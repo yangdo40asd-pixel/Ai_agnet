@@ -1,0 +1,16 @@
+streamlit
+plotly
+yfinance
+finance-datareader
+requests
+beautifulsoup4
+lxml
+aiohttp
+langchain
+langchain-openai
+langchain-groq
+crewai
+tiktoken
+pydantic
+pandas
+python-dotenv

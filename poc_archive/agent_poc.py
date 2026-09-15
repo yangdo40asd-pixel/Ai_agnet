@@ -10,8 +10,9 @@ from langchain_core.prompts import ChatPromptTemplate
 # 윈도우 터미널 한글/이모지 깨짐 방지
 sys.stdout.reconfigure(encoding='utf-8')
 
-# 1. 환경변수 로드
-load_dotenv()
+# 1. 환경변수 로드 (.env 파일이 부모 폴더에 있으므로 경로 명시)
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+load_dotenv(env_path)
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 NAVER_ID = os.getenv("NAVER_CLIENT_ID")
 NAVER_SECRET = os.getenv("NAVER_CLIENT_SECRET")

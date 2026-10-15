@@ -12,3 +12,11 @@ __pycache__/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Local editor/tool links into the virtual environment
+.agents/
+.claude/
+
+# Keep only the final, reproducible live check result in Git
+검수자료/*
+!검수자료/실제_API_검수.json

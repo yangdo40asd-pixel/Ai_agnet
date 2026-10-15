@@ -1,0 +1,9 @@
+# 현재 src 프로그램에 직접 필요한 패키지.
+# requirements.txt는 이전 실험·확장 후보까지 포함한 목록으로 유지한다.
+streamlit
+yfinance
+finance-datareader
+requests
+pandas
+python-dotenv
+langchain-groq

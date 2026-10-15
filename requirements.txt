@@ -9,8 +9,13 @@ aiohttp
 langchain
 langchain-openai
 langchain-groq
+langchain-google-genai
 crewai
 tiktoken
 pydantic
 pandas
 python-dotenv
+opendartreader
+selenium
+webdriver-manager
+reportlab

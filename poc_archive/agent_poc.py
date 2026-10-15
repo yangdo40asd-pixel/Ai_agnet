@@ -25,7 +25,8 @@ print("="*60)
 llm = ChatGroq(
     groq_api_key=GROQ_API_KEY, 
     model_name="qwen/qwen3.8-27b", 
-    temperature=0.1
+    temperature=0.1,
+    max_tokens=900
 )
 
 # ---------------------------------------------------------

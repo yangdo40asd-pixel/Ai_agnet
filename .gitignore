@@ -20,3 +20,15 @@ Thumbs.db
 # Keep only the final, reproducible live check result in Git
 검수자료/*
 !검수자료/실제_API_검수.json
+!검수자료/챗봇_API_검수.json
+
+# Local legacy document outputs and one-off document generation tools
+/docs/이전자료/*.docx
+/docs/참고자료/*.docx
+/scripts/document_tools/
+
+# Office lock files and local test caches
+~$*
+.pytest_cache/
+.coverage
+htmlcov/

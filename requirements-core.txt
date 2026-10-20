@@ -5,5 +5,7 @@ yfinance
 finance-datareader
 requests
 pandas
+plotly
+XlsxWriter
 python-dotenv
 langchain-groq

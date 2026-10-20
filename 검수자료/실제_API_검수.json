@@ -1,13 +1,15 @@
 {
-  "checked_at": "2026-10-15T09:48:09.118758+09:00",
+  "checked_at": "2026-10-20T10:36:33.599651+09:00",
   "model": "openai/gpt-oss-20b",
+  "dart_configured": true,
   "external_responses_mocked": false,
   "browser_or_server_started": false,
   "cases": [
     {
       "theme": "반도체 테마주 분석해줘",
       "status": "complete",
-      "seconds": 5.85,
+      "seconds": 18.79,
+      "discovery_ms": 2951.38,
       "candidates": [
         {
           "name": "삼성전자",
@@ -20,53 +22,147 @@
           "market": "KOSPI"
         },
         {
-          "name": "삼성SDI",
-          "code": "006400",
-          "market": "KOSPI"
+          "name": "SFA반도체",
+          "code": "036540",
+          "market": "KOSDAQ"
         }
       ],
-      "price": 216000.0,
-      "per": 9.624810622939131,
+      "selected_stock": {
+        "name": "삼성전자",
+        "code": "005930",
+        "market": "KOSPI"
+      },
+      "price": 211000.0,
+      "per": 9.402014080741466,
+      "pbr": null,
+      "eps": 22442.0,
+      "bps": null,
+      "roe": 10.783,
+      "roe_basis": "provided",
       "per_eps": 22442.0,
       "per_period_end": "2026-06-30",
-      "price_at": "2026-10-15T09:28:14+09:00",
-      "retrieved_at": "2026-10-15T09:48:13.173487+09:00",
+      "price_at": "2026-10-20T10:16:41+09:00",
+      "retrieved_at": "2026-10-20T10:36:37.633924+09:00",
       "warnings": [],
+      "history_bars": 62,
+      "history_range": [
+        "2026-07-20",
+        "2026-10-20"
+      ],
+      "dart_status": "ok",
+      "annual_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "financial_ratios": {
+        "bsns_year": "2025",
+        "fs_div": "CFS",
+        "roe": 10.783,
+        "operating_margin": 13.07,
+        "net_margin": 13.55,
+        "debt_ratio": 29.94
+      },
+      "section_status": {
+        "financial": "ok",
+        "history": "ok",
+        "dart": "ok",
+        "news": "ok",
+        "commentary": "ok",
+        "financial_commentary": "failed"
+      },
+      "timings_ms": {
+        "financial_ms": 1236.54,
+        "history_ms": 217.42,
+        "dart_ms": 3365.91,
+        "news_ms": 340.57,
+        "commentary_ms": 2725.01,
+        "financial_commentary_ms": 1397.47
+      },
       "news": [
         {
           "id": 1,
-          "title": "[특징주] 삼성전자·SK하이닉스, 美 3대 지수 모두 하락.. '급락'",
-          "url": "https://www.g-enews.com/view.php?ud=20261015093654425944093b5d4e_1",
-          "published_at": "2026-10-15 09:46:00 KST"
+          "title": "코스피 장 초반 급락…코스닥도 동반 하락",
+          "url": "https://news.kbs.co.kr/news/pc/view/view.do?ncd=8689978&ref=A",
+          "published_at": "2026-10-20 10:34:00 KST"
         },
         {
           "id": 2,
-          "title": "직주근접 수요층 유입에 거래 활성화…경기 남부 반도체 벨트 부동산 눈...",
-          "url": "https://www.apnews.kr/news/articleView.html?idxno=3052094",
-          "published_at": "2026-10-15 09:46:00 KST"
+          "title": "코스피 지수 널뛰기 2026년 상승률 116%에서 31%로 축소",
+          "url": "http://www.newstown.co.kr/news/articleView.html?idxno=719060",
+          "published_at": "2026-10-20 10:33:00 KST"
         },
         {
           "id": 3,
-          "title": "[개장] 美 물가·AI 투자 불안에 코스피 6% 급락… 5700선 붕괴",
-          "url": "https://it.chosun.com/news/articleView.html?idxno=2023092172072",
-          "published_at": "2026-10-15 09:46:00 KST"
+          "title": "“40평보다 33평이 6500만원 더 비싸” 85㎡까지만 사내대출에 ‘집값 역...",
+          "url": "https://biz.heraldcorp.com/article/10908322?ref=naver",
+          "published_at": "2026-10-20 10:33:00 KST"
         }
       ],
       "commentary": {
         "trend": [
-          "삼성전자와 SK하이닉스가 미국 주요 지수에서 하락을 기록했다"
+          "코스피 장 초반 급락이 반도체 테마에 영향을 미칠 가능성",
+          "코스피 지수 변동이 반도체 주가에 영향을 줄 수 있는 가능성"
         ],
-        "stock": "주가와 PER만으로 재무 건전성이나 미래 주가를 판단할 수 없으며, 추가 지표가 필요하다",
-        "opportunity": "직주근접 수요층 유입이 거래를 활성화하고 경기 남부 반도체 벨트 부동산에 긍정적 영향을 미칠 가능성이 있다",
-        "risk": "미국 물가·AI 투자 불안으로 코스피가 급락한 상황이 반도체 주가에 부정적 영향을 줄 수 있다",
-        "summary": "제공된 뉴스 제목만으로는 사업상의 기회와 위험을 완전히 파악하기 어렵지만, 직주근접 수요층 유입과 미국 시장 변동성이 주요 요인으로 보인다"
+        "stock": "주가와 PER만으로 재무 건전성이나 미래 주가를 단정할 수 없습니다.",
+        "financial_commentary": [],
+        "opportunity": "제공된 뉴스 제목만으로 사업상의 기회 요인을 확인하기 어렵습니다.",
+        "risk": "코스피 하락이 반도체 주식에 부정적 영향을 미칠 수 있는 가능성",
+        "summary": "코스피 장 초반 급락과 지수 변동이 반도체 테마에 영향을 미칠 수 있는 가능성을 포함한 요약"
+      },
+      "excel": {
+        "filename": "주식분석_반도체_테마주_분석해줘_삼성전자_005930_3M_20261020.xlsx",
+        "size_bytes": 29903,
+        "sheet_names": [
+          "요약",
+          "핵심지표",
+          "일별시세",
+          "손익계산서",
+          "재무상태표",
+          "현금흐름표",
+          "관련뉴스",
+          "출처및산식"
+        ],
+        "chart_count": 5,
+        "formula_cells_count": 0
+      },
+      "candidate_switch_verified": true,
+      "switched_stock": {
+        "name": "SK하이닉스",
+        "code": "000660",
+        "market": "KOSPI"
+      },
+      "switched_timings_ms": {
+        "financial_ms": 1016.26,
+        "history_ms": 388.74,
+        "dart_ms": 1881.73,
+        "news_ms": 750.86,
+        "commentary_ms": 1235.44,
+        "financial_commentary_ms": 602.01
+      },
+      "switched_excel": {
+        "filename": "주식분석_반도체_테마주_분석해줘_SK하이닉스_000660_3M_20261020.xlsx",
+        "size_bytes": 29789,
+        "sheet_names": [
+          "요약",
+          "핵심지표",
+          "일별시세",
+          "손익계산서",
+          "재무상태표",
+          "현금흐름표",
+          "관련뉴스",
+          "출처및산식"
+        ],
+        "chart_count": 5,
+        "formula_cells_count": 0
       },
       "ui_values_links_and_rerun": "passed"
     },
     {
       "theme": "2차전지",
       "status": "passed_with_notice",
-      "seconds": 3.63,
+      "seconds": 6.1,
+      "discovery_ms": 1115.8,
       "candidates": [
         {
           "name": "LG화학",
@@ -84,103 +180,236 @@
           "market": "KOSPI"
         }
       ],
-      "price": 254500.0,
-      "per": -13.17287784679089,
+      "selected_stock": {
+        "name": "LG화학",
+        "code": "051910",
+        "market": "KOSPI"
+      },
+      "price": 263000.0,
+      "per": -13.612836438923395,
+      "pbr": null,
+      "eps": -19320.0,
+      "bps": null,
+      "roe": -2.055,
+      "roe_basis": "provided",
       "per_eps": -19320.0,
       "per_period_end": "2026-06-30",
-      "price_at": "2026-10-15T09:28:40+09:00",
-      "retrieved_at": "2026-10-15T09:48:46.800741+09:00",
+      "price_at": "2026-10-20T10:17:08+09:00",
+      "retrieved_at": "2026-10-20T10:37:09.332402+09:00",
       "warnings": [
         "최근 12개월 희석 EPS가 음수여서 PER가 음수입니다. 단순히 저평가라고 해석할 수 없습니다."
       ],
+      "history_bars": 62,
+      "history_range": [
+        "2026-07-20",
+        "2026-10-20"
+      ],
+      "dart_status": "ok",
+      "annual_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "financial_ratios": {
+        "bsns_year": "2025",
+        "fs_div": "CFS",
+        "roe": -2.055,
+        "operating_margin": 2.57,
+        "net_margin": -2.13,
+        "debt_ratio": 114.54
+      },
+      "section_status": {
+        "financial": "partial",
+        "history": "ok",
+        "dart": "ok",
+        "news": "ok",
+        "commentary": "ok",
+        "financial_commentary": "failed"
+      },
+      "timings_ms": {
+        "financial_ms": 995.87,
+        "history_ms": 310.49,
+        "dart_ms": 1726.65,
+        "news_ms": 264.44,
+        "commentary_ms": 956.4,
+        "financial_commentary_ms": 513.97
+      },
       "news": [
         {
           "id": 1,
-          "title": "테오도르의 시장분석 \"전일 급락 이후 반등\" (10월 14일)",
-          "url": "https://www.fntoday.co.kr/news/articleView.html?idxno=395252",
-          "published_at": "2026-10-14 11:04:00 KST"
+          "title": "美ESS 시장서 中 빠진다…K-배터리 반사익",
+          "url": "http://www.smedaily.co.kr/news/articleView.html?idxno=364872",
+          "published_at": "2026-10-20 09:58:00 KST"
         },
         {
           "id": 2,
-          "title": "테오도르의 주식시장 분석 : 특징주와 테마주 \"2차전지 소재 업종와 반...",
-          "url": "https://www.fntoday.co.kr/news/articleView.html?idxno=395254",
-          "published_at": "2026-10-14 11:02:00 KST"
+          "title": "\"하루 만에 11% 올랐다\"…美 선거 앞두고 들썩이는 종목 [분석+]",
+          "url": "https://www.hankyung.com/article/2026101911456",
+          "published_at": "2026-10-20 06:31:00 KST"
         },
         {
           "id": 3,
-          "title": "전기차 배터리·스테인리스 수요 회복 기대…니켈주 요동",
-          "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=495144",
-          "published_at": "2026-10-14 10:24:00 KST"
+          "title": "\"중국 ESS 기업 美서 사실상 철수\"…K-배터리 볕드나",
+          "url": "http://www.4th.kr/news/articleView.html?idxno=2120022",
+          "published_at": "2026-10-19 22:00:00 KST"
         }
       ],
       "commentary": {
         "trend": [
-          "전일 급락 이후 반등을 보인 이 종목"
+          "K-배터리 시장에서의 반사익 가능성"
         ],
-        "stock": "최근 실적이 음수여 PER가 음수이며, 이는 단순히 저평가라고 해석할 수 없습니다.",
-        "opportunity": "전기차 배터리·스테인리스 수요 회복 기대가 이 종목의 사업에 긍정 요인으로 작용할 수 있습니다.",
-        "risk": "전일 급락 이후 반등이 지속되지 않을 위험이 존재합니다.",
-        "summary": "전일 급락 이후 반등과 전기차 배터리·스테인리스 수요 회복 기대가 이 종목의 사업에 긍정 요인으로 작용할 수 있으나, 최근 실적이 음수여 PER가 음수인 점을 감안할 때 투자 판단은 신중히 해야 합니다."
+        "stock": "EPS가 음수여 PER가 음수인 상황이므로 단순히 저평가라고 해석할 수 없습니다.",
+        "financial_commentary": [],
+        "opportunity": "K-배터리 반사익 가능성",
+        "risk": "중국 ESS 기업의 미국 시장 철수 가능성",
+        "summary": "K-배터리 시장에서의 반사익과 중국 ESS 기업의 미국 철수 가능성을 동시에 고려해야 합니다."
       },
+      "excel": {
+        "filename": "주식분석_2차전지_LG화학_051910_3M_20261020.xlsx",
+        "size_bytes": 29616,
+        "sheet_names": [
+          "요약",
+          "핵심지표",
+          "일별시세",
+          "손익계산서",
+          "재무상태표",
+          "현금흐름표",
+          "관련뉴스",
+          "출처및산식"
+        ],
+        "chart_count": 5,
+        "formula_cells_count": 0
+      },
+      "candidate_switch_verified": false,
+      "switched_stock": null,
+      "switched_timings_ms": null,
+      "switched_excel": null,
       "ui_values_links_and_rerun": "passed"
     },
     {
       "theme": "로봇",
       "status": "complete",
-      "seconds": 4.15,
+      "seconds": 6.04,
+      "discovery_ms": 1188.1,
       "candidates": [
         {
-          "name": "LSK아이로봇",
-          "code": "091970",
-          "market": "KOSDAQ"
+          "name": "삼성전자",
+          "code": "005930",
+          "market": "KOSPI"
         },
         {
-          "name": "유진로봇",
-          "code": "056080",
-          "market": "KOSDAQ"
+          "name": "LG전자",
+          "code": "066570",
+          "market": "KOSPI"
         },
         {
-          "name": "전진건설로봇",
-          "code": "079900",
+          "name": "한화시스템",
+          "code": "272210",
           "market": "KOSPI"
         }
       ],
-      "price": 3255.0,
-      "per": 2.6484947111472743,
-      "per_eps": 1229.0,
+      "selected_stock": {
+        "name": "삼성전자",
+        "code": "005930",
+        "market": "KOSPI"
+      },
+      "price": 211000.0,
+      "per": 9.402014080741466,
+      "pbr": null,
+      "eps": 22442.0,
+      "bps": null,
+      "roe": 10.783,
+      "roe_basis": "provided",
+      "per_eps": 22442.0,
       "per_period_end": "2026-06-30",
-      "price_at": "2026-10-15T09:28:27+09:00",
-      "retrieved_at": "2026-10-15T09:49:21.136318+09:00",
+      "price_at": "2026-10-20T10:17:34+09:00",
+      "retrieved_at": "2026-10-20T10:37:30.304203+09:00",
       "warnings": [],
+      "history_bars": 62,
+      "history_range": [
+        "2026-07-20",
+        "2026-10-20"
+      ],
+      "dart_status": "ok",
+      "annual_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "financial_ratios": {
+        "bsns_year": "2025",
+        "fs_div": "CFS",
+        "roe": 10.783,
+        "operating_margin": 13.07,
+        "net_margin": 13.55,
+        "debt_ratio": 29.94
+      },
+      "section_status": {
+        "financial": "ok",
+        "history": "ok",
+        "dart": "ok",
+        "news": "ok",
+        "commentary": "ok",
+        "financial_commentary": "failed"
+      },
+      "timings_ms": {
+        "financial_ms": 591.28,
+        "history_ms": 163.58,
+        "dart_ms": 1555.23,
+        "news_ms": 322.71,
+        "commentary_ms": 1326.19,
+        "financial_commentary_ms": 578.76
+      },
       "news": [
         {
           "id": 1,
-          "title": "[더벨][한국거래소 제재 워치] 뒤늦게 재정비 마친 빅텐츠, 자금 조달 실...",
-          "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202610112333070560102695",
-          "published_at": "2026-10-15 07:02:00 KST"
+          "title": "[미국 특징주] 인텔, 美의 외국산 로봇 규제 예외 요청…반도체 공장 가...",
+          "url": "https://www.newspim.com/news/view/20261020000373",
+          "published_at": "2026-10-20 10:20:00 KST"
         },
         {
           "id": 2,
-          "title": "화학주 반등 열쇠는 수익성…전통 석유화학과 첨단 소재 차별화",
-          "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=494512",
-          "published_at": "2026-10-12 15:06:00 KST"
+          "title": "올해 굿디자인코리아 대통령상에 '민둥산 경험루트'",
+          "url": "https://view.asiae.co.kr/article/2026102010205827947",
+          "published_at": "2026-10-20 10:20:00 KST"
         },
         {
           "id": 3,
-          "title": "2차전지·반도체 소재 기대감에 화학株 강세…보원케미칼 '기세등등'",
-          "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=493743",
-          "published_at": "2026-10-08 13:50:00 KST"
+          "title": "[더벨][신규 ETF 리뷰 | 마이티 미국피지컬AI액티브] DB운용 첫 해외주식...",
+          "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202610160929203320104179",
+          "published_at": "2026-10-20 10:18:00 KST"
         }
       ],
       "commentary": {
         "trend": [
-          "제공된 뉴스 제목만으로 이 테마에 대한 동향을 파악하기 어렵습니다."
+          "로봇 관련 규제 이슈가 주목받고 있다"
         ],
-        "stock": "주가·PER만으로 재무 건전성, 저평가, 미래 주가나 수익을 단정할 수 없습니다.",
-        "opportunity": "제공된 뉴스 제목만으로 사업상의 기회 요인을 확인하기 어렵습니다.",
-        "risk": "제공된 뉴스 제목만으로 사업상의 위험 요인을 확인하기 어렵습니다.",
-        "summary": "제공된 뉴스 제목만으로 이 종목에 대한 기회·위험·동향을 판단하기 어렵습니다."
+        "stock": "주가와 PER만으로 재무 건전성이나 미래를 판단하기 어렵다",
+        "financial_commentary": [],
+        "opportunity": "외국산 로봇 규제 예외 요청이 이 테마에 긍정적 요인으로 작용할 가능성이 있다",
+        "risk": "규제 예외 요청이 승인되지 않을 경우 이 테마에 부정적 영향을 미칠 가능성이 있다",
+        "summary": "제공된 뉴스 제목만으로 사업상의 기회와 위험을 파악할 수 있으나, 재무 지표만으로는 결론을 내리기 어렵다"
       },
+      "excel": {
+        "filename": "주식분석_로봇_삼성전자_005930_3M_20261020.xlsx",
+        "size_bytes": 29916,
+        "sheet_names": [
+          "요약",
+          "핵심지표",
+          "일별시세",
+          "손익계산서",
+          "재무상태표",
+          "현금흐름표",
+          "관련뉴스",
+          "출처및산식"
+        ],
+        "chart_count": 5,
+        "formula_cells_count": 0
+      },
+      "candidate_switch_verified": false,
+      "switched_stock": null,
+      "switched_timings_ms": null,
+      "switched_excel": null,
       "ui_values_links_and_rerun": "passed"
     }
   ],

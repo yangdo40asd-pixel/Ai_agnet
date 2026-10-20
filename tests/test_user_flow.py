@@ -24,14 +24,18 @@ def response(payload):
     return SimpleNamespace(content=json.dumps(payload, ensure_ascii=False), response_metadata={"finish_reason": "stop"})
 
 
-def report_payload(per=15.2, news=True):
+def report_payload(per=15.2, news=True, stock_name="예시회사", price=70000):
     statement = {"text": "관련 소식이 관심을 높일 가능성이 있습니다.", "news_ids": [1]}
-    return {"stock_name": "예시회사", "price": 70000, "per": per,
-            "theme_trend": [copy.deepcopy(statement)] if news else [],
-            "stock_comment": "이 지표만으로 기업 가치를 단정하기 어렵습니다.",
-            "opportunity": copy.deepcopy(statement) if news else None,
-            "risk": copy.deepcopy(statement) if news else None,
-            "summary": copy.deepcopy(statement) if news else None}
+    return {
+        "stock_name": stock_name,
+        "price": price,
+        "per": per,
+        "theme_trend": [copy.deepcopy(statement)] if news else [],
+        "stock_comment": "이 지표만으로 기업 가치를 단정하기 어렵습니다.",
+        "opportunity": copy.deepcopy(statement) if news else None,
+        "risk": copy.deepcopy(statement) if news else None,
+        "summary": copy.deepcopy(statement) if news else None,
+    }
 
 
 class UserFlowTests(unittest.TestCase):
@@ -69,9 +73,26 @@ class UserFlowTests(unittest.TestCase):
             response(report if report is not None else report_payload()),
         ]
 
-    def submit(self, theme="반도체"):
+    def submit_theme(self, theme="반도체"):
         self.app.chat_input[0].set_value(theme).run()
         self.assert_no_exception()
+
+    def select_stock(self, code):
+        selectors = [el for el in self.app.selectbox if el.key == "candidate_selector"]
+        if selectors and code in selectors[0].options:
+            selectors[0].select(code).run()
+        else:
+            self.app.session_state["selected_code"] = code
+            self.app.run()
+        self.assert_no_exception()
+
+    def submit(self, theme="반도체", code=None):
+        self.submit_theme(theme)
+        if "candidate_result" in self.app.session_state and "latest_error" not in self.app.session_state:
+            discovery = self.app.session_state["candidate_result"]
+            if discovery.candidates:
+                target_code = code if code is not None else (discovery.candidates[0].code or discovery.candidates[0].name)
+                self.select_stock(target_code)
 
     def assert_no_exception(self):
         self.assertEqual(len(self.app.exception), 0, [element.message for element in self.app.exception])
@@ -86,17 +107,116 @@ class UserFlowTests(unittest.TestCase):
         self.listing.assert_not_called()
         self.news_request.assert_not_called()
 
+    def test_theme_submission_enters_selection_waiting_state_before_detail_calls(self):
+        self.submit_theme("반도체")
+        self.assertEqual(len(self.app.dataframe), 1)
+        self.assertEqual(len(self.app.dataframe[0].value), 3)
+        self.assertEqual(len(self.app.metric), 0)
+        self.assertEqual(len(self.app.success), 0)
+        self.assertTrue(any("분석할 종목을 선택해 주세요" in item.value for item in self.app.info))
+        self.assertEqual(self.llm.invoke.call_count, 1)
+        self.listing.assert_called_once()
+        self.ticker.assert_not_called()
+        self.news_request.assert_not_called()
+
     def test_normal_theme_runs_complete_pipeline_and_renders_sources(self):
         self.submit()
         self.assertEqual(len(self.app.success), 1)
-        self.assertEqual([metric.value for metric in self.app.metric], ["70,000원", "15.20배"])
+        self.assertEqual([metric.value for metric in self.app.metric[:2]], ["70,000원", "15.20배"])
+        self.assertEqual(len(self.app.metric), 6)
         self.assertEqual(len(self.app.dataframe[0].value), 3)
         self.assertEqual(self.app.dataframe[0].value.iloc[1]["시장"], "KOSDAQ")
         self.assertEqual(self.llm.invoke.call_count, 2)
-        self.ticker.assert_called_once_with("005930.KS")
+        self.ticker.assert_called_with("005930.KS")
         links = [element.proto.url for element in self.app.get("link_button")]
         self.assertIn("https://example.com/news", links)
         self.assertTrue(any("조회 시각" in element.value for element in self.app.caption))
+
+    def test_selecting_second_or_third_candidate_updates_title_ticker_news_and_ai(self):
+        self.info["symbol"] = "247540.KQ"
+        self.info["regularMarketPrice"] = 125000
+        self.info["currentPrice"] = 125000
+        self.info["trailingPE"] = 22.5
+        self.set_responses(
+            ["예시회사", "회사나", "회사다"],
+            report_payload(per=22.5, stock_name="회사나", price=125000),
+        )
+        self.submit("2차전지", code="247540")
+        self.assertEqual(len(self.app.success), 1)
+        self.ticker.assert_called_with("247540.KQ")
+        self.assertEqual(self.news_request.call_args.kwargs["params"]["query"], "2차전지 회사나")
+        self.assertEqual([metric.value for metric in self.app.metric[:2]], ["125,000원", "22.50배"])
+        table = self.app.dataframe[0].value
+        self.assertEqual(table.iloc[1]["분석 대상"], "대표 종목 (선택됨)")
+        self.assertEqual(table.iloc[0]["분석 대상"], "선택 가능")
+        markdown_text = " ".join(el.value for el in self.app.markdown)
+        self.assertIn("회사나", markdown_text)
+        self.assertIn("247540", markdown_text)
+
+    def test_related_candidate_button_switches_selection_without_reproposing(self):
+        self.llm.invoke.side_effect = [
+            response({"stocks": ["예시회사", "회사나", "회사다"]}),
+            response(report_payload(per=15.2, stock_name="예시회사", price=70000)),
+            response(report_payload(per=18.0, stock_name="회사다", price=90000)),
+        ]
+        self.submit("반도체", code="005930")
+        self.assertEqual(self.app.session_state["selected_code"], "005930")
+
+        # Update mock for third candidate 000660
+        self.info["symbol"] = "000660.KS"
+        self.info["regularMarketPrice"] = 90000
+        self.info["currentPrice"] = 90000
+        self.info["trailingPE"] = 18.0
+        self.app.button(key="result_related_000660").click().run()
+        self.assert_no_exception()
+
+        self.assertEqual(self.app.session_state["selected_code"], "000660")
+        self.assertEqual(self.listing.call_count, 1)
+        self.assertEqual(self.llm.invoke.call_count, 3)  # 1 candidate proposal + 2 reports
+        self.assertEqual([metric.value for metric in self.app.metric[:2]], ["90,000원", "18.00배"])
+        self.assertEqual(self.app.dataframe[0].value.iloc[2]["분석 대상"], "대표 종목 (선택됨)")
+
+    def test_switching_stock_when_second_fails_clears_first_stock_result(self):
+        self.submit("반도체", code="005930")
+        self.assertEqual(len(self.app.metric), 6)
+        self.app.session_state["export_bytes"] = b"old-excel-bytes"
+
+        # Now switch to second candidate (247540), where financial fetch fails
+        self.ticker.return_value.get_info.side_effect = RuntimeError("provider failure")
+        self.select_stock("247540")
+
+        self.assertEqual(len(self.app.metric), 0)
+        self.assertNotIn("dashboard_result", self.app.session_state)
+        self.assertNotIn("export_bytes", self.app.session_state)
+        self.assertIn("주가·PER 조회에 실패", self.error_text())
+
+    def test_refresh_selected_button_requeries_current_stock_only(self):
+        self.llm.invoke.side_effect = [
+            response({"stocks": ["예시회사", "회사나", "회사다"]}),
+            response(report_payload(per=15.2, stock_name="예시회사", price=70000)),
+            response(report_payload(per=16.0, stock_name="예시회사", price=71000)),
+        ]
+        self.submit("반도체", code="005930")
+        initial_calls = self.ticker.call_count
+        self.assertGreaterEqual(initial_calls, 1)
+
+        self.info["regularMarketPrice"] = 71000
+        self.info["currentPrice"] = 71000
+        self.info["trailingPE"] = 16.0
+        self.app.button(key="refresh_selected").click().run()
+        self.assert_no_exception()
+
+        self.assertEqual(self.listing.call_count, 1)
+        self.assertGreater(self.ticker.call_count, initial_calls)
+        self.assertEqual([metric.value for metric in self.app.metric[:2]], ["71,000원", "16.00배"])
+
+    def test_out_of_candidate_code_is_rejected_before_external_calls(self):
+        self.submit_theme("반도체")
+        self.select_stock("999999")
+        self.assertIn("후보 목록에 없습니다", self.error_text())
+        self.ticker.assert_not_called()
+        self.news_request.assert_not_called()
+        self.assertEqual(len(self.app.metric), 0)
 
     def test_kosdaq_target_uses_kq_code(self):
         self.info["symbol"] = "247540.KQ"
@@ -104,7 +224,7 @@ class UserFlowTests(unittest.TestCase):
         payload["stock_name"] = "회사나"
         self.set_responses(["회사나", "예시회사", "회사다"], payload)
         self.submit("2차전지")
-        self.ticker.assert_called_once_with("247540.KQ")
+        self.ticker.assert_called_with("247540.KQ")
         self.assertEqual(len(self.app.success), 1)
 
     def test_numeric_theme_name_in_ai_text_does_not_fail(self):
@@ -118,7 +238,7 @@ class UserFlowTests(unittest.TestCase):
     def test_partly_unreadable_news_displays_partial_result(self):
         self.news_response.json.return_value["items"].append({"title": None})
         self.submit()
-        self.assertEqual(len(self.app.metric), 2)
+        self.assertEqual(len(self.app.metric), 6)
         self.assertEqual(len(self.app.success), 0)
         self.assertTrue(any("일부 뉴스 항목을 읽지 못" in item.value for item in self.app.warning))
 
@@ -145,7 +265,10 @@ class UserFlowTests(unittest.TestCase):
         self.news_request.assert_not_called()
 
     def test_unconfirmed_target_does_not_use_next_candidate(self):
-        self.set_responses(["없는회사", "회사나", "회사다"])
+        self.llm.invoke.side_effect = [
+            response({"stocks": ["없는회사", "회사나", "회사다"]}),
+            response({"stocks": ["없는회사", "회사나", "회사다"]}),
+        ]
         self.submit()
         self.assertIn("첫 번째 후보", self.error_text())
         self.ticker.assert_not_called()
@@ -182,7 +305,7 @@ class UserFlowTests(unittest.TestCase):
         self.news_response.json.return_value = {"items": []}
         self.set_responses(report=report_payload(news=False))
         self.submit()
-        self.assertEqual(len(self.app.metric), 2)
+        self.assertEqual(len(self.app.metric), 6)
         self.assertEqual(len(self.app.success), 0)
         self.assertTrue(any("뉴스 제목을 확보하지 못해" in item.value for item in self.app.info))
 
@@ -191,7 +314,7 @@ class UserFlowTests(unittest.TestCase):
         self.set_responses(report=report_payload(news=False))
         self.submit()
         self.assertTrue(any("인증" in item.value for item in self.app.warning))
-        self.assertEqual(len(self.app.metric), 2)
+        self.assertEqual(len(self.app.metric), 6)
         self.assertEqual(len(self.app.success), 0)
 
     def test_ai_report_number_mismatch_keeps_actual_metrics(self):
@@ -208,8 +331,35 @@ class UserFlowTests(unittest.TestCase):
         self.submit()
         self.assertIn("AI 호출에 실패", self.error_text())
         self.assertNotIn("private", self.error_text())
-        self.assertEqual(len(self.app.metric), 2)
+        self.assertEqual(len(self.app.metric), 6)
         self.assertEqual(len(self.app.success), 0)
+
+    def test_dashboard_renders_pbr_eps_bps_and_price_volume_chart(self):
+        self.info.update({
+            "financialCurrency": "KRW",
+            "trailingEps": 4605.0,
+            "bookValue": 51850.0,
+            "priceToBook": 1.35,
+        })
+        self.ticker.return_value.history.return_value = pd.DataFrame(
+            {
+                "Open": [69000.0, 70000.0],
+                "High": [70500.0, 71500.0],
+                "Low": [68500.0, 69500.0],
+                "Close": [70000.0, 71000.0],
+                "Volume": [10000000, 12000000],
+            },
+            index=[pd.Timestamp("2026-10-15"), pd.Timestamp("2026-10-16")],
+        )
+        self.submit("반도체", code="005930")
+        self.assertEqual(
+            [metric.value for metric in self.app.metric],
+            ["70,000원", "15.20배", "1.35배", "정보 없음", "4,605원", "51,850원"],
+        )
+        captions = " ".join(c.value for c in self.app.caption)
+        self.assertIn("시세 이력 출처: Yahoo Finance", captions)
+        self.assertIn("2026-10-15 ~ 2026-10-16 (2거래일)", captions)
+        self.assertIn("무수정 시세(auto_adjust=False)", captions)
 
     def test_rerun_and_clear_do_not_request_again(self):
         self.submit()

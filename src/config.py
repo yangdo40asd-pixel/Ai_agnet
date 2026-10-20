@@ -17,6 +17,7 @@ class Settings:
     naver_secret: str = field(repr=False)
     news_sort: str = "date"
     request_timeout: float = 30.0
+    dart_api_key: str = field(default="", repr=False)
 
 
 def load_settings() -> Settings:
@@ -38,4 +39,5 @@ def load_settings() -> Settings:
         naver_id=os.getenv("NAVER_CLIENT_ID", "").strip(),
         naver_secret=os.getenv("NAVER_CLIENT_SECRET", "").strip(),
         news_sort=sort, request_timeout=timeout,
+        dart_api_key=os.getenv("DART_API_KEY", "").strip(),
     )

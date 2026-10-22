@@ -20,6 +20,8 @@ PRICE_RANGE_MAP: dict[str, str] = {
     "3M": "3mo",
     "6M": "6mo",
     "1Y": "1y",
+    "3Y": "3y",
+    "5Y": "5y",
 }
 
 PRICE_RANGE_LABELS: dict[str, str] = {
@@ -27,6 +29,8 @@ PRICE_RANGE_LABELS: dict[str, str] = {
     "3M": "최근 3개월",
     "6M": "최근 6개월",
     "1Y": "최근 1년",
+    "3Y": "최근 3년",
+    "5Y": "최근 5년",
 }
 
 REQUIRED_OHLCV_COLUMNS = {"Open", "High", "Low", "Close", "Volume"}

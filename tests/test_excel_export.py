@@ -250,6 +250,8 @@ class ExcelExportTests(unittest.TestCase):
         state: dict = {}
 
         store_analysis_result(state, res_a, "반도체|005930|3M|latest|11011|CFS|0")
+        self.assertNotIn("export_bytes", state)
+        ensure_export_bundle(state, res_a)
         bytes_a = state["export_bytes"]
         name_a = state["export_filename"]
         self.assertIn("005930", name_a)
@@ -268,6 +270,7 @@ class ExcelExportTests(unittest.TestCase):
 
         # B 분석 성공 시 B의 엑셀 바이트가 저장되고 내부 종목코드가 000660임
         store_analysis_result(state, res_b, "반도체|000660|3M|latest|11011|CFS|0")
+        ensure_export_bundle(state, res_b)
         self.assertIn("000660", state["export_filename"])
         wb_b = openpyxl.load_workbook(io.BytesIO(state["export_bytes"]))
         self.assertEqual(wb_b["요약"]["B5"].value, "000660")
@@ -292,10 +295,12 @@ class ExcelExportTests(unittest.TestCase):
             app.session_state["candidate_result"] = discovery
             app.session_state["selected_code"] = "005930"
             app.run()
+            app.button(key="add_canvas").click().run()
+            app.button(key="prepare_export_c1").click().run()
 
             self.assertEqual(len(app.exception), 0)
             self.assertEqual(mock_analyze.call_count, 1)
-            self.assertIn("005930", app.session_state["export_filename"])
+            self.assertIn("005930", app.session_state["canvases"][0]["export_filename"])
             self.assertGreater(len(app.get("download_button")), 0)
 
             # 단순 rerun에서는 analyze_selected_stock과 build_workbook_bytes를 다시 호출하지 않음
@@ -305,11 +310,13 @@ class ExcelExportTests(unittest.TestCase):
             self.assertEqual(mock_analyze.call_count, 1)
 
             # 후보 2(000660)로 전환 시 새 종목 엑셀로 교체됨
-            app.selectbox(key="candidate_selector").select("000660").run()
+            app.button(key="c1_result_related_000660").click().run()
             self.assertEqual(len(app.exception), 0)
             self.assertEqual(mock_analyze.call_count, 2)
-            self.assertIn("000660", app.session_state["export_filename"])
-            wb = openpyxl.load_workbook(io.BytesIO(app.session_state["export_bytes"]))
+            app.button(key="add_canvas").click().run()
+            app.button(key="prepare_export_c2").click().run()
+            self.assertIn("000660", app.session_state["canvases"][0]["export_filename"])
+            wb = openpyxl.load_workbook(io.BytesIO(app.session_state["canvases"][0]["export_bytes"]))
             self.assertEqual(wb["요약"]["B5"].value, "000660")
 
 

@@ -1,0 +1,49 @@
+{
+  "checked_at": "2026-10-21T16:40:56.517744+09:00",
+  "external_responses_mocked": false,
+  "browser_or_server_started": false,
+  "steps": [
+    {
+      "step": "initial_hidden_canvas",
+      "passed": true
+    },
+    {
+      "step": "direct_stock_analysis",
+      "passed": true
+    },
+    {
+      "step": "real_collection",
+      "passed": true,
+      "section_status": {
+        "financial": "ok",
+        "history": "ok",
+        "dart": "ok",
+        "news": "ok",
+        "commentary": "ok",
+        "financial_commentary": "ok"
+      },
+      "history_bars": 62,
+      "annual_periods": 3,
+      "news_count": 3,
+      "commentary_present": true,
+      "ai_error": null
+    },
+    {
+      "step": "report_in_chat",
+      "passed": true
+    },
+    {
+      "step": "canvas_still_hidden",
+      "passed": true
+    },
+    {
+      "step": "explicit_canvas_open",
+      "passed": true
+    },
+    {
+      "step": "excel_prepared",
+      "passed": true,
+      "byte_count": 30145
+    }
+  ]
+}

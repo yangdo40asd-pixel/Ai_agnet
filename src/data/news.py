@@ -14,13 +14,11 @@ NEWS_URL = "https://naverapihub.apigw.ntruss.com/search/v1/news"
 
 
 def news_query(theme: str, stock_name: str) -> str:
-    # 챗봇의 요청 문구까지 검색하면 관련 뉴스가 줄거나 과거 기사만 나올 수 있다.
-    keyword = re.sub(
-        r"\s*(?:(?:테마주|관련주|종목)\s*)?(?:분석(?:해\s*줘|해\s*주세요|해|해줘요|해주세요)?|알려\s*줘|알려\s*주세요)\s*[.!?]*$",
-        "", theme,
-    ).strip()
-    keyword = re.sub(r"\s+(?:테마주|관련주)$", "", keyword).strip()
-    return f"{keyword or theme} {stock_name}"
+    from src.agents.request import discovery_theme
+    keyword = discovery_theme(theme)
+    if keyword == stock_name or not keyword:
+        return stock_name
+    return f"{keyword} {stock_name}"
 
 
 def safe_news_url(value: object) -> str | None:

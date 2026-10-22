@@ -14,6 +14,7 @@ from src.data.dart import (
     resolve_corp_code,
 )
 from src.models import (
+    AppError,
     AnnualFinancialSummary,
     FinancialAccountRow,
     FinancialFact,

@@ -27,6 +27,9 @@ class StockCandidate:
     market: str | None = None
     ticker: str | None = None
     reason: str = ""
+    association_reason: str = ""
+    association_source: str = ""
+    association_status: str = "not_collected"
 
     @property
     def verified(self) -> bool:
@@ -430,7 +433,8 @@ class AnalysisResult:
             and not self.financial.warnings
             and self.news.status == "ok"
             and self.financial.stock.selectable
-            and all(candidate.verified and not candidate.reason for candidate in self.candidates)
+            and self.financial.price is not None
+            and all(status == "ok" for key, status in self.section_status.items() if key in {"history", "dart", "news", "commentary"})
         )
 
 

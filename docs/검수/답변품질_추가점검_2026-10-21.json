@@ -1,0 +1,185 @@
+{
+  "review_date": "2026-10-21",
+  "scope": "Actual configured LLM calls using current answer_question; synthetic company, metrics, headlines and history only. No live financial/news APIs, no browser/server. No runtime code changes.",
+  "model": "openai/gpt-oss-20b",
+  "synthetic_data": {
+    "price": 10000,
+    "per": 12.5,
+    "pbr": null,
+    "chart_closes": [
+      10000,
+      10300
+    ]
+  },
+  "live_cases": [
+    {
+      "id": "Q01",
+      "question": "PER의 뜻과 계산 방법을 쉽게 설명해 주십시오.",
+      "uses_synthetic_result": false,
+      "external_llm_mocked": false,
+      "success": true,
+      "answer": "PER은 주가를 주당순이익으로 나눈 값으로, 기업이 이익을 얼마나 벌었는지 대비 주가가 얼마나 높은지를 보여줘요. 계산은 \"주가 ÷ 주당순이익\"으로 하면 돼요.",
+      "evidence": [],
+      "follow_up": "이어서 궁금한 지표가 있나요?",
+      "seconds": 2.225
+    },
+    {
+      "id": "Q02",
+      "question": "PER과 PBR의 차이와 각각 언제 참고해야 하는지 비교해 주십시오.",
+      "uses_synthetic_result": false,
+      "external_llm_mocked": false,
+      "success": true,
+      "answer": "PER은 주가를 주당순이익으로 나눈 비율로, 기업이 벌어들이는 이익 대비 주가가 얼마나 높은지를 보여준다. PBR은 주가를 주당순자산으로 나눈 비율로, 기업의 자산 대비 주가가 얼마나 높은지를 나타낸다. PER은 이익 성장 전망이 중요한 경우, PBR은 자산가치가 중요한 경우에 참고한다.",
+      "evidence": [],
+      "follow_up": "PER과 PBR 중 어느 지표가 더 유용하다고 생각하십니까?",
+      "seconds": 0.815
+    },
+    {
+      "id": "Q03",
+      "question": "현재 종목의 주가와 PER 값을 알려 주십시오.",
+      "uses_synthetic_result": true,
+      "external_llm_mocked": false,
+      "success": true,
+      "answer": "주가가 현재 얼마인지와 PER이 무엇인지 알려드릴게요. PER은 주가를 주당순이익으로 나눈 값이에요. 주가는 현재 얼마인지와 PER이 무엇인지 알려드릴게요.",
+      "evidence": [
+        {
+          "text": "검수용가상회사 · PRICE: 10,000.00원",
+          "source": "검수용 가상자료",
+          "period": "",
+          "retrieved_at": "2026-10-21T08:40:10.347355+09:00",
+          "id": "PRICE"
+        },
+        {
+          "text": "검수용가상회사 · PER: 12.50배",
+          "source": "검수용 가상자료",
+          "period": "",
+          "retrieved_at": "2026-10-21T08:40:10.347355+09:00",
+          "id": "PER"
+        }
+      ],
+      "follow_up": "PER이 낮으면 어떻게 해요?",
+      "seconds": 3.69
+    },
+    {
+      "id": "Q04",
+      "question": "현재 종목의 PBR이 정보 없음으로 나옵니다. 값이 영이라는 의미입니까?",
+      "uses_synthetic_result": true,
+      "external_llm_mocked": false,
+      "success": true,
+      "answer": "PBR이 ‘정보 없음’이라면 주가가 주당순자산을 나누어 계산할 수 있는 자료가 없다는 뜻이야. 즉, 현재 공개된 재무제표에서 주당순자산이 제공되지 않았거나, 계산이 불가능한 상황이야.",
+      "evidence": [
+        {
+          "text": "검수용가상회사 · PBR: 정보 없음",
+          "source": "검수용 가상자료",
+          "period": "",
+          "retrieved_at": "2026-10-21T08:40:10.347355+09:00",
+          "id": "PBR"
+        }
+      ],
+      "follow_up": "다른 재무지표에 대해 궁금한 점이 있나요?",
+      "seconds": 0.81
+    },
+    {
+      "id": "Q05",
+      "question": "제공된 뉴스 때문에 이 종목의 주가가 올랐다고 볼 수 있습니까?",
+      "uses_synthetic_result": true,
+      "external_llm_mocked": false,
+      "success": true,
+      "answer": "검수용가상회사의 신규 생산라인 가동 계획 발표가 주가에 영향을 미쳤을 가능성은 있지만, 현재 제공된 자료만으로는 그 영향이 실제로 주가 상승으로 이어졌다고 단정할 수 없습니다.",
+      "evidence": [
+        {
+          "text": "검수용가상회사, 신규 생산라인 가동 계획 발표",
+          "url": "https://example.com/test-news",
+          "source": "검수용 가상뉴스",
+          "published_at": "2026-10-20 09:00:00 KST",
+          "retrieved_at": "2026-10-21T08:40:26.359399+09:00",
+          "id": "NEWS_1"
+        },
+        {
+          "text": "검수용가상회사 · PRICE: 10,000.00원",
+          "source": "검수용 가상자료",
+          "period": "",
+          "retrieved_at": "2026-10-21T08:40:26.359386+09:00",
+          "id": "PRICE"
+        },
+        {
+          "text": "검수용가상회사 · PER: 12.50배",
+          "source": "검수용 가상자료",
+          "period": "",
+          "retrieved_at": "2026-10-21T08:40:26.359386+09:00",
+          "id": "PER"
+        }
+      ],
+      "follow_up": "이어서 궁금한 지표가 있나요?",
+      "seconds": 2.724
+    },
+    {
+      "id": "Q06",
+      "question": "앞선 PER 정의는 반복하지 말고, 이 종목에서 확인된 사실과 추가 확인이 필요한 점을 설명해 주십시오.",
+      "uses_synthetic_result": true,
+      "external_llm_mocked": false,
+      "success": false,
+      "error_code": "ai_rate_limit",
+      "seconds": 1.154
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "b1d3b8d8b19072ba69131f762f677245f7d1a8711d9e0f8dc2e565716a34e23e",
+    "src/agents/report.py": "f21b740bd78f84c11e553b8859d87db1766498f465aeb072eb99b6359b8418eb",
+    "src/ui/app.py": "c47c589f989955cac144522bf036a270d316b831cf5c88ae708c4ce72e280367"
+  },
+  "success_semantics": "success=true means the current function returned and existing validators accepted it, not that content quality or professional tone passed review.",
+  "new_user_style_requirement": "Assistant narration: polite professional Korean using 입니다/합니다; questions using 입니까/습니까; user-authored questions/quotes and short UI labels are separate.",
+  "local_validation_probes": [
+    {
+      "text": "PER은 주가를 주당순이익으로 나눈 값이야.",
+      "verdict": "accepted"
+    },
+    {
+      "text": "PER은 주가를 주당순이익으로 나눈 값입니다.",
+      "verdict": "accepted"
+    },
+    {
+      "text": "확인해 드릴게요. 확인해 드릴게요.",
+      "verdict": "accepted"
+    }
+  ],
+  "manual_review": {
+    "Q01": {
+      "content": "Formula correct; concise basic answer. Additional explanation can be tailored to request.",
+      "style": "해요체; new professional polite style requirement not met.",
+      "follow_up": "Generic fallback; weak connection to formula question.",
+      "revision": "Style and next-action wording."
+    },
+    "Q02": {
+      "content": "Formulas correct; earnings-versus-assets distinction supplied. Usage guidance is compressed and can be made more precise.",
+      "style": "Plain 한다/보여준다 rather than polite 합니다.",
+      "follow_up": "Asks user which indicator is more useful instead of helping choose based on purpose.",
+      "revision": "Polite style and user-oriented explanation/follow-up."
+    },
+    "Q03": {
+      "content": "PRICE and PER values present and correct in attached synthetic evidence. Body repeats an intention to answer and unnecessary definition.",
+      "style": "해요체.",
+      "follow_up": "PER low question disconnected from a direct request for current values.",
+      "revision": "Direct answer body, repetition control, renderer-owned verified values, style."
+    },
+    "Q04": {
+      "content": "Infers missing published financial statements or inability to calculate from missing PBR alone; no evidence for those causes. Does not directly distinguish unknown from zero clearly enough.",
+      "style": "반말: 뜻이야/상황이야.",
+      "follow_up": "Generic question.",
+      "revision": "High priority: correct missing-data explanation, polite style, supported next action."
+    },
+    "Q05": {
+      "content": "Appropriately avoids establishing causation between headline and stock rise. Extra PER evidence not required for the question.",
+      "style": "Polite formal ending present.",
+      "follow_up": "Generic indicator question, weak connection to news/causality.",
+      "revision": "Retain cautious reasoning; make evidence selection and follow-up relevant."
+    },
+    "Q06": {
+      "content": "Not evaluated: rate limit.",
+      "style": "Not evaluated.",
+      "follow_up": "Not evaluated.",
+      "revision": "Treat service availability separately from answer quality; no repeated retry performed."
+    }
+  }
+}

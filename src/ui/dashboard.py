@@ -27,7 +27,18 @@ from src.ui.formatting import (
     format_price,
     format_timestamp,
 )
+
+CHART_CONFIG = {"scrollZoom": False}
+
+
+def _chart_key(prefix: str, name: str) -> str:
+    return f"{prefix}_{name}" if prefix else name
+
+
+def _show_chart(fig, key: str) -> None:
+    st.plotly_chart(fig, width="stretch", key=key, config=CHART_CONFIG)
 from src.ui.state import select_candidate
+from src.agents.knowledge import TERMS
 
 
 def show_statement(title: str, statement: Statement | None):
@@ -61,9 +72,17 @@ def render_metrics(result: AnalysisResult):
     st.subheader(f"핵심 금융 지표 — {financial.stock.name} ({financial.stock.code})")
     top_cols = st.columns(4)
     top_cols[0].metric("주가", format_price(financial.price))
-    top_cols[1].metric("PER", format_multiple(financial.per))
-    top_cols[2].metric("PBR", format_multiple(financial.pbr))
-    top_cols[3].metric("ROE", format_percent(roe_value))
+    top_cols[1].metric("PER", format_multiple(financial.per), help=" ".join(TERMS["PER"]))
+    top_cols[2].metric("PBR", format_multiple(financial.pbr), help=" ".join(TERMS["PBR"]))
+    top_cols[3].metric("ROE", format_percent(roe_value), help=" ".join(TERMS["ROE"]))
+
+    with st.expander("지표 뜻과 해석 주의사항"):
+        st.markdown(
+            "- **PER**: 주가를 주당순이익으로 나눈 값입니다. 이익 변동과 비교 기간을 함께 확인해야 합니다.\n"
+            "- **PBR**: 주가를 주당순자산으로 나눈 값입니다. 자산의 구성과 수익성을 함께 봐야 합니다.\n"
+            "- **ROE**: 자기자본 대비 이익의 비율입니다. 제공값인지 자체 계산값인지와 기준 기간을 확인해야 합니다.\n"
+            "- **EPS·BPS**: 각각 주당순이익과 주당순자산입니다. 값이 없으면 추정하지 않고 정보 없음으로 표시합니다."
+        )
 
     with st.expander("보조 지표 (주당 가치: EPS · BPS)", expanded=True):
         aux_cols = st.columns(2)
@@ -114,9 +133,9 @@ def render_metrics(result: AnalysisResult):
         st.link_button("금융 자료 출처 열기", f"https://finance.yahoo.com/quote/{financial.stock.ticker}/")
 
 
-def render_price_chart(result: AnalysisResult):
+def render_price_chart(result: AnalysisResult, key_prefix: str = ""):
     """선택 종목의 일별 주가·거래량 상하 패널 차트를 표시한다."""
-    st.subheader("일별 주가·거래량 추이")
+    st.subheader("주가·거래량 추이")
     history = result.price_history
     if history is None:
         st.info("표시할 일별 주가·거래량 이력이 없습니다.")
@@ -128,12 +147,15 @@ def render_price_chart(result: AnalysisResult):
         st.info(history.message or "선택한 기간의 일별 시세 이력이 없습니다.")
         return
 
-    fig = build_price_volume_figure(result.financial.stock, history)
+    interval = st.selectbox("표시 간격", ["일", "월", "연"], key=_chart_key(key_prefix, "chart_interval"))
+    fig = build_price_volume_figure(result.financial.stock, history, interval)
+    if interval != "일":
+        st.caption("조회한 거래일을 월·연 단위로 집계합니다. 구간의 첫 달·해와 마지막 달·해는 일부 거래일만 포함할 수 있습니다.")
     if fig is None:
         st.info("차트를 구성할 수 있는 유효한 원화 시세 이력이 없습니다.")
         return
 
-    st.plotly_chart(fig, width="stretch", key=f"price_vol_chart_{result.financial.stock.code}_{history.range_key}")
+    _show_chart(fig, _chart_key(key_prefix, f"price_vol_chart_{result.financial.stock.code}_{history.range_key}"))
     first_date = history.bars[0].trade_date
     last_date = history.bars[-1].trade_date
     adj_text = "수정주가" if history.adjusted else "무수정 시세(auto_adjust=False)"
@@ -144,7 +166,7 @@ def render_price_chart(result: AnalysisResult):
     )
 
 
-def render_financial_summary(result: AnalysisResult):
+def render_financial_summary(result: AnalysisResult, key_prefix: str = ""):
     """기업 실적 차트·재무 요약표 및 상세 재무제표(BS/CF/비율/공시링크)를 표시한다."""
     st.subheader("기업 실적 및 재무 분석")
     dart_status = result.section_status.get("dart", "empty")
@@ -165,11 +187,7 @@ def render_financial_summary(result: AnalysisResult):
     if result.annual_summaries:
         annual_fig = build_annual_performance_figure(result.financial.stock, result.annual_summaries)
         if annual_fig is not None:
-            st.plotly_chart(
-                annual_fig,
-                width="stretch",
-                key=f"annual_perf_chart_{result.financial.stock.code}",
-            )
+            _show_chart(annual_fig, _chart_key(key_prefix, f"annual_perf_chart_{result.financial.stock.code}"))
 
         summary_rows = []
         for item in result.annual_summaries:
@@ -196,11 +214,7 @@ def render_financial_summary(result: AnalysisResult):
     if result.quarterly_summaries:
         q_fig = build_quarter_performance_figure(result.financial.stock, result.quarterly_summaries)
         if q_fig is not None:
-            st.plotly_chart(
-                q_fig,
-                width="stretch",
-                key=f"quarter_perf_chart_{result.financial.stock.code}",
-            )
+            _show_chart(q_fig, _chart_key(key_prefix, f"quarter_perf_chart_{result.financial.stock.code}"))
 
     if result.financial_ratios:
         ratios = result.financial_ratios
@@ -234,11 +248,7 @@ def render_financial_summary(result: AnalysisResult):
         if result.annual_summaries:
             bs_fig = build_balance_sheet_figure(result.financial.stock, result.annual_summaries)
             if bs_fig is not None:
-                st.plotly_chart(
-                    bs_fig,
-                    width="stretch",
-                    key=f"bs_chart_{result.financial.stock.code}",
-                )
+                _show_chart(bs_fig, _chart_key(key_prefix, f"bs_chart_{result.financial.stock.code}"))
             detail_rows = []
             for item in result.annual_summaries:
                 detail_rows.append(
@@ -267,9 +277,9 @@ def render_financial_summary(result: AnalysisResult):
             st.caption("상세 재무상태표·현금흐름표 데이터가 없습니다.")
 
 
-def render_related_stocks(result: AnalysisResult, on_select=None):
+def render_related_stocks(result: AnalysisResult, on_select=None, key_prefix: str = "", enable_switch: bool = True):
     """관련 종목 후보 가격·등락·미니 차트 및 동일 선택 동작 버튼을 표시한다."""
-    st.subheader("관련 종목 후보 및 빠른 전환")
+    st.subheader("관련 종목 후보")
     st.caption("후보 순서는 투자 추천 순위가 아닙니다. 등락은 동일 조정 기준 일별 종가 비교(+/−)로 표시합니다.")
 
     summary_by_code = {
@@ -294,36 +304,30 @@ def render_related_stocks(result: AnalysisResult, on_select=None):
                 st.caption(summary.comparison_basis)
                 spark_fig = build_mini_sparkline_figure(summary)
                 if spark_fig is not None:
-                    st.plotly_chart(
-                        spark_fig,
-                        width="stretch",
-                        key=f"spark_{candidate.code}",
-                    )
+                    _show_chart(spark_fig, _chart_key(key_prefix, f"spark_{candidate.code}"))
             elif not candidate.selectable:
                 st.caption(f"안내: {candidate.reason or '상장 종목 미확인'}")
             elif summary and summary.message:
                 st.caption(summary.message)
 
-            if candidate.selectable and candidate.code:
+            if enable_switch and candidate.selectable and candidate.code:
                 button_label = (
                     f"{candidate.name} ({candidate.code}) · 현재 선택됨"
                     if is_current
                     else f"{candidate.name} ({candidate.code}) 분석 보기"
                 )
-                clicked = st.button(
+                st.button(
                     button_label,
-                    key=f"result_related_{candidate.code}",
+                    key=_chart_key(key_prefix, f"result_related_{candidate.code}"),
                     disabled=is_current,
-                    on_click=select_candidate,
-                    args=(st.session_state, candidate.code),
+                    on_click=on_select or select_candidate,
+                    args=(candidate.code,) if on_select else (st.session_state, candidate.code),
                     width="stretch",
                 )
-                if clicked and on_select is not None:
-                    on_select(candidate.code)
-            else:
+            elif enable_switch:
                 st.button(
                     f"{candidate.name} (선택 불가)",
-                    key=f"result_related_disabled_{candidate.name}",
+                    key=_chart_key(key_prefix, f"result_related_disabled_{candidate.name}"),
                     disabled=True,
                     width="stretch",
                 )
@@ -392,6 +396,7 @@ def render_export(
     result: AnalysisResult,
     export_bytes: bytes | None = None,
     export_filename: str | None = None,
+    key_prefix: str = "",
 ):
     """선택 종목 분석 자료 엑셀 다운로드 영역을 표시한다."""
     st.subheader("분석 결과 엑셀 다운로드")
@@ -407,12 +412,12 @@ def render_export(
             data=export_bytes,
             file_name=export_filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            key=f"download_xlsx_{result.result_id or stock.code}",
+            key=_chart_key(key_prefix, f"download_xlsx_{result.result_id or stock.code}"),
             width="stretch",
         )
         st.caption(f"파일명: `{export_filename}` (화면과 동일한 분석 결과 객체에서 생성됨)")
     else:
-        st.caption("엑셀 파일 생성 모듈 연결 시 현재 선택 종목의 통합 XLSX 다운로드가 활성화됩니다.")
+        st.caption("‘엑셀 준비’를 누르면 이 결과의 다운로드 파일을 생성합니다.")
 
 
 def render_dashboard(
@@ -422,6 +427,8 @@ def render_dashboard(
     export_bytes: bytes | None = None,
     export_filename: str | None = None,
     show_insights: bool = True,
+    key_prefix: str = "",
+    enable_related_switch: bool = True,
 ):
     """우측 패널의 전체 선택 종목 대시보드를 순서대로 렌더링한다."""
     if result.complete:
@@ -430,12 +437,17 @@ def render_dashboard(
         st.info("확인된 데이터만 먼저 표시합니다. 아래 안내에서 누락 또는 실패 항목을 확인해 주세요.")
 
     render_metrics(result)
-    render_price_chart(result)
-    render_financial_summary(result)
-    render_related_stocks(result, on_select=on_select)
+    render_price_chart(result, key_prefix=key_prefix)
+    render_financial_summary(result, key_prefix=key_prefix)
+    render_related_stocks(
+        result,
+        on_select=on_select,
+        key_prefix=key_prefix,
+        enable_switch=enable_related_switch,
+    )
 
     if show_insights:
         render_insights(result)
     render_news(result)
 
-    render_export(result, export_bytes=export_bytes, export_filename=export_filename)
+    render_export(result, export_bytes=export_bytes, export_filename=export_filename, key_prefix=key_prefix)

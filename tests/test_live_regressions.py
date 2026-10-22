@@ -212,7 +212,7 @@ class RealRequestRegressionTests(unittest.TestCase):
     def test_unlisted_candidate_is_reproposed_and_revalidated(self):
         names = ("예시회사", "회사나", "회사다")
         listing = pd.DataFrame([{"Name":n,"Code":c,"Market":"KOSPI"} for n,c in zip(names,["005930","000660","000990"])])
-        with (patch("src.pipeline.load_settings"),
+        with (patch("src.pipeline.load_settings", return_value=Settings("test", "test-model", "test", "test")),
               patch("src.pipeline.propose_candidates", side_effect=[("없는회사", "회사나", "회사다"), names]) as propose,
               patch("src.pipeline.load_listing", return_value=listing) as load,
               patch("src.pipeline.fetch_financial", return_value=example_financial()),
@@ -226,7 +226,7 @@ class RealRequestRegressionTests(unittest.TestCase):
 
     def test_reproposal_does_not_accept_another_unlisted_name(self):
         listing = pd.DataFrame([{"Name":"회사나","Code":"005930","Market":"KOSPI"}])
-        with (patch("src.pipeline.load_settings"),
+        with (patch("src.pipeline.load_settings", return_value=Settings("test", "test-model", "test", "test")),
               patch("src.pipeline.propose_candidates", side_effect=[("없는회사","회사나","회사다"), ("또없는회사","회사나","회사다")]) as propose,
               patch("src.pipeline.load_listing", return_value=listing),
               patch("src.pipeline.fetch_financial") as finance):

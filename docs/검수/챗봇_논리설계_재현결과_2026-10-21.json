@@ -1,0 +1,152 @@
+{
+  "review_date": "2026-10-21",
+  "scope": "Local deterministic probes and AppTest only; no live AI or provider API calls; classifier outputs explicitly stubbed.",
+  "baseline_suite": {
+    "tests": 187,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 26.12,
+    "note": "Actual suite result from the immediately preceding review run."
+  },
+  "routing_probes": [
+    {
+      "id": "R01",
+      "input": "최근 시장에서 주목받는 테마를 알려줘",
+      "selected_code": null,
+      "stub_classifier_action": "discover",
+      "actual_action": "clarify",
+      "actual_theme": "",
+      "classifier_calls": 1
+    },
+    {
+      "id": "R02",
+      "input": "반도체 관련 종목 알려줘",
+      "selected_code": null,
+      "stub_classifier_action": "discover",
+      "actual_action": "clarify",
+      "actual_theme": "",
+      "classifier_calls": 1
+    },
+    {
+      "id": "R03",
+      "input": "다른 테마로 방산 찾아줘",
+      "selected_code": "005930",
+      "stub_classifier_action": "discover",
+      "actual_action": "clarify",
+      "actual_theme": "",
+      "classifier_calls": 0
+    },
+    {
+      "id": "R04",
+      "input": "예시회사 최근 뉴스 찾아줘",
+      "selected_code": "005930",
+      "stub_classifier_action": "answer",
+      "actual_action": "discover",
+      "actual_theme": "예시회사 최근 뉴스",
+      "classifier_calls": 0
+    },
+    {
+      "id": "R05",
+      "input": "PER 뜻 찾아줘",
+      "selected_code": null,
+      "stub_classifier_action": "answer",
+      "actual_action": "discover",
+      "actual_theme": "PER 뜻",
+      "classifier_calls": 0
+    },
+    {
+      "id": "R06",
+      "input": "이 회사 뉴스 다시 조회해줘",
+      "selected_code": "005930",
+      "stub_classifier_action": "refresh",
+      "actual_action": "answer",
+      "actual_theme": "",
+      "classifier_calls": 0
+    },
+    {
+      "id": "R07",
+      "input": "삼성전자 최근 뉴스는?",
+      "selected_code": "005930",
+      "stub_classifier_action": "discover",
+      "actual_action": "answer",
+      "actual_theme": "",
+      "classifier_calls": 0
+    },
+    {
+      "id": "R08",
+      "input": "자료를 다시 조회해줘",
+      "selected_code": "005930",
+      "stub_classifier_action": "refresh",
+      "actual_action": "clarify",
+      "actual_theme": "",
+      "classifier_calls": 1
+    },
+    {
+      "id": "R09",
+      "input": "차트 열어줘",
+      "selected_code": "005930",
+      "stub_classifier_action": "answer",
+      "actual_action": "answer",
+      "actual_theme": "",
+      "classifier_calls": 1
+    },
+    {
+      "id": "R10",
+      "input": "후보 종목을 비교해줘",
+      "selected_code": "005930",
+      "stub_classifier_action": "clarify",
+      "actual_action": "clarify",
+      "actual_theme": "",
+      "classifier_calls": 1
+    }
+  ],
+  "validation_probes": [
+    {
+      "text": "공장 가동이 중단됐어요.",
+      "verdict": "accepted"
+    },
+    {
+      "text": "PER이 15.2배로 조회됐어요.",
+      "verdict": "report_unverified"
+    },
+    {
+      "text": "매수와 매도의 뜻을 설명할게요.",
+      "verdict": "report_recommendation"
+    },
+    {
+      "text": "최근 실적을 확인할 자료가 없어요.",
+      "unnatural": true
+    }
+  ],
+  "mode_reset_probe": {
+    "before": "candidate_selection",
+    "after": null,
+    "candidate_saved": true
+  },
+  "initial_suggestions": [
+    "최근 시장에서 주목받는 테마를 알려줘",
+    "반도체 관련 종목을 찾아줘",
+    "관심 종목의 위험 요인을 분석해줘"
+  ],
+  "app_test_transcript_with_stubbed_classifier": [
+    {
+      "role": "user",
+      "text": "최근 시장에서 주목받는 테마를 알려줘",
+      "follow_up": ""
+    },
+    {
+      "role": "assistant",
+      "text": "관심 테마의 종목을 찾으려면 ‘반도체 테마 찾아줘’처럼 말씀해 주세요.",
+      "follow_up": "어떤 테마의 종목을 찾을까요?"
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "b1d3b8d8b19072ba69131f762f677245f7d1a8711d9e0f8dc2e565716a34e23e",
+    "src/ui/app.py": "c47c589f989955cac144522bf036a270d316b831cf5c88ae708c4ce72e280367",
+    "src/ui/state.py": "f084a55b68720330e62411e5bb4e46d8e4207d297080ddef3f79a3b01ca6a4a5",
+    "src/pipeline.py": "2ed98157b4e896f70009b136b88430cea18238299f766e4f4f9d2e3e816b7b63",
+    "src/agents/report.py": "f21b740bd78f84c11e553b8859d87db1766498f465aeb072eb99b6359b8418eb",
+    "계획5_근거기반_대화형분석_개선기획.md": "5187a2240d8ed474eb314322740f40ad0f358a074f7c43ed623610fb4114733a"
+  }
+}

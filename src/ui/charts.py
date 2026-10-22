@@ -4,6 +4,7 @@
 """
 
 from decimal import Decimal
+from dataclasses import replace
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -14,7 +15,23 @@ from src.models import (
     QuarterlyFinancialSummary,
     RelatedStockSummary,
     StockCandidate,
+    PriceBar,
 )
+
+
+def aggregate_history(history: PriceHistory, interval: str = "일") -> PriceHistory:
+    """조회한 일봉만 달력 월·연도별 OHLCV로 묶는다. 구간 밖 데이터는 만들지 않는다."""
+    if interval not in {"일", "월", "연"}:
+        raise ValueError("지원하지 않는 표시 간격입니다.")
+    if interval == "일":
+        return history
+    groups = {}
+    for bar in sorted(history.bars, key=lambda b: b.trade_date):
+        key = bar.trade_date[:7 if interval == "월" else 4]
+        groups.setdefault(key, []).append(bar)
+    bars = tuple(PriceBar(key, rows[0].open, max(r.high for r in rows), min(r.low for r in rows),
+                          rows[-1].close, sum(r.volume for r in rows)) for key, rows in groups.items())
+    return replace(history, bars=bars)
 
 
 def _to_eok(amount_won: int | float | Decimal | None) -> float | None:
@@ -29,6 +46,7 @@ def _to_eok(amount_won: int | float | Decimal | None) -> float | None:
 def build_price_volume_figure(
     stock: StockCandidate,
     history: PriceHistory,
+    interval: str = "일",
 ) -> go.Figure | None:
     """일별 종가 선(상단)과 거래량 막대(하단)를 공유 날짜축의 상하 패널로 구성한다."""
     if (
@@ -40,6 +58,7 @@ def build_price_volume_figure(
     ):
         return None
 
+    history = aggregate_history(history, interval)
     dates = [bar.trade_date for bar in history.bars]
     opens = [bar.open for bar in history.bars]
     highs = [bar.high for bar in history.bars]
@@ -51,8 +70,7 @@ def build_price_volume_figure(
     range_label = PRICE_RANGE_LABELS.get(history.range_key, history.range_key)
     adj_label = "수정주가" if history.adjusted else "무수정 시세(auto_adjust=False)"
     title_text = (
-        f"{stock.name} ({stock.code}) 일별 주가·거래량 추이 "
-        f"[{range_label} · {history.currency} · {adj_label}]"
+        f"{stock.name} ({stock.code}) · {interval} 단위 시세 · {range_label}"
     )
 
     fig = make_subplots(
@@ -61,7 +79,7 @@ def build_price_volume_figure(
         shared_xaxes=True,
         vertical_spacing=0.08,
         row_heights=[0.68, 0.32],
-        subplot_titles=("일별 종가 (단위: 원, KRW)", "일별 거래량 (단위: 주)"),
+        subplot_titles=("종가 (원)", "거래량 (주)"),
     )
 
     fig.add_trace(
@@ -100,13 +118,13 @@ def build_price_volume_figure(
     fig.update_yaxes(title_text="주가 (원)", tickformat=",", row=1, col=1)
     fig.update_yaxes(title_text="거래량 (주)", tickformat=",", row=2, col=1)
     # 실제 거래일 문자열만 범주형으로 표시해 휴장일 공백이나 가짜 봉을 만들지 않는다.
-    fig.update_xaxes(type="category", tickangle=-30, row=1, col=1)
-    fig.update_xaxes(title_text="거래일 (KST)", type="category", tickangle=-30, row=2, col=1)
+    fig.update_xaxes(type="category", nticks=6, showticklabels=False, row=1, col=1)
+    fig.update_xaxes(title_text="거래 기간 (KST)", type="category", nticks=6, tickangle=-30, row=2, col=1)
     fig.update_layout(
         title={"text": title_text, "font": {"size": 15}},
         height=460,
-        margin={"l": 55, "r": 25, "t": 65, "b": 45},
-        legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "xanchor": "right", "x": 1.0},
+        margin={"l": 55, "r": 25, "t": 90, "b": 75},
+        showlegend=False,
         hovermode="x unified",
     )
     return fig

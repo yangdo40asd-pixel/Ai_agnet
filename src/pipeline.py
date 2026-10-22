@@ -3,7 +3,7 @@
 import time
 from collections.abc import Callable
 from dataclasses import replace
-from unittest.mock import NonCallableMock
+from uuid import uuid4
 
 from src.agents.report import (
     generate_commentary,
@@ -29,7 +29,25 @@ from src.models import (
     QueryOptions,
     StockCandidate,
     now_kst,
+    FinancialData,
+    NewsData,
 )
+
+
+def identify_stock(name_or_code: str, *, listing=None) -> StockCandidate:
+    """명시한 회사 하나만 공식 목록과 대조한다. 별칭·부분 일치는 추측하지 않는다."""
+    import re
+    table = load_listing() if listing is None else listing
+    value = name_or_code.strip()
+    if re.fullmatch(r"[0-9A-Za-z]{6}", value):
+        codes = table["Code"].astype(str).str.strip().str.upper().str.zfill(6)
+        rows = table[codes == value.upper()]
+        if len(rows) == 1:
+            value = str(rows.iloc[0]["Name"])
+    found = resolve_candidates((value,), table)[0]
+    if not found.selectable:
+        raise AppError("stock_unconfirmed", "입력한 회사의 공식 종목명·코드를 확인하지 못했습니다. 공식 명칭이나 6자리 코드를 입력해 주세요.")
+    return found
 
 
 def normalize_theme(theme: str) -> str:
@@ -94,6 +112,8 @@ def analyze_selected_stock(
     on_progress: Callable[[str], None] | None = None,
     *,
     settings: Settings | None = None,
+    scope: str = "all",
+    previous: AnalysisResult | None = None,
 ) -> AnalysisResult:
     """사용자가 선택한 후보 종목에 대해 금융·뉴스·AI 설명을 수집한다. 후보 AI를 다시 호출하지 않는다."""
     progress = on_progress or (lambda _: None)
@@ -102,52 +122,38 @@ def analyze_selected_stock(
     target = resolve_selected_target(candidate_tuple, selected_code)
     active_settings = settings or load_settings()
     options = query_options or QueryOptions()
+    if scope not in {"all", "finance", "news", "history", "financials"}:
+        raise AppError("request_scope", "지원하지 않는 조회 범위입니다.")
+    if previous is not None and previous.target_code != target.code:
+        previous = None
     timings: dict[str, float] = {}
 
-    progress("주가·PER를 조회하고 있습니다.")
+    if scope in {"all", "finance"}:
+        progress("주가·금융 지표를 조회하고 있습니다.")
     t0 = time.perf_counter()
-    financial = fetch_financial(target)
+    financial = (fetch_financial(target) if scope in {"all", "finance"} else
+                 previous.financial if previous else FinancialData(target, None, None, now_kst(), warnings=("금융 지표를 아직 조회하지 않았습니다.",)))
     timings["financial_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
     if financial.stock.code != target.code:
         raise AppError("finance_identity", "금융 자료의 종목코드를 확인하지 못했습니다. 이번 분석을 중단합니다.")
 
-    price_history = None
-    related_stocks = ()
-    should_fetch_history = not isinstance(fetch_financial, NonCallableMock) or isinstance(
-        fetch_price_history, NonCallableMock
-    )
-    if should_fetch_history:
-        progress("일별 주가·거래량 이력을 조회하고 있습니다.")
+    price_history = previous.price_history if previous else None
+    related_stocks = previous.related_stocks if previous else ()
+    if scope in {"all", "history"}:
+        progress("주가·거래량과 후보 시세를 조회하고 있습니다.")
         t_hist = time.perf_counter()
-        hist_currency = "KRW" if financial.price is not None else "UNKNOWN"
-        price_history = fetch_price_history(
-            target,
-            options.price_period,
-            currency=hist_currency,
-        )
-        related_stocks = fetch_related_stock_summaries(
-            candidate_tuple,
-            target.code,
-            price_history,
-            fetch_unselected=False,
-        )
+        price_history = fetch_price_history(target, options.price_period, currency="KRW")
+        related_stocks = fetch_related_stock_summaries(candidate_tuple, target.code, price_history, fetch_unselected=True)
         timings["history_ms"] = round((time.perf_counter() - t_hist) * 1000.0, 2)
 
-    financial_statements = ()
-    annual_summaries = ()
-    quarterly_summaries = ()
-    financial_ratios = None
-    financial_facts = ()
-    dart_status = "empty"
+    financial_statements = previous.financial_statements if previous else ()
+    annual_summaries = previous.annual_summaries if previous else ()
+    quarterly_summaries = previous.quarterly_summaries if previous else ()
+    financial_ratios = previous.financial_ratios if previous else None
+    financial_facts = previous.financial_facts if previous else ()
+    dart_status = previous.section_status.get("dart", "not_collected") if previous else "not_collected"
 
-    should_fetch_dart = (
-        not isinstance(fetch_financial, NonCallableMock)
-        or isinstance(collect_company_financials, NonCallableMock)
-    )
-    if should_fetch_dart and (
-        active_settings.dart_api_key
-        or isinstance(collect_company_financials, NonCallableMock)
-    ):
+    if scope in {"all", "financials"} and active_settings.dart_api_key:
         progress("기업 재무제표와 주요 재무비율(OpenDART)을 조회하고 있습니다.")
         t_dart = time.perf_counter()
         dart_bundle = collect_company_financials(
@@ -165,15 +171,18 @@ def analyze_selected_stock(
         if financial_ratios is not None and financial_ratios.roe is not None:
             financial = replace(financial, roe_metric=financial_ratios.roe)
 
-    progress("관련 뉴스와 근거 링크를 수집하고 있습니다.")
+    if scope in {"all", "news"}:
+        progress("관련 뉴스와 근거 링크를 수집하고 있습니다.")
     t1 = time.perf_counter()
-    news = fetch_news(normalized_theme, target.name, active_settings)
+    news = (fetch_news(normalized_theme, target.name, active_settings) if scope in {"all", "news"} else
+            previous.news if previous else NewsData((), now_kst(), status="not_collected", message="뉴스를 아직 조회하지 않았습니다."))
     timings["news_ms"] = round((time.perf_counter() - t1) * 1000.0, 2)
 
-    progress("AI 설명을 작성하고 조회값·뉴스 근거를 확인하고 있습니다.")
+    if scope == "all":
+        progress("AI 설명을 작성하고 조회값·뉴스 근거를 확인하고 있습니다.")
     t2 = time.perf_counter()
     try:
-        commentary = generate_commentary(normalized_theme, financial, news, active_settings)
+        commentary = generate_commentary(normalized_theme, financial, news, active_settings) if scope == "all" else None
         ai_error = None
     except AppError as error:
         # 수집 자료를 보존하되 AI 리포트 생성 완료로 표시하지 않는다.
@@ -185,10 +194,6 @@ def analyze_selected_stock(
     should_generate_fin_comm = (
         commentary is not None
         and bool(financial_facts)
-        and (
-            not isinstance(generate_commentary, NonCallableMock)
-            or isinstance(generate_financial_commentary, NonCallableMock)
-        )
     )
     if should_generate_fin_comm and commentary is not None:
         progress("기업 재무제표 근거 AI 설명을 작성하고 사실(fact_id)을 대조하고 있습니다.")
@@ -205,17 +210,13 @@ def analyze_selected_stock(
 
     section_status = {
         "financial": "partial" if financial.warnings else "ok",
-        "history": price_history.status if price_history is not None else "empty",
+        "history": price_history.status if price_history is not None else "not_collected",
         "dart": dart_status,
         "news": news.status,
-        "commentary": "ok" if commentary is not None else "failed",
+        "commentary": "ok" if commentary is not None else "failed" if scope == "all" else "not_requested",
         "financial_commentary": fin_comm_status,
     }
-    result_id = (
-        f"{normalized_theme}:{target.code}:{options.price_period}:"
-        f"{options.bsns_year or 'latest'}:{options.reprt_code}:{options.fs_div}:"
-        f"{options.refresh_generation}"
-    )
+    result_id = uuid4().hex
     return AnalysisResult(
         theme=normalized_theme,
         candidates=candidate_tuple,

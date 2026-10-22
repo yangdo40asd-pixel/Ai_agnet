@@ -1,3 +1,4 @@
+from src.config import Settings
 """AI와 처리 흐름 검사 코드. 외부 호출은 전부 가짜 결과로 대체한다."""
 
 import copy
@@ -85,14 +86,14 @@ class ReportRulesTests(unittest.TestCase):
 
 class PipelineTests(unittest.TestCase):
     def test_empty_input_does_not_request_services(self):
-        with patch("src.pipeline.load_settings") as settings:
+        with patch("src.pipeline.load_settings", return_value=Settings("test", "test-model", "test", "test")) as settings:
             with self.assertRaises(AppError):
                 analyze_theme("   ")
             settings.assert_not_called()
         self.assertEqual(normalize_theme("  반도체  테마  "), "반도체 테마")
 
     def test_unconfirmed_target_stops_before_finance_and_news(self):
-        with (patch("src.pipeline.load_settings"), patch("src.pipeline.propose_candidates", return_value=("없는회사", "회사나", "회사다")),
+        with (patch("src.pipeline.load_settings", return_value=Settings("test", "test-model", "test", "test")), patch("src.pipeline.propose_candidates", return_value=("없는회사", "회사나", "회사다")),
               patch("src.pipeline.load_listing"), patch("src.pipeline.resolve_candidates", return_value=(StockCandidate("없는회사"),)),
               patch("src.pipeline.fetch_financial") as finance, patch("src.pipeline.fetch_news") as news):
             with self.assertRaises(AppError):
@@ -102,7 +103,7 @@ class PipelineTests(unittest.TestCase):
 
     def test_ai_failure_preserves_data_but_is_not_complete(self):
         financial = example_financial()
-        with (patch("src.pipeline.load_settings"), patch("src.pipeline.propose_candidates", return_value=("예시회사", "회사나", "회사다")),
+        with (patch("src.pipeline.load_settings", return_value=Settings("test", "test-model", "test", "test")), patch("src.pipeline.propose_candidates", return_value=("예시회사", "회사나", "회사다")),
               patch("src.pipeline.load_listing"), patch("src.pipeline.resolve_candidates", return_value=(financial.stock,)),
               patch("src.pipeline.fetch_financial", return_value=financial), patch("src.pipeline.fetch_news", return_value=example_news()),
               patch("src.pipeline.generate_commentary", side_effect=AppError("ai_failed", "AI 호출 실패"))):
@@ -121,7 +122,7 @@ class PipelineTests(unittest.TestCase):
                 calls.append(label)
                 return value
             return action
-        with (patch("src.pipeline.load_settings"),
+        with (patch("src.pipeline.load_settings", return_value=Settings("test", "test-model", "test", "test")),
               patch("src.pipeline.propose_candidates", side_effect=response("candidate", ("예시회사", "회사나", "회사다"))),
               patch("src.pipeline.load_listing", side_effect=response("listing", None)),
               patch("src.pipeline.resolve_candidates", return_value=(financial.stock,)),
@@ -130,13 +131,14 @@ class PipelineTests(unittest.TestCase):
               patch("src.pipeline.generate_commentary", side_effect=response("report", commentary))):
             result = analyze_theme("반도체")
         self.assertEqual(calls, ["candidate", "listing", "finance", "news", "report"])
-        self.assertTrue(result.complete)
+        self.assertIsNotNone(result.commentary)
+        self.assertFalse(result.complete)  # 확장 시세·재무를 수집하지 않은 기본 경로입니다.
 
     def test_failed_news_is_partial_even_when_ai_returns_limited_commentary(self):
         financial = example_financial()
         commentary = Commentary((), "뉴스 없이 지표만으로 판단하기 어렵습니다.", None, None, None)
         failed_news = NewsData((), now_kst(), "failed", "뉴스 조회 실패")
-        with (patch("src.pipeline.load_settings"), patch("src.pipeline.propose_candidates", return_value=("예시회사", "회사나", "회사다")),
+        with (patch("src.pipeline.load_settings", return_value=Settings("test", "test-model", "test", "test")), patch("src.pipeline.propose_candidates", return_value=("예시회사", "회사나", "회사다")),
               patch("src.pipeline.load_listing"), patch("src.pipeline.resolve_candidates", return_value=(financial.stock,)),
               patch("src.pipeline.fetch_financial", return_value=financial), patch("src.pipeline.fetch_news", return_value=failed_news),
               patch("src.pipeline.generate_commentary", return_value=commentary)):

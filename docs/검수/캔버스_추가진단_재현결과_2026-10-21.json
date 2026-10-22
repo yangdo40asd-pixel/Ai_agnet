@@ -1,0 +1,164 @@
+{
+  "review_date": "2026-10-21",
+  "scope": "AppTest and local deterministic probes only. No browser/server started or real AI/provider API invoked. Export failures are injected diagnostic cases, not a confirmed cause of the user runtime incident.",
+  "cases": [
+    {
+      "id": "C01",
+      "case": "normal selected-stock open-close with substituted providers",
+      "ready": {
+        "has_analysis": true,
+        "has_open_button": true,
+        "card_count": 0,
+        "metric_count": 0,
+        "exceptions": [],
+        "latest_error": null,
+        "last_assistant": "예시회사 분석을 마쳤어요. 이 지표만으로 기업 가치를 단정하기 어렵습니다. 종합: 관련 소식이 관심을 높일 가능성이 있습니다. ‘캔버스 추가’(차트·근거 보기)를 누르면 상세 자료와 원문 링크를 확인할 수 있어요."
+      },
+      "opened": {
+        "has_analysis": true,
+        "has_open_button": true,
+        "card_count": 1,
+        "metric_count": 6,
+        "exceptions": [],
+        "latest_error": null,
+        "last_assistant": "오른쪽 맨 위에 분석 캔버스를 올려 두었어요."
+      },
+      "closed": {
+        "has_analysis": true,
+        "has_open_button": true,
+        "card_count": 0,
+        "metric_count": 0,
+        "exceptions": [],
+        "latest_error": null,
+        "last_assistant": "오른쪽 맨 위에 분석 캔버스를 올려 두었어요."
+      }
+    },
+    {
+      "id": "C02",
+      "case": "injected export failure while saving analysis",
+      "result": {
+        "has_analysis": false,
+        "has_open_button": false,
+        "card_count": 0,
+        "metric_count": 0,
+        "exceptions": [],
+        "latest_error": "검사용 엑셀 생성 실패",
+        "last_assistant": "검사용 엑셀 생성 실패"
+      }
+    },
+    {
+      "id": "C03",
+      "case": "injected export failure while opening canvas",
+      "result": {
+        "has_analysis": true,
+        "has_open_button": false,
+        "card_count": 0,
+        "metric_count": 0,
+        "exceptions": [
+          "검사용 엑셀 생성 실패"
+        ],
+        "latest_error": null,
+        "last_assistant": "예시회사 분석을 마쳤어요. 이 지표만으로 기업 가치를 단정하기 어렵습니다. 종합: 관련 소식이 관심을 높일 가능성이 있습니다. ‘캔버스 추가’(차트·근거 보기)를 누르면 상세 자료와 원문 링크를 확인할 수 있어요."
+      }
+    },
+    {
+      "id": "C04",
+      "case": "same-theme same-stock new discovery with changed data",
+      "old_price": 70000.0,
+      "fresh_price": 71000.0,
+      "same_result_id": true,
+      "before_open": {
+        "has_analysis": true,
+        "has_open_button": true,
+        "card_count": 1,
+        "metric_count": 6,
+        "exceptions": [],
+        "latest_error": null,
+        "last_assistant": "예시회사 분석을 마쳤어요. 이 지표만으로 기업 가치를 단정하기 어렵습니다. 종합: 관련 소식이 관심을 높일 가능성이 있습니다. ‘캔버스 추가’(차트·근거 보기)를 누르면 상세 자료와 원문 링크를 확인할 수 있어요."
+      },
+      "after_open": {
+        "has_analysis": true,
+        "has_open_button": true,
+        "card_count": 1,
+        "metric_count": 6,
+        "exceptions": [],
+        "latest_error": null,
+        "last_assistant": "같은 분석이 오른쪽에 이미 있어요."
+      },
+      "displayed_snapshot_price": 70000.0,
+      "focus_generation_changed": false
+    },
+    {
+      "id": "C05",
+      "case": "natural-language request has no canvas action; classifier and answer substituted",
+      "result": {
+        "has_analysis": true,
+        "has_open_button": true,
+        "card_count": 0,
+        "metric_count": 0,
+        "exceptions": [],
+        "latest_error": null,
+        "last_assistant": "차트는 자료 화면에서 확인할 수 있어요."
+      }
+    },
+    {
+      "id": "C06",
+      "case": "opposite chart histories produce identical chat evidence",
+      "evidence_equal": true,
+      "evidence_keys": [
+        "PRICE",
+        "PER",
+        "PBR",
+        "EPS",
+        "BPS",
+        "ROE",
+        "NEWS_1"
+      ],
+      "up_closes": [
+        110,
+        130
+      ],
+      "down_closes": [
+        110,
+        80
+      ]
+    },
+    {
+      "id": "C07",
+      "case": "suggested request parsing contaminates provider query",
+      "input": "반도체 관련 종목을 찾아줘",
+      "theme": "반도체 관련 종목을",
+      "news_query": "반도체 관련 종목을 예시회사"
+    },
+    {
+      "id": "C08",
+      "case": "markdown answer table escaped before rendering",
+      "input": "|지표|뜻|\n|---|---|\n|PER|주당이익 대비 주가|",
+      "render_input": "\\|지표\\|뜻\\|\n\\|---\\|---\\|\n\\|PER\\|주당이익 대비 주가\\|"
+    },
+    {
+      "id": "C09",
+      "case": "explicit theme-search form submission misroutes theme name containing dialogue token",
+      "input": "정보보안",
+      "has_candidates": false,
+      "listing_calls": 0,
+      "mode": "theme_search",
+      "last_answer": "정보를 보호하는 산업에 대한 질문으로 이해했어요.",
+      "exceptions": []
+    },
+    {
+      "id": "C10",
+      "case": "known-price request accepts definition-only answer without PRICE evidence",
+      "question": "현재 주가 알려줘",
+      "available_price": 70000.0,
+      "accepted_answer": "주가는 시장에서 거래되는 가격이에요.",
+      "evidence_ids": []
+    }
+  ],
+  "sha256": {
+    "src/ui/app.py": "c47c589f989955cac144522bf036a270d316b831cf5c88ae708c4ce72e280367",
+    "src/ui/state.py": "f084a55b68720330e62411e5bb4e46d8e4207d297080ddef3f79a3b01ca6a4a5",
+    "src/agents/chat.py": "b1d3b8d8b19072ba69131f762f677245f7d1a8711d9e0f8dc2e565716a34e23e",
+    "src/pipeline.py": "2ed98157b4e896f70009b136b88430cea18238299f766e4f4f9d2e3e816b7b63"
+  }
+}

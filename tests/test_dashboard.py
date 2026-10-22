@@ -272,6 +272,7 @@ class FormattingAndChartsTests(unittest.TestCase):
             )
             app.session_state["selected_code"] = "005930"
             app.run()
+            app.button(key="add_canvas").click().run()
 
         self.assertEqual(len(app.exception), 0)
         self.assertEqual(

@@ -9,10 +9,10 @@ if not exist "venv\Scripts\python.exe" goto ERR_VENV
 echo ===================================================
 echo   AI 테마주 인사이트 리포트 - 로컬 자동 검사
 echo ===================================================
-echo [안내] 외부 API 호출 없이 가짜 응답으로 80개 테스트를 검증합니다...
+echo [안내] 외부 API 호출 없이 가짜 응답으로 전체 테스트를 검증합니다...
 echo.
 
-".\venv\Scripts\python.exe" -m unittest discover -s tests -v
+".\venv\Scripts\python.exe" scripts/verify_local.py
 goto END
 
 :ERR_VENV

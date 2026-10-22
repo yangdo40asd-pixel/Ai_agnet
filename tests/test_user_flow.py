@@ -73,13 +73,21 @@ class UserFlowTests(unittest.TestCase):
             response(report if report is not None else report_payload()),
         ]
 
-    def submit_theme(self, theme="반도체"):
-        self.app.chat_input[0].set_value(theme).run()
+    def submit_theme(self, theme="반도체 테마 찾아줘"):
+        self.app.text_input(key="composer_text").set_value(theme)
+        self.app.button(key="composer_submit").click().run()
+        self.assert_no_exception()
+
+    def open_canvas(self):
+        self.app.button(key="add_canvas").click().run()
         self.assert_no_exception()
 
     def select_stock(self, code):
+        buttons = [el for el in self.app.button if el.key == f"msg_select_{code}"]
         selectors = [el for el in self.app.selectbox if el.key == "candidate_selector"]
-        if selectors and code in selectors[0].options:
+        if buttons and not buttons[0].disabled:
+            buttons[0].click().run()
+        elif selectors and code in selectors[0].options:
             selectors[0].select(code).run()
         else:
             self.app.session_state["selected_code"] = code
@@ -87,12 +95,15 @@ class UserFlowTests(unittest.TestCase):
         self.assert_no_exception()
 
     def submit(self, theme="반도체", code=None):
-        self.submit_theme(theme)
+        request = theme if not theme.strip() or "찾아" in theme or "분석해" in theme else f"{theme} 테마 찾아줘"
+        self.submit_theme(request)
         if "candidate_result" in self.app.session_state and "latest_error" not in self.app.session_state:
             discovery = self.app.session_state["candidate_result"]
             if discovery.candidates:
                 target_code = code if code is not None else (discovery.candidates[0].code or discovery.candidates[0].name)
                 self.select_stock(target_code)
+                if "dashboard_result" in self.app.session_state:
+                    self.open_canvas()
 
     def assert_no_exception(self):
         self.assertEqual(len(self.app.exception), 0, [element.message for element in self.app.exception])
@@ -101,14 +112,19 @@ class UserFlowTests(unittest.TestCase):
         return " ".join(element.value for element in self.app.error)
 
     def test_initial_screen_does_not_call_services(self):
-        self.assertEqual(len(self.app.chat_input), 1)
+        self.assertEqual(len(self.app.chat_input), 0)
+        self.assertEqual(len(self.app.text_input), 1)
         self.assertEqual(len(self.app.metric), 0)
+        self.assertFalse(any(element.key == "add_canvas" for element in self.app.button))
+        self.assertTrue(any(element.key == "suggested_prompt_0" for element in self.app.button))
+        self.assertTrue(any("대화형 탐색 중" in item.value for item in self.app.caption))
+        self.assertTrue(any("관심 테마나 종목" in item.value for item in self.app.info))
         self.llm.invoke.assert_not_called()
         self.listing.assert_not_called()
         self.news_request.assert_not_called()
 
     def test_theme_submission_enters_selection_waiting_state_before_detail_calls(self):
-        self.submit_theme("반도체")
+        self.submit_theme("반도체 테마 찾아줘")
         self.assertEqual(len(self.app.dataframe), 1)
         self.assertEqual(len(self.app.dataframe[0].value), 3)
         self.assertEqual(len(self.app.metric), 0)
@@ -121,16 +137,24 @@ class UserFlowTests(unittest.TestCase):
 
     def test_normal_theme_runs_complete_pipeline_and_renders_sources(self):
         self.submit()
-        self.assertEqual(len(self.app.success), 1)
+        self.assertIsNotNone(self.app.session_state["dashboard_result"].commentary)
+        self.assertEqual(self.app.session_state["request_status"], "partial")
         self.assertEqual([metric.value for metric in self.app.metric[:2]], ["70,000원", "15.20배"])
         self.assertEqual(len(self.app.metric), 6)
         self.assertEqual(len(self.app.dataframe[0].value), 3)
         self.assertEqual(self.app.dataframe[0].value.iloc[1]["시장"], "KOSDAQ")
         self.assertEqual(self.llm.invoke.call_count, 2)
-        self.ticker.assert_called_with("005930.KS")
+        self.ticker.assert_any_call("005930.KS")
         links = [element.proto.url for element in self.app.get("link_button")]
         self.assertIn("https://example.com/news", links)
         self.assertTrue(any("조회 시각" in element.value for element in self.app.caption))
+        analysis_message = next(
+            item for item in reversed(self.app.session_state["chat_messages"])
+            if item.get("result_id")
+        )
+        self.assertIn("종합 분석", analysis_message["text"])
+        self.assertFalse(analysis_message.get("follow_up"))
+        self.assertTrue(analysis_message.get("evidence"))
 
     def test_selecting_second_or_third_candidate_updates_title_ticker_news_and_ai(self):
         self.info["symbol"] = "247540.KQ"
@@ -142,8 +166,9 @@ class UserFlowTests(unittest.TestCase):
             report_payload(per=22.5, stock_name="회사나", price=125000),
         )
         self.submit("2차전지", code="247540")
-        self.assertEqual(len(self.app.success), 1)
-        self.ticker.assert_called_with("247540.KQ")
+        self.assertIsNotNone(self.app.session_state["dashboard_result"].commentary)
+        self.assertEqual(self.app.session_state["request_status"], "partial")
+        self.ticker.assert_any_call("247540.KQ")
         self.assertEqual(self.news_request.call_args.kwargs["params"]["query"], "2차전지 회사나")
         self.assertEqual([metric.value for metric in self.app.metric[:2]], ["125,000원", "22.50배"])
         table = self.app.dataframe[0].value
@@ -167,8 +192,9 @@ class UserFlowTests(unittest.TestCase):
         self.info["regularMarketPrice"] = 90000
         self.info["currentPrice"] = 90000
         self.info["trailingPE"] = 18.0
-        self.app.button(key="result_related_000660").click().run()
+        self.app.button(key="c1_result_related_000660").click().run()
         self.assert_no_exception()
+        self.open_canvas()
 
         self.assertEqual(self.app.session_state["selected_code"], "000660")
         self.assertEqual(self.listing.call_count, 1)
@@ -185,9 +211,10 @@ class UserFlowTests(unittest.TestCase):
         self.ticker.return_value.get_info.side_effect = RuntimeError("provider failure")
         self.select_stock("247540")
 
-        self.assertEqual(len(self.app.metric), 0)
+        self.assertEqual(len(self.app.metric), 6)
         self.assertNotIn("dashboard_result", self.app.session_state)
         self.assertNotIn("export_bytes", self.app.session_state)
+        self.assertEqual(len(self.app.session_state["canvases"]), 1)
         self.assertIn("주가·PER 조회에 실패", self.error_text())
 
     def test_refresh_selected_button_requeries_current_stock_only(self):
@@ -205,13 +232,14 @@ class UserFlowTests(unittest.TestCase):
         self.info["trailingPE"] = 16.0
         self.app.button(key="refresh_selected").click().run()
         self.assert_no_exception()
+        self.open_canvas()
 
         self.assertEqual(self.listing.call_count, 1)
         self.assertGreater(self.ticker.call_count, initial_calls)
         self.assertEqual([metric.value for metric in self.app.metric[:2]], ["71,000원", "16.00배"])
 
     def test_out_of_candidate_code_is_rejected_before_external_calls(self):
-        self.submit_theme("반도체")
+        self.submit_theme("반도체 테마 찾아줘")
         self.select_stock("999999")
         self.assertIn("후보 목록에 없습니다", self.error_text())
         self.ticker.assert_not_called()
@@ -224,15 +252,17 @@ class UserFlowTests(unittest.TestCase):
         payload["stock_name"] = "회사나"
         self.set_responses(["회사나", "예시회사", "회사다"], payload)
         self.submit("2차전지")
-        self.ticker.assert_called_with("247540.KQ")
-        self.assertEqual(len(self.app.success), 1)
+        self.ticker.assert_any_call("247540.KQ")
+        self.assertIsNotNone(self.app.session_state["dashboard_result"].commentary)
+        self.assertEqual(self.app.session_state["request_status"], "partial")
 
     def test_numeric_theme_name_in_ai_text_does_not_fail(self):
         payload = report_payload()
         payload["risk"]["text"] = "2차전지 관련 소식은 추가 확인이 필요합니다."
         self.set_responses(report=payload)
         self.submit("2차전지 테마주 분석해줘")
-        self.assertEqual(len(self.app.success), 1)
+        self.assertIsNotNone(self.app.session_state["dashboard_result"].commentary)
+        self.assertEqual(self.app.session_state["request_status"], "partial")
         self.assertEqual(len(self.app.error), 0)
 
     def test_partly_unreadable_news_displays_partial_result(self):
@@ -373,14 +403,16 @@ class UserFlowTests(unittest.TestCase):
         self.assertEqual(len(self.app.chat_message), 0)
         self.assertEqual(self.llm.invoke.call_count, 2)
 
-    def test_failed_new_request_clears_previous_result(self):
+    def test_unresolved_new_theme_keeps_previous_result_and_explains_next_step(self):
         self.submit()
         self.llm.invoke.side_effect = RuntimeError("fake AI failure")
-        self.submit("다른 테마")
-        self.assertEqual(len(self.app.metric), 0)
-        self.assertEqual(len(self.app.dataframe), 0)
-        self.assertEqual(len(self.app.success), 0)
-        self.assertIn("AI 호출에 실패", self.error_text())
+        self.submit_theme("다른 테마")
+        self.assertIn("dashboard_result", self.app.session_state)
+        self.assertEqual(len(self.app.session_state["canvases"]), 1)
+        self.assertIn(
+            "새로 살펴볼 테마",
+            self.app.session_state["chat_messages"][-1]["text"],
+        )
 
 
 if __name__ == "__main__":

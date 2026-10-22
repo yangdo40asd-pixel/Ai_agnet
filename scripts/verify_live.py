@@ -206,7 +206,12 @@ def _verify_selected_result(app, result, expected_theme: str, expected_code: str
 def run_case(app, theme: str, *, verify_second_candidate: bool = False):
     start = time.monotonic()
     t_disc = time.perf_counter()
-    app.chat_input[0].set_value(theme).run(timeout=180)
+    from src.agents.chat import is_explicit_search
+    # 검수는 항상 새 대화에서 시작한다. 일반 대화를 검색으로 처리하지 않는다.
+    app.button(key="clear_results").click().run()
+    search = theme if is_explicit_search(theme) else f"{theme} 테마 찾아줘"
+    app.text_input(key="composer_text").set_value(search)
+    app.button(key="composer_submit").click().run(timeout=180)
     discovery_ms = round((time.perf_counter() - t_disc) * 1000.0, 2)
 
     check(not app.exception, "후보 탐색 화면 실행 예외")
@@ -226,6 +231,7 @@ def run_case(app, theme: str, *, verify_second_candidate: bool = False):
     check(not app.exception, "선택 종목 1 상세 분석 실행 예외")
     check("dashboard_result" in app.session_state, "선택 종목 1 상세 결과 생성 실패")
     result1 = app.session_state["dashboard_result"]
+    app.button(key="add_canvas").click().run()
 
     primary_detail = _verify_selected_result(app, result1, discovery.theme, first_code)
 
@@ -238,6 +244,10 @@ def run_case(app, theme: str, *, verify_second_candidate: bool = False):
         result2 = app.session_state["dashboard_result"]
         check(result2.target_code == second_code, "선택 종목 2 전환 후 종목코드 불일치")
         check(result2 is not result1, "종목 전환 후 이전 결과 객체가 그대로 남음")
+        # 아래 수치 대조는 캔버스 한 장을 대상으로 한다.
+        for card in list(app.session_state["canvases"]):
+            app.button(key=f"close_{card['canvas_id']}").click().run()
+        app.button(key="add_canvas").click().run()
         switch_detail = _verify_selected_result(app, result2, discovery.theme, second_code)
 
     return {

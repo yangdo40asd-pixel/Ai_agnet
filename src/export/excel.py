@@ -15,12 +15,14 @@ import re
 import xml.etree.ElementTree as ET
 import zipfile
 from decimal import Decimal
+from dataclasses import dataclass
+from xlsxwriter.format import Format
 
 import xlsxwriter
 
 from src.data.news import safe_news_url
 from src.models import AnalysisResult, MetricValue
-from src.ui.formatting import (
+from src.formatting import (
     format_eok,
     format_multiple,
     format_per_share_krw,
@@ -106,55 +108,25 @@ def _write_optional_number(ws, row: int, col: int, value: object, num_format=Non
     return True
 
 
-def _resolve_roe_metric(result: AnalysisResult) -> MetricValue | None:
-    if result.financial_ratios and result.financial_ratios.roe is not None:
-        return result.financial_ratios.roe
-    if result.financial.roe_metric is not None:
-        return result.financial.roe_metric
-    return None
+# 이전 진입점의 이름도 유지한다.
+from src.models import resolve_roe_metric as _resolve_roe_metric
 
 
-def build_workbook_bytes(result: AnalysisResult) -> bytes:
-    """AnalysisResult 단일 객체로부터 8개 시트와 셀 참조 네이티브 차트를 포함한 XLSX 바이트를 생성한다."""
-    output = io.BytesIO()
-    workbook = xlsxwriter.Workbook(
-        output,
-        {
-            "in_memory": True,
-            "strings_to_formulas": False,
-            "strings_to_urls": False,
-        },
-    )
+@dataclass(frozen=True)
+class _WorkbookFormats:
+    title_fmt: Format
+    header_fmt: Format
+    label_fmt: Format
+    text_fmt: Format
+    int_fmt: Format
+    dec_fmt: Format
 
-    title_fmt = workbook.add_format({"bold": True, "font_size": 13, "font_color": "#1B365D"})
-    header_fmt = workbook.add_format(
-        {"bold": True, "bg_color": "#E8EEF5", "border": 1, "align": "center"}
-    )
-    label_fmt = workbook.add_format({"bold": True, "bg_color": "#F5F7FA", "border": 1})
-    text_fmt = workbook.add_format({"border": 1})
-    int_fmt = workbook.add_format({"border": 1, "num_format": "#,##0"})
-    dec_fmt = workbook.add_format({"border": 1, "num_format": "#,##0.00"})
 
-    ws_summary = workbook.add_worksheet("요약")
-    ws_metrics = workbook.add_worksheet("핵심지표")
-    ws_history = workbook.add_worksheet("일별시세")
-    ws_is = workbook.add_worksheet("손익계산서")
-    ws_bs = workbook.add_worksheet("재무상태표")
-    ws_cf = workbook.add_worksheet("현금흐름표")
-    ws_news = workbook.add_worksheet("관련뉴스")
-    ws_sources = workbook.add_worksheet("출처및산식")
-
-    stock = result.financial.stock
-    stock_code = str(stock.code or "")
-    price_period = result.query_options.price_period if result.query_options else "3M"
-    fs_div_pref = result.query_options.fs_div if result.query_options else "CFS"
-    retrieved_str = format_timestamp(result.financial.retrieved_at)
-    price_at_str = format_timestamp(result.financial.price_at, fallback="제공 시각 미확인")
-
+def _write_summary_sheet(fs_div_pref, price_at_str, price_period, result, retrieved_str, stock, stock_code, ws_summary, formats):
     # 1. 요약 시트
     ws_summary.set_column(0, 0, 22)
     ws_summary.set_column(1, 3, 38)
-    ws_summary.write_string(0, 0, "관심 테마 기반 주식 분석 요약", title_fmt)
+    ws_summary.write_string(0, 0, "관심 테마 기반 주식 분석 요약", formats.title_fmt)
 
     summary_meta = [
         ("검색 테마", sanitize_excel_text(result.theme)),
@@ -168,46 +140,46 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         ("결과 식별자(result_id)", sanitize_excel_text(result.result_id)),
     ]
     for idx, (k, v) in enumerate(summary_meta, start=2):
-        ws_summary.write_string(idx, 0, k, label_fmt)
-        ws_summary.write_string(idx, 1, v, text_fmt)
+        ws_summary.write_string(idx, 0, k, formats.label_fmt)
+        ws_summary.write_string(idx, 1, v, formats.text_fmt)
 
     row_cursor = len(summary_meta) + 3
-    ws_summary.write_string(row_cursor, 0, "영역별 수집 상태", title_fmt)
+    ws_summary.write_string(row_cursor, 0, "영역별 수집 상태", formats.title_fmt)
     row_cursor += 1
-    ws_summary.write_string(row_cursor, 0, "영역", header_fmt)
-    ws_summary.write_string(row_cursor, 1, "상태", header_fmt)
+    ws_summary.write_string(row_cursor, 0, "영역", formats.header_fmt)
+    ws_summary.write_string(row_cursor, 1, "상태", formats.header_fmt)
     for sec_key, sec_val in (result.section_status or {}).items():
         row_cursor += 1
-        ws_summary.write_string(row_cursor, 0, sanitize_excel_text(sec_key), text_fmt)
-        ws_summary.write_string(row_cursor, 1, sanitize_excel_text(sec_val), text_fmt)
+        ws_summary.write_string(row_cursor, 0, sanitize_excel_text(sec_key), formats.text_fmt)
+        ws_summary.write_string(row_cursor, 1, sanitize_excel_text(sec_val), formats.text_fmt)
 
     row_cursor += 2
-    ws_summary.write_string(row_cursor, 0, "AI 종합 분석 리포트", title_fmt)
+    ws_summary.write_string(row_cursor, 0, "AI 종합 분석 리포트", formats.title_fmt)
     row_cursor += 1
-    ws_summary.write_string(row_cursor, 0, "구분", header_fmt)
-    ws_summary.write_string(row_cursor, 1, "설명 내용", header_fmt)
-    ws_summary.write_string(row_cursor, 2, "근거 (뉴스/재무 fact_id)", header_fmt)
+    ws_summary.write_string(row_cursor, 0, "구분", formats.header_fmt)
+    ws_summary.write_string(row_cursor, 1, "설명 내용", formats.header_fmt)
+    ws_summary.write_string(row_cursor, 2, "근거 (뉴스/재무 fact_id)", formats.header_fmt)
 
     if result.commentary is not None:
         comm = result.commentary
         for idx, stmt in enumerate(comm.theme_trend, start=1):
             row_cursor += 1
-            ws_summary.write_string(row_cursor, 0, f"테마 동향 {idx}", label_fmt)
-            ws_summary.write_string(row_cursor, 1, sanitize_excel_text(stmt.text), text_fmt)
+            ws_summary.write_string(row_cursor, 0, f"테마 동향 {idx}", formats.label_fmt)
+            ws_summary.write_string(row_cursor, 1, sanitize_excel_text(stmt.text), formats.text_fmt)
             refs = ", ".join(f"뉴스 {nid}" for nid in stmt.news_ids)
-            ws_summary.write_string(row_cursor, 2, sanitize_excel_text(refs), text_fmt)
+            ws_summary.write_string(row_cursor, 2, sanitize_excel_text(refs), formats.text_fmt)
 
         row_cursor += 1
-        ws_summary.write_string(row_cursor, 0, "선택 종목 지표 설명", label_fmt)
-        ws_summary.write_string(row_cursor, 1, sanitize_excel_text(comm.stock_comment), text_fmt)
-        ws_summary.write_string(row_cursor, 2, "기본 주가·PER 조회값", text_fmt)
+        ws_summary.write_string(row_cursor, 0, "선택 종목 지표 설명", formats.label_fmt)
+        ws_summary.write_string(row_cursor, 1, sanitize_excel_text(comm.stock_comment), formats.text_fmt)
+        ws_summary.write_string(row_cursor, 2, "기본 주가·PER 조회값", formats.text_fmt)
 
         for idx, fstmt in enumerate(comm.financial_commentary, start=1):
             row_cursor += 1
-            ws_summary.write_string(row_cursor, 0, f"기업 재무 분석 {idx}", label_fmt)
-            ws_summary.write_string(row_cursor, 1, sanitize_excel_text(fstmt.text), text_fmt)
+            ws_summary.write_string(row_cursor, 0, f"기업 재무 분석 {idx}", formats.label_fmt)
+            ws_summary.write_string(row_cursor, 1, sanitize_excel_text(fstmt.text), formats.text_fmt)
             ws_summary.write_string(
-                row_cursor, 2, sanitize_excel_text(", ".join(fstmt.fact_ids)), text_fmt
+                row_cursor, 2, sanitize_excel_text(", ".join(fstmt.fact_ids)), formats.text_fmt
             )
 
         for label, item in (
@@ -216,32 +188,34 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
             ("종합 의견", comm.summary),
         ):
             row_cursor += 1
-            ws_summary.write_string(row_cursor, 0, label, label_fmt)
+            ws_summary.write_string(row_cursor, 0, label, formats.label_fmt)
             if item is not None:
-                ws_summary.write_string(row_cursor, 1, sanitize_excel_text(item.text), text_fmt)
+                ws_summary.write_string(row_cursor, 1, sanitize_excel_text(item.text), formats.text_fmt)
                 refs = ", ".join(f"뉴스 {nid}" for nid in item.news_ids)
-                ws_summary.write_string(row_cursor, 2, sanitize_excel_text(refs), text_fmt)
+                ws_summary.write_string(row_cursor, 2, sanitize_excel_text(refs), formats.text_fmt)
             else:
-                ws_summary.write_string(row_cursor, 1, "관련 뉴스 근거 부족으로 미생성", text_fmt)
-                ws_summary.write_string(row_cursor, 2, "-", text_fmt)
+                ws_summary.write_string(row_cursor, 1, "관련 뉴스 근거 부족으로 미생성", formats.text_fmt)
+                ws_summary.write_string(row_cursor, 2, "-", formats.text_fmt)
     else:
         row_cursor += 1
-        ws_summary.write_string(row_cursor, 0, "AI 설명 상태", label_fmt)
+        ws_summary.write_string(row_cursor, 0, "AI 설명 상태", formats.label_fmt)
         ws_summary.write_string(
             row_cursor,
             1,
             sanitize_excel_text(result.commentary_error or "AI 설명이 준비되지 않았습니다."),
-            text_fmt,
+            formats.text_fmt,
         )
-        ws_summary.write_string(row_cursor, 2, "-", text_fmt)
+        ws_summary.write_string(row_cursor, 2, "-", formats.text_fmt)
 
+
+def _write_metrics_sheet(price_at_str, result, stock, stock_code, ws_metrics, formats):
     # 2. 핵심지표 시트
     ws_metrics.set_column(0, 0, 16)
     ws_metrics.set_column(1, 2, 18)
     ws_metrics.set_column(3, 9, 22)
-    ws_metrics.write_string(0, 0, f"{stock.name} ({stock_code}) 핵심 금융·재무 지표", title_fmt)
-    ws_metrics.write_string(1, 0, "종목코드", label_fmt)
-    ws_metrics.write_string(1, 1, stock_code, text_fmt)
+    ws_metrics.write_string(0, 0, f"{stock.name} ({stock_code}) 핵심 금융·재무 지표", formats.title_fmt)
+    ws_metrics.write_string(1, 0, "종목코드", formats.label_fmt)
+    ws_metrics.write_string(1, 1, stock_code, formats.text_fmt)
 
     metric_headers = (
         "지표명",
@@ -256,7 +230,7 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         "상태/사유",
     )
     for col_idx, h in enumerate(metric_headers):
-        ws_metrics.write_string(3, col_idx, h, header_fmt)
+        ws_metrics.write_string(3, col_idx, h, formats.header_fmt)
 
     fin = result.financial
     roe_metric = _resolve_roe_metric(result)
@@ -377,16 +351,19 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
     ]
 
     for r_offset, m_row in enumerate(metric_rows, start=4):
-        ws_metrics.write_string(r_offset, 0, sanitize_excel_text(m_row[0]), label_fmt)
-        _write_optional_number(ws_metrics, r_offset, 1, m_row[1], dec_fmt)
+        ws_metrics.write_string(r_offset, 0, sanitize_excel_text(m_row[0]), formats.label_fmt)
+        _write_optional_number(ws_metrics, r_offset, 1, m_row[1], formats.dec_fmt)
         for c_idx in range(2, 10):
-            ws_metrics.write_string(r_offset, c_idx, sanitize_excel_text(m_row[c_idx]), text_fmt)
+            ws_metrics.write_string(r_offset, c_idx, sanitize_excel_text(m_row[c_idx]), formats.text_fmt)
+    return fin, ratios
 
+
+def _write_history_sheet(fin, price_period, result, stock, stock_code, workbook, ws_history, formats):
     # 3. 일별시세 시트 + 셀 참조 주가/거래량 네이티브 차트
     ws_history.set_column(0, 0, 14)
     ws_history.set_column(1, 5, 16)
     ws_history.set_column(6, 8, 22)
-    ws_history.write_string(0, 0, f"{stock.name} ({stock_code}) 일별 주가·거래량 시세", title_fmt)
+    ws_history.write_string(0, 0, f"{stock.name} ({stock_code}) 일별 주가·거래량 시세", formats.title_fmt)
 
     hist = result.price_history
     hist_meta = (
@@ -409,22 +386,22 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         "출처",
     )
     for col_idx, h in enumerate(hist_headers):
-        ws_history.write_string(3, col_idx, h, header_fmt)
+        ws_history.write_string(3, col_idx, h, formats.header_fmt)
 
     bars = hist.bars if (hist and hist.status == "ok" and hist.bars) else ()
     if bars:
         for idx, bar in enumerate(bars, start=4):
-            ws_history.write_string(idx, 0, sanitize_excel_text(bar.trade_date), text_fmt)
-            _write_optional_number(ws_history, idx, 1, bar.open, int_fmt)
-            _write_optional_number(ws_history, idx, 2, bar.high, int_fmt)
-            _write_optional_number(ws_history, idx, 3, bar.low, int_fmt)
-            _write_optional_number(ws_history, idx, 4, bar.close, int_fmt)
-            _write_optional_number(ws_history, idx, 5, bar.volume, int_fmt)
-            ws_history.write_string(idx, 6, sanitize_excel_text(hist.currency), text_fmt)
+            ws_history.write_string(idx, 0, sanitize_excel_text(bar.trade_date), formats.text_fmt)
+            _write_optional_number(ws_history, idx, 1, bar.open, formats.int_fmt)
+            _write_optional_number(ws_history, idx, 2, bar.high, formats.int_fmt)
+            _write_optional_number(ws_history, idx, 3, bar.low, formats.int_fmt)
+            _write_optional_number(ws_history, idx, 4, bar.close, formats.int_fmt)
+            _write_optional_number(ws_history, idx, 5, bar.volume, formats.int_fmt)
+            ws_history.write_string(idx, 6, sanitize_excel_text(hist.currency), formats.text_fmt)
             ws_history.write_string(
-                idx, 7, "미수정(raw)" if not hist.adjusted else "수정", text_fmt
+                idx, 7, "미수정(raw)" if not hist.adjusted else "수정", formats.text_fmt
             )
-            ws_history.write_string(idx, 8, sanitize_excel_text(hist.source), text_fmt)
+            ws_history.write_string(idx, 8, sanitize_excel_text(hist.source), formats.text_fmt)
 
         last_hist_row = 3 + len(bars)  # 0-based index of last data row
         # 네이티브 선형 주가 차트 (일별시세 시트 셀 참조)
@@ -460,14 +437,17 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         ws_history.insert_chart("J20", vol_chart)
     else:
         empty_reason = (hist.message if hist and hist.message else "수집된 일별 시세 이력이 없습니다.")
-        ws_history.write_string(4, 0, "자료 없음", label_fmt)
-        ws_history.write_string(4, 1, sanitize_excel_text(empty_reason), text_fmt)
+        ws_history.write_string(4, 0, "자료 없음", formats.label_fmt)
+        ws_history.write_string(4, 1, sanitize_excel_text(empty_reason), formats.text_fmt)
+    return hist
 
+
+def _write_income_sheet(result, stock, stock_code, workbook, ws_is, ws_summary, formats):
     # 4. 손익계산서 시트 + 셀 참조 연간 실적 네이티브 차트
     ws_is.set_column(0, 1, 14)
     ws_is.set_column(2, 7, 20)
     ws_is.set_column(8, 10, 22)
-    ws_is.write_string(0, 0, f"{stock.name} ({stock_code}) 손익계산서 (연간 비교 및 상세)", title_fmt)
+    ws_is.write_string(0, 0, f"{stock.name} ({stock_code}) 손익계산서 (연간 비교 및 상세)", formats.title_fmt)
 
     is_headers = (
         "사업연도",
@@ -483,23 +463,23 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         "비고",
     )
     for col_idx, h in enumerate(is_headers):
-        ws_is.write_string(3, col_idx, h, header_fmt)
+        ws_is.write_string(3, col_idx, h, formats.header_fmt)
 
     annuals = result.annual_summaries or ()
     if annuals:
         for idx, ann in enumerate(annuals, start=4):
-            ws_is.write_string(idx, 0, sanitize_excel_text(f"{ann.bsns_year}년"), text_fmt)
-            ws_is.write_string(idx, 1, sanitize_excel_text(ann.fs_div), text_fmt)
-            _write_optional_number(ws_is, idx, 2, ann.revenue, int_fmt)
-            _write_optional_number(ws_is, idx, 3, ann.operating_income, int_fmt)
-            _write_optional_number(ws_is, idx, 4, ann.net_income, int_fmt)
-            _write_optional_number(ws_is, idx, 5, _to_eok_float(ann.revenue), dec_fmt)
-            _write_optional_number(ws_is, idx, 6, _to_eok_float(ann.operating_income), dec_fmt)
-            _write_optional_number(ws_is, idx, 7, _to_eok_float(ann.net_income), dec_fmt)
-            ws_is.write_string(idx, 8, sanitize_excel_text(ann.rcept_no or "-"), text_fmt)
-            ws_is.write_string(idx, 9, "OpenDART", text_fmt)
+            ws_is.write_string(idx, 0, sanitize_excel_text(f"{ann.bsns_year}년"), formats.text_fmt)
+            ws_is.write_string(idx, 1, sanitize_excel_text(ann.fs_div), formats.text_fmt)
+            _write_optional_number(ws_is, idx, 2, ann.revenue, formats.int_fmt)
+            _write_optional_number(ws_is, idx, 3, ann.operating_income, formats.int_fmt)
+            _write_optional_number(ws_is, idx, 4, ann.net_income, formats.int_fmt)
+            _write_optional_number(ws_is, idx, 5, _to_eok_float(ann.revenue), formats.dec_fmt)
+            _write_optional_number(ws_is, idx, 6, _to_eok_float(ann.operating_income), formats.dec_fmt)
+            _write_optional_number(ws_is, idx, 7, _to_eok_float(ann.net_income), formats.dec_fmt)
+            ws_is.write_string(idx, 8, sanitize_excel_text(ann.rcept_no or "-"), formats.text_fmt)
+            ws_is.write_string(idx, 9, "OpenDART", formats.text_fmt)
             note = "별도(OFS) 대체" if ann.is_separate_fallback else "정상"
-            ws_is.write_string(idx, 10, note, text_fmt)
+            ws_is.write_string(idx, 10, note, formats.text_fmt)
 
         last_is_row = 3 + len(annuals)
         income_chart = workbook.add_chart({"type": "column"})
@@ -537,16 +517,19 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         summary_income_chart.set_size({"width": 580, "height": 280})
         ws_summary.insert_chart("E2", summary_income_chart)
     else:
-        ws_is.write_string(4, 0, "자료 없음", label_fmt)
+        ws_is.write_string(4, 0, "자료 없음", formats.label_fmt)
         ws_is.write_string(
-            4, 1, "OpenDART 연간 손익계산서 자료가 없거나 미공시 상태입니다.", text_fmt
+            4, 1, "OpenDART 연간 손익계산서 자료가 없거나 미공시 상태입니다.", formats.text_fmt
         )
+    return annuals
 
+
+def _write_balance_sheet(annuals, stock, stock_code, workbook, ws_bs, formats):
     # 5. 재무상태표 시트 + 셀 참조 재무구조 차트
     ws_bs.set_column(0, 1, 14)
     ws_bs.set_column(2, 7, 20)
     ws_bs.set_column(8, 10, 22)
-    ws_bs.write_string(0, 0, f"{stock.name} ({stock_code}) 재무상태표 (연도별 기말 잔액)", title_fmt)
+    ws_bs.write_string(0, 0, f"{stock.name} ({stock_code}) 재무상태표 (연도별 기말 잔액)", formats.title_fmt)
 
     bs_headers = (
         "사업연도",
@@ -562,26 +545,26 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         "비고",
     )
     for col_idx, h in enumerate(bs_headers):
-        ws_bs.write_string(3, col_idx, h, header_fmt)
+        ws_bs.write_string(3, col_idx, h, formats.header_fmt)
 
     if annuals:
         for idx, ann in enumerate(annuals, start=4):
-            ws_bs.write_string(idx, 0, sanitize_excel_text(f"{ann.bsns_year}년"), text_fmt)
-            ws_bs.write_string(idx, 1, sanitize_excel_text(ann.fs_div), text_fmt)
-            _write_optional_number(ws_bs, idx, 2, ann.total_assets, int_fmt)
-            _write_optional_number(ws_bs, idx, 3, ann.total_liabilities, int_fmt)
-            _write_optional_number(ws_bs, idx, 4, ann.total_equity, int_fmt)
-            _write_optional_number(ws_bs, idx, 5, _to_eok_float(ann.total_assets), dec_fmt)
-            _write_optional_number(ws_bs, idx, 6, _to_eok_float(ann.total_liabilities), dec_fmt)
-            _write_optional_number(ws_bs, idx, 7, _to_eok_float(ann.total_equity), dec_fmt)
-            ws_bs.write_string(idx, 8, sanitize_excel_text(ann.rcept_no or "-"), text_fmt)
-            ws_bs.write_string(idx, 9, "OpenDART", text_fmt)
+            ws_bs.write_string(idx, 0, sanitize_excel_text(f"{ann.bsns_year}년"), formats.text_fmt)
+            ws_bs.write_string(idx, 1, sanitize_excel_text(ann.fs_div), formats.text_fmt)
+            _write_optional_number(ws_bs, idx, 2, ann.total_assets, formats.int_fmt)
+            _write_optional_number(ws_bs, idx, 3, ann.total_liabilities, formats.int_fmt)
+            _write_optional_number(ws_bs, idx, 4, ann.total_equity, formats.int_fmt)
+            _write_optional_number(ws_bs, idx, 5, _to_eok_float(ann.total_assets), formats.dec_fmt)
+            _write_optional_number(ws_bs, idx, 6, _to_eok_float(ann.total_liabilities), formats.dec_fmt)
+            _write_optional_number(ws_bs, idx, 7, _to_eok_float(ann.total_equity), formats.dec_fmt)
+            ws_bs.write_string(idx, 8, sanitize_excel_text(ann.rcept_no or "-"), formats.text_fmt)
+            ws_bs.write_string(idx, 9, "OpenDART", formats.text_fmt)
             eq_note = (
                 "자본잠식(음수 자본)"
                 if (ann.total_equity is not None and ann.total_equity < 0)
                 else "기말 잔액"
             )
-            ws_bs.write_string(idx, 10, eq_note, text_fmt)
+            ws_bs.write_string(idx, 10, eq_note, formats.text_fmt)
 
         last_bs_row = 3 + len(annuals)
         bs_chart = workbook.add_chart({"type": "column"})
@@ -602,16 +585,18 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         bs_chart.set_size({"width": 620, "height": 300})
         ws_bs.insert_chart("L4", bs_chart)
     else:
-        ws_bs.write_string(4, 0, "자료 없음", label_fmt)
+        ws_bs.write_string(4, 0, "자료 없음", formats.label_fmt)
         ws_bs.write_string(
-            4, 1, "OpenDART 재무상태표 자료가 없거나 미공시 상태입니다.", text_fmt
+            4, 1, "OpenDART 재무상태표 자료가 없거나 미공시 상태입니다.", formats.text_fmt
         )
 
+
+def _write_cash_flow_sheet(annuals, stock, stock_code, ws_cf, formats):
     # 6. 현금흐름표 시트
     ws_cf.set_column(0, 1, 14)
     ws_cf.set_column(2, 7, 22)
     ws_cf.set_column(8, 10, 22)
-    ws_cf.write_string(0, 0, f"{stock.name} ({stock_code}) 현금흐름표 (연도별 비교)", title_fmt)
+    ws_cf.write_string(0, 0, f"{stock.name} ({stock_code}) 현금흐름표 (연도별 비교)", formats.title_fmt)
 
     cf_headers = (
         "사업연도",
@@ -627,38 +612,40 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         "해석 유의사항",
     )
     for col_idx, h in enumerate(cf_headers):
-        ws_cf.write_string(3, col_idx, h, header_fmt)
+        ws_cf.write_string(3, col_idx, h, formats.header_fmt)
 
     if annuals:
         for idx, ann in enumerate(annuals, start=4):
-            ws_cf.write_string(idx, 0, sanitize_excel_text(f"{ann.bsns_year}년"), text_fmt)
-            ws_cf.write_string(idx, 1, sanitize_excel_text(ann.fs_div), text_fmt)
-            _write_optional_number(ws_cf, idx, 2, ann.operating_cash_flow, int_fmt)
-            _write_optional_number(ws_cf, idx, 3, ann.investing_cash_flow, int_fmt)
-            _write_optional_number(ws_cf, idx, 4, ann.financing_cash_flow, int_fmt)
-            _write_optional_number(ws_cf, idx, 5, _to_eok_float(ann.operating_cash_flow), dec_fmt)
-            _write_optional_number(ws_cf, idx, 6, _to_eok_float(ann.investing_cash_flow), dec_fmt)
-            _write_optional_number(ws_cf, idx, 7, _to_eok_float(ann.financing_cash_flow), dec_fmt)
-            ws_cf.write_string(idx, 8, sanitize_excel_text(ann.rcept_no or "-"), text_fmt)
-            ws_cf.write_string(idx, 9, "OpenDART", text_fmt)
+            ws_cf.write_string(idx, 0, sanitize_excel_text(f"{ann.bsns_year}년"), formats.text_fmt)
+            ws_cf.write_string(idx, 1, sanitize_excel_text(ann.fs_div), formats.text_fmt)
+            _write_optional_number(ws_cf, idx, 2, ann.operating_cash_flow, formats.int_fmt)
+            _write_optional_number(ws_cf, idx, 3, ann.investing_cash_flow, formats.int_fmt)
+            _write_optional_number(ws_cf, idx, 4, ann.financing_cash_flow, formats.int_fmt)
+            _write_optional_number(ws_cf, idx, 5, _to_eok_float(ann.operating_cash_flow), formats.dec_fmt)
+            _write_optional_number(ws_cf, idx, 6, _to_eok_float(ann.investing_cash_flow), formats.dec_fmt)
+            _write_optional_number(ws_cf, idx, 7, _to_eok_float(ann.financing_cash_flow), formats.dec_fmt)
+            ws_cf.write_string(idx, 8, sanitize_excel_text(ann.rcept_no or "-"), formats.text_fmt)
+            ws_cf.write_string(idx, 9, "OpenDART", formats.text_fmt)
             ws_cf.write_string(
                 idx,
                 10,
                 "투자활동 현금흐름 음수(-)는 설비·연구 투자 유출을 의미할 수 있으며 적자와 다릅니다.",
-                text_fmt,
+                formats.text_fmt,
             )
     else:
-        ws_cf.write_string(4, 0, "자료 없음", label_fmt)
+        ws_cf.write_string(4, 0, "자료 없음", formats.label_fmt)
         ws_cf.write_string(
-            4, 1, "OpenDART 현금흐름표 자료가 없거나 미공시 상태입니다.", text_fmt
+            4, 1, "OpenDART 현금흐름표 자료가 없거나 미공시 상태입니다.", formats.text_fmt
         )
 
+
+def _write_news_sheet(result, stock, stock_code, ws_news, formats):
     # 7. 관련뉴스 시트
     ws_news.set_column(0, 0, 10)
     ws_news.set_column(1, 1, 55)
     ws_news.set_column(2, 3, 22)
     ws_news.set_column(4, 4, 48)
-    ws_news.write_string(0, 0, f"{stock.name} ({stock_code}) 관련 뉴스 목록", title_fmt)
+    ws_news.write_string(0, 0, f"{stock.name} ({stock_code}) 관련 뉴스 목록", formats.title_fmt)
     ws_news.write_string(
         1,
         0,
@@ -669,34 +656,36 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
 
     news_headers = ("뉴스 번호", "기사 제목", "발행 시각", "언론사 도메인", "안전 확인된 원문 URL")
     for col_idx, h in enumerate(news_headers):
-        ws_news.write_string(3, col_idx, h, header_fmt)
+        ws_news.write_string(3, col_idx, h, formats.header_fmt)
 
     if result.news.articles:
         for idx, art in enumerate(result.news.articles, start=4):
-            ws_news.write_number(idx, 0, art.id, int_fmt)
-            ws_news.write_string(idx, 1, sanitize_excel_text(art.title), text_fmt)
+            ws_news.write_number(idx, 0, art.id, formats.int_fmt)
+            ws_news.write_string(idx, 1, sanitize_excel_text(art.title), formats.text_fmt)
             ws_news.write_string(
-                idx, 2, sanitize_excel_text(art.published_at or "미확인"), text_fmt
+                idx, 2, sanitize_excel_text(art.published_at or "미확인"), formats.text_fmt
             )
             ws_news.write_string(
-                idx, 3, sanitize_excel_text(art.publisher_domain or "미확인"), text_fmt
+                idx, 3, sanitize_excel_text(art.publisher_domain or "미확인"), formats.text_fmt
             )
             safe_url = safe_news_url(art.url) or "미확인"
-            ws_news.write_string(idx, 4, sanitize_excel_text(safe_url), text_fmt)
+            ws_news.write_string(idx, 4, sanitize_excel_text(safe_url), formats.text_fmt)
     else:
-        ws_news.write_string(4, 0, "자료 없음", label_fmt)
+        ws_news.write_string(4, 0, "자료 없음", formats.label_fmt)
         ws_news.write_string(
-            4, 1, sanitize_excel_text(result.news.message or "표시할 관련 뉴스가 없습니다."), text_fmt
+            4, 1, sanitize_excel_text(result.news.message or "표시할 관련 뉴스가 없습니다."), formats.text_fmt
         )
 
+
+def _write_sources_sheet(fin, fs_div_pref, hist, price_at_str, price_period, ratios, result, retrieved_str, ws_sources, formats):
     # 8. 출처및산식 시트
     ws_sources.set_column(0, 1, 24)
     ws_sources.set_column(2, 4, 38)
-    ws_sources.write_string(0, 0, "데이터 출처·기준 시각·산식 안내", title_fmt)
+    ws_sources.write_string(0, 0, "데이터 출처·기준 시각·산식 안내", formats.title_fmt)
 
     source_headers = ("데이터 영역", "제공 출처", "기준 기간/시각", "계산 산식 및 기준", "주의사항")
     for col_idx, h in enumerate(source_headers):
-        ws_sources.write_string(2, col_idx, h, header_fmt)
+        ws_sources.write_string(2, col_idx, h, formats.header_fmt)
 
     source_rows = [
         (
@@ -743,9 +732,58 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
         ),
     ]
     for r_idx, s_row in enumerate(source_rows, start=3):
-        ws_sources.write_string(r_idx, 0, s_row[0], label_fmt)
+        ws_sources.write_string(r_idx, 0, s_row[0], formats.label_fmt)
         for c_idx in range(1, 5):
-            ws_sources.write_string(r_idx, c_idx, sanitize_excel_text(s_row[c_idx]), text_fmt)
+            ws_sources.write_string(r_idx, c_idx, sanitize_excel_text(s_row[c_idx]), formats.text_fmt)
+
+
+def build_workbook_bytes(result: AnalysisResult) -> bytes:
+    """AnalysisResult 단일 객체로부터 8개 시트와 셀 참조 네이티브 차트를 포함한 XLSX 바이트를 생성한다."""
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(
+        output,
+        {
+            "in_memory": True,
+            "strings_to_formulas": False,
+            "strings_to_urls": False,
+        },
+    )
+
+    title_fmt = workbook.add_format({"bold": True, "font_size": 13, "font_color": "#1B365D"})
+    header_fmt = workbook.add_format(
+        {"bold": True, "bg_color": "#E8EEF5", "border": 1, "align": "center"}
+    )
+    label_fmt = workbook.add_format({"bold": True, "bg_color": "#F5F7FA", "border": 1})
+    text_fmt = workbook.add_format({"border": 1})
+    int_fmt = workbook.add_format({"border": 1, "num_format": "#,##0"})
+    dec_fmt = workbook.add_format({"border": 1, "num_format": "#,##0.00"})
+
+    formats = _WorkbookFormats(title_fmt, header_fmt, label_fmt, text_fmt, int_fmt, dec_fmt)
+
+    ws_summary = workbook.add_worksheet("요약")
+    ws_metrics = workbook.add_worksheet("핵심지표")
+    ws_history = workbook.add_worksheet("일별시세")
+    ws_is = workbook.add_worksheet("손익계산서")
+    ws_bs = workbook.add_worksheet("재무상태표")
+    ws_cf = workbook.add_worksheet("현금흐름표")
+    ws_news = workbook.add_worksheet("관련뉴스")
+    ws_sources = workbook.add_worksheet("출처및산식")
+
+    stock = result.financial.stock
+    stock_code = str(stock.code or "")
+    price_period = result.query_options.price_period if result.query_options else "3M"
+    fs_div_pref = result.query_options.fs_div if result.query_options else "CFS"
+    retrieved_str = format_timestamp(result.financial.retrieved_at)
+    price_at_str = format_timestamp(result.financial.price_at, fallback="제공 시각 미확인")
+
+    _write_summary_sheet(fs_div_pref, price_at_str, price_period, result, retrieved_str, stock, stock_code, ws_summary, formats)
+    fin, ratios = _write_metrics_sheet(price_at_str, result, stock, stock_code, ws_metrics, formats)
+    hist = _write_history_sheet(fin, price_period, result, stock, stock_code, workbook, ws_history, formats)
+    annuals = _write_income_sheet(result, stock, stock_code, workbook, ws_is, ws_summary, formats)
+    _write_balance_sheet(annuals, stock, stock_code, workbook, ws_bs, formats)
+    _write_cash_flow_sheet(annuals, stock, stock_code, ws_cf, formats)
+    _write_news_sheet(result, stock, stock_code, ws_news, formats)
+    _write_sources_sheet(fin, fs_div_pref, hist, price_at_str, price_period, ratios, result, retrieved_str, ws_sources, formats)
 
     workbook.close()
     return output.getvalue()

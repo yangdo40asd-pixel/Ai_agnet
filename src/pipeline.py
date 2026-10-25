@@ -132,7 +132,7 @@ def analyze_selected_stock(
         progress("주가·금융 지표를 조회하고 있습니다.")
     t0 = time.perf_counter()
     financial = (fetch_financial(target) if scope in {"all", "finance"} else
-                 previous.financial if previous else FinancialData(target, None, None, now_kst(), warnings=("금융 지표를 아직 조회하지 않았습니다.",)))
+                 previous.financial if previous else FinancialData(target, None, None, now_kst(), warnings=("금융 지표를 아직 조회하지 않았습니다.",), collection_status="not_collected"))
     timings["financial_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
     if financial.stock.code != target.code:
         raise AppError("finance_identity", "금융 자료의 종목코드를 확인하지 못했습니다. 이번 분석을 중단합니다.")

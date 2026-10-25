@@ -1,0 +1,356 @@
+{
+  "checked_at": "2026-10-24T21:13:58.731837+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "source": "tests\\fixtures\\review_quality_cases.json",
+  "cases": [
+    {
+      "case_id": "intro_with_answer",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "scope": "headline_only",
+            "url": "https://example.com/synthetic",
+            "source": "가상 검수 자료"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "뉴스의 핵심을 설명합니다. 제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다. 계획 발표만으로 실제 가동이나 실적 개선을 확정할 수는 없습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "accepted",
+      "checked_text": "뉴스의 핵심을 설명합니다. 제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다. 계획 발표만으로 실제 가동이나 실적 개선을 확정할 수는 없습니다.",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Statement is a generic introduction; no factual claim; evidence not required.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Matches headline text: '가상검수회사 신규 생산라인 가동 계획 발표'.",
+                "supported": true
+              },
+              {
+                "id": "intro_2",
+                "reason": "Acknowledges limitation due to headline-only evidence; no claim of actual operation.",
+                "supported": true
+              }
+            ],
+            "reason": "All statements are consistent with the headline evidence; no unsupported claims or inferred timelines; scope limited to headline; answer addresses question directly.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "answers_question": true
+          }
+        }
+      ],
+      "expected_status": "accepted",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 실제 모델 검증이며 답변을 새로 생성한 검사는 아니다."
+      }
+    },
+    {
+      "case_id": "preamble_only",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "scope": "headline_only",
+            "url": "https://example.com/synthetic",
+            "source": "가상 검수 자료"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "수집된 뉴스 제목을 기준으로 이 종목의 이슈를 분석해 드리겠습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "rejected",
+      "error_code": "chat_grounding",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Statement merely states intent to analyze and does not reference any evidence or provide factual content.",
+                "supported": true
+              }
+            ],
+            "reason": "Answer does not address the user’s request; it only declares an intention to analyze based on the headline, lacking any factual explanation or reference to the evidence. Consequently, it fails to meet the answer requirements.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": false,
+              "explanation": false,
+              "question_focus": false,
+              "scope_disclosed": false,
+              "time_basis": true
+            },
+            "supported": false,
+            "answers_question": false
+          }
+        }
+      ],
+      "expected_status": "rejected",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 실제 모델 검증이며 답변을 새로 생성한 검사는 아니다.",
+        "limitation": "전체 거절은 적절하지만 evidence_match와 scope_disclosed까지 false로 판정한 점은 과도하다. 핵심 실패는 실질 답변 부재이며 개별 기준의 정확성은 남은 과제다."
+      }
+    },
+    {
+      "case_id": "bounded_cancel",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 공급 계약 취소 공시",
+            "scope": "headline_only",
+            "url": "https://example.com/synthetic",
+            "source": "가상 검수 자료"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "수집된 제목에 따르면 공급 계약 취소가 공시됐습니다. 취소 사유와 실적에 미치는 영향은 이 제목만으로 확인할 수 없습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "accepted",
+      "checked_text": "수집된 제목에 따르면 공급 계약 취소가 공시됐습니다. 취소 사유와 실적에 미치는 영향은 이 제목만으로 확인할 수 없습니다.",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Headline confirms supply contract cancellation.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Headline lacks details on reasons or impact, so statement of uncertainty is justified.",
+                "supported": true
+              }
+            ],
+            "reason": "Answer accurately reflects headline, acknowledges lack of detail, discloses scope, and makes no unsupported inferences.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "answers_question": true
+          }
+        }
+      ],
+      "expected_status": "accepted",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 실제 모델 검증이며 답변을 새로 생성한 검사는 아니다."
+      }
+    },
+    {
+      "case_id": "unsupported_cause",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 공급 계약 취소 공시",
+            "scope": "headline_only",
+            "url": "https://example.com/synthetic",
+            "source": "가상 검수 자료"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "수집된 제목에 따르면 공급 계약이 취소됐습니다. 수요 감소로 인한 취소이며, 손실 규모는 이 제목만으로 확인할 수 없습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "rejected",
+      "error_code": "chat_grounding",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Headline states supply contract cancellation.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Headline does not mention demand decrease.",
+                "supported": false
+              },
+              {
+                "id": "intro_2",
+                "reason": "Headline lacks loss scale info.",
+                "supported": true
+              }
+            ],
+            "reason": "The cancellation claim is supported by the headline, but the demand‑decrease reason lacks evidence, while the limitation on loss scale is correct.",
+            "checks": {
+              "evidence_match": false,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": false,
+            "answers_question": true
+          }
+        }
+      ],
+      "expected_status": "rejected",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 실제 모델 검증이며 답변을 새로 생성한 검사는 아니다."
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "518534cf70369b971531e8782fac050ce2b40c66418cb4c5fc2940b1366989c6",
+    "src/agents/answer_quality.py": "9039c1a37f4ddd4211fc4e4679e097015c1a60bb3d180f900084966c2eb80ec6",
+    "src/agents/transport.py": "7b089fa916d616de6f5a04c223e5e0c42a0f17b1ac8ae70467ca1784d3430ea3",
+    "src/agents/rate_control.py": "f623a71943cf3b5ce0a037bb372681de126de5cf4e40ec2ddc0f34efa93cc5c9"
+  },
+  "rate_control": {
+    "interval_seconds": 65.0,
+    "max_wait_seconds": 180.0,
+    "scope": "one_verification_process",
+    "events": [
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 999,
+          "limit_tokens": 8000,
+          "remaining_tokens": 4863,
+          "reset_tokens_seconds": 23.527,
+          "reset_requests_seconds": 86.4
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 2761,
+        "completion_tokens": 1203,
+        "total_tokens": 3964
+      },
+      {
+        "event": "wait",
+        "seconds": 64.824
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 998,
+          "limit_tokens": 8000,
+          "remaining_tokens": 4199,
+          "reset_tokens_seconds": 28.507,
+          "reset_requests_seconds": 172.8
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 2598,
+        "completion_tokens": 977,
+        "total_tokens": 3575
+      },
+      {
+        "event": "wait",
+        "seconds": 64.83
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 997,
+          "limit_tokens": 8000,
+          "remaining_tokens": 5133,
+          "reset_tokens_seconds": 21.502,
+          "reset_requests_seconds": 259.2
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 2687,
+        "completion_tokens": 611,
+        "total_tokens": 3298
+      },
+      {
+        "event": "wait",
+        "seconds": 64.838
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 996,
+          "limit_tokens": 8000,
+          "remaining_tokens": 4643,
+          "reset_tokens_seconds": 25.177,
+          "reset_requests_seconds": 345.6
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 2746,
+        "completion_tokens": 854,
+        "total_tokens": 3600
+      }
+    ]
+  },
+  "evaluation_note": "정상 2개 허용·오류 2개 거절로 기대 판정 4/4 일치. HTTP 요청 4개 모두 200이며 요청 사이 65초 대기를 실제 적용했다. 개별 평가 기준의 오판까지 모두 해결한 것은 아니다."
+}

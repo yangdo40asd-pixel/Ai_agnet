@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT))
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--live", action="store_true")
+    parser.add_argument("--output", type=Path, default=ROOT / "docs/검수/계획5_실제흐름_검수.json")
     args = parser.parse_args()
     if not args.live:
         parser.error("실제 호출에는 --live가 필요합니다.")
@@ -50,7 +51,7 @@ def main():
             report["user_messages"] = [m["text"] for m in app.session_state.filtered_state.get("chat_messages", []) if m.get("role") == "assistant"]
     except Exception as error:
         record("execution", False, error_type=type(error).__name__)
-    output = ROOT / "docs/검수/계획5_실제흐름_검수.json"
+    output = args.output
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=True))
     return 0 if report["steps"] and all(s["passed"] for s in report["steps"]) else 1

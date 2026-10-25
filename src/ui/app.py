@@ -12,20 +12,19 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.data.history import PRICE_RANGE_LABELS
-from src.data.news import safe_news_url
 from src.agents.chat import (
-    ChatIntent,
     answer_question,
-    build_evidence,
-    prefers_dialogue,
     prepare_submission,
     resolve_follow_up,
     route_message,
 )
+from src.analysis_flow import needs_data, analysis_response
+from src.diagnostics import record_failure
 from src.config import load_settings
 from src.models import AppError, CandidateDiscoveryResult, QueryOptions, StockCandidate, now_kst
 from src.pipeline import analyze_selected_stock, discover_theme_candidates, identify_stock
 from src.ui.dashboard import render_dashboard
+from src.ui.answer import render_answer, response_fields, time_label
 from src.ui.layout import WORKSPACE_CSS, canvas_scroll_key, panel_content_height
 from src.ui.state import (
     build_request_key,
@@ -37,6 +36,7 @@ from src.ui.state import (
     store_analysis_result,
     store_candidate_discovery,
     trigger_refresh,
+    prepare_analysis_request,
     add_canvas,
     close_canvas,
     guide_actions,
@@ -165,6 +165,9 @@ def render_related_candidate_buttons(
 
 
 def _say(state, text: str, **extra) -> None:
+    linked = get_result(state, extra.get("result_id")) if extra.get("result_id") else None
+    if linked is not None:
+        extra["result_target"] = {"name": linked.financial.stock.name, "code": linked.target_code}
     show_follow_up = extra.pop("show_follow_up", True)
     follow = resolve_follow_up(
         extra.pop("follow_up", ""),
@@ -175,10 +178,6 @@ def _say(state, text: str, **extra) -> None:
     if not show_follow_up:
         follow = ""
     append_chat_message(state, "assistant", text, follow_up=follow, **extra)
-
-
-def _queue_prompt(text: str) -> None:
-    st.session_state["queued_prompt"] = text
 
 
 def _fill_prompt(text: str) -> None:
@@ -233,7 +232,8 @@ def _prepare_export(canvas_id):
         data, name = ensure_export_bundle(card, card["result"])
         card["export_bytes"], card["export_filename"] = data, name
         card.pop("export_error", None)
-    except Exception:
+    except Exception as error:
+        record_failure("export", error, result_id=card["result"].result_id)
         card["export_error"] = "엑셀을 생성하지 못했습니다. 분석 자료는 유지됩니다. 다시 시도할 수 있습니다."
 
 
@@ -309,63 +309,47 @@ def _process_chat_message(raw_text: str, files=None, explicit_action=None) -> No
                 code = stock.code
             else:
                 code = intent.code
-            select_candidate(state, code)
-            state["request_scope"] = intent.scope
-            if intent.period:
-                update_query_options(state, price_period=intent.period)
-            state["pending_question"] = text if intent.scope != "all" else ""
+            prepare_analysis_request(state, scope=intent.scope, period=intent.period,
+                                     question=text if intent.scope != "all" else "", code=code)
         elif intent.action == "refresh":
-            state["request_scope"] = intent.scope
-            state["pending_question"] = text if intent.scope != "all" else ""
-            trigger_refresh(state)
-            if intent.period:
-                update_query_options(state, price_period=intent.period)
+            prepare_analysis_request(state, scope=intent.scope, period=intent.period,
+                                     question=text if intent.scope != "all" else "", refresh=True)
         else:
             result = state.get("dashboard_result")
             if result is not None and _needs_data(result, intent.scope, text, intent.period):
-                state["request_scope"] = intent.scope
-                state["pending_question"] = text
-                trigger_refresh(state)
-                if intent.period:
-                    update_query_options(state, price_period=intent.period)
+                prepare_analysis_request(state, scope=intent.scope, period=intent.period,
+                                         question=text, refresh=True)
             else:
                 _answer(text, result, history, attachments)
     except AppError as error:
+        record_failure("chat", error)
         state["retry_submission"] = state.get("last_submission")
         _say(state, error.message)
         st.error(error.message)
-    except Exception:
+    except Exception as error:
+        record_failure("chat", error)
         state["retry_submission"] = state.get("last_submission")
         _say(state, "요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.")
         st.error("요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.")
 
 
 def _needs_data(result, scope, text, period=""):
-    from src.models import now_kst
-    from src.agents.request import is_concept_question
-    if is_concept_question(text) and not any(w in text for w in ("이 종목", "현재", result.financial.stock.name)):
-        return False
-    if scope == "news":
-        return result.news.status == "not_collected" or (now_kst()-result.news.retrieved_at).total_seconds() > 900
-    if scope == "history":
-        return (bool(period and period != result.query_options.price_period)
-                or result.price_history is None
-                or (now_kst()-result.price_history.retrieved_at).total_seconds() > 900)
-    if scope == "finance":
-        return (now_kst()-result.financial.retrieved_at).total_seconds() > 300 or "아직 조회" in " ".join(result.financial.warnings)
-    if scope == "financials":
-        # 인증 설정이 없는 자료를 질문할 때마다 반복 호출하지 않는다.
-        return bool(load_settings().dart_api_key) and result.section_status.get("dart") == "not_collected"
-    return False
+    return needs_data(result, scope, text, period, now=now_kst(),
+                      dart_enabled=bool(load_settings().dart_api_key) if scope == "financials" else False)
 
 
 def _answer(text, result, history, attachments=None):
     with st.spinner("질문과 근거를 확인하고 있습니다."):
-        answer, evidence, follow = answer_question(text, result, history, load_settings(), attachments,
-                                                   st.session_state.get("candidate_result"))
+        response = answer_question(text, result, history, load_settings(), attachments,
+                                   st.session_state.get("candidate_result"))
+        answer, evidence, follow = response
+    # 일반 개념 답변에 현재 종목의 상세 버튼을 잘못 붙이지 않는다.
+    linked = result if evidence else None
     append_chat_message(st.session_state, "assistant", answer, evidence=evidence, follow_up=follow,
-                        target=result.financial.stock.name if result else "일반 설명",
-                        result_id=canvas_result_id(result) if result else None)
+                        target=linked.financial.stock.name if linked else "일반 설명",
+                        result_id=canvas_result_id(linked) if linked else None,
+                        result_target={"name": linked.financial.stock.name, "code": linked.target_code} if linked else None,
+                        **response_fields(response))
 
 
 def analyze_pending_selection() -> None:
@@ -392,45 +376,31 @@ def analyze_pending_selection() -> None:
                 lambda message: status.update(label=message), scope=scope, previous=previous,
             )
             store_analysis_result(state, result, request_key)
-            evidence_map = build_evidence(result)
-            evidence = [{"id": key, **item} for key, item in evidence_map.items() if key in {"PRICE", "PER", "PBR", "ROE"}]
-            commentary = result.commentary
-            summary_parts = [f"**{result.financial.stock.name} 조회 결과**"]
-            if commentary:
-                summary_parts.append(commentary.stock_comment)
-                for label, statements in (("테마 동향", commentary.theme_trend), ("기회 요인", (commentary.opportunity,)),
-                                          ("위험 요인", (commentary.risk,)), ("종합 분석", (commentary.summary,)),
-                                          ("재무 분석", commentary.financial_commentary)):
-                    for statement in statements:
-                        if statement:
-                            summary_parts.append(f"**{label}**\n{statement.text}")
-                            for key in [*(f"NEWS_{n}" for n in statement.news_ids), *(f"FACT_{n}" for n in statement.fact_ids)]:
-                                if key in evidence_map and key not in {e["id"] for e in evidence}:
-                                    evidence.append({"id": key, **evidence_map[key]})
-            elif scope == "all":
-                summary_parts.append("자료 수집 결과를 표시합니다. AI 종합 설명은 생성되지 않았습니다.")
+            response = analysis_response(result, scope)
+            summary, evidence, _ = response
             if pending_question:
                 # 실패해도 수집 결과와 열기 버튼은 보존한다.
                 try:
                     _answer(pending_question, result, list(state.get("chat_messages", ())))
                 except AppError as error:
+                    record_failure("pending_answer", error, result_id=result.result_id)
                     _say(state, f"요청한 자료는 보관했습니다. {error.message}", evidence=evidence, result_id=canvas_result_id(result))
-                except Exception:
+                except Exception as error:
+                    record_failure("pending_answer", error, result_id=result.result_id)
                     _say(state, "요청한 자료는 보관했습니다. 설명 처리에 문제가 발생했습니다. 다시 질문할 수 있습니다.",
                          evidence=evidence, result_id=canvas_result_id(result))
             else:
-                if result.news.status != "ok":
-                    summary_parts.append(result.news.message or "뉴스 자료를 확인하지 못했습니다.")
-                if not result.complete:
-                    summary_parts.append("일부 자료가 없거나 설명이 생성되지 않았습니다. 확인된 범위에서 해석해야 합니다.")
-                _say(state, "\n\n".join(summary_parts), evidence=evidence, result_id=canvas_result_id(result),
-                     analysis_error=result.ai_error, news_missing=not result.news.articles, show_follow_up=False)
+                _say(state, summary, evidence=evidence, result_id=canvas_result_id(result),
+                     analysis_error=result.ai_error, news_missing=not result.news.articles, show_follow_up=False,
+                     **response_fields(response))
             status.update(label="조회 결과를 표시합니다." if result.complete else "요청 처리를 마쳤습니다. 일부 자료는 미확인입니다.", state="complete")
         except AppError as error:
+            record_failure("analysis", error)
             store_analysis_error(state, error.message, request_key=request_key)
             _say(state, error.message)
             status.update(label="분석을 완료하지 못했습니다.", state="error")
-        except Exception:
+        except Exception as error:
+            record_failure("analysis", error)
             message = "처리 중 문제가 발생했습니다. 선택 종목 재조회로 다시 시도해 주세요."
             store_analysis_error(state, message, request_key=request_key)
             _say(state, message)
@@ -479,17 +449,22 @@ def render_guide_buttons() -> None:
         "canvas": (_on_add_canvas, ()),
     }
     actions = guide_actions(st.session_state)
-    render_state_context()
-    columns = st.columns(max(len(actions), 1))
-    for column, action in zip(columns, actions):
-        callback, args = callbacks[action]
-        column.button(labels[action], key=keys[action], on_click=callback, args=args)
+    with st.expander("추가 작업"):
+        for action in actions:
+            callback, args = callbacks[action]
+            st.button(labels[action], key=keys[action], on_click=callback, args=args)
+
+
+def render_question_suggestions() -> None:
+    if st.session_state.get("conversation_mode") == "theme_search":
+        return
     prompts = suggested_prompts(st.session_state)
+    if st.session_state.get("chat_messages"):
+        prompts = prompts[:2]
     if prompts:
-        st.caption("다음 질문")
-    prompt_columns = st.columns(max(len(prompts), 1))
+        st.caption("다음 질문" if st.session_state.get("chat_messages") else "예시 질문 · 선택 후 수정하여 보낼 수 있습니다.")
     for index, prompt in enumerate(prompts):
-        prompt_columns[index].button(
+        st.button(
             prompt,
             key=f"suggested_prompt_{index}",
             on_click=_fill_prompt,
@@ -528,7 +503,16 @@ def render_composer() -> None:
             st.caption("검색 결과에서 분석할 종목을 직접 선택합니다.")
         st.button("대화로 돌아가기", key="cancel_search", on_click=lambda: st.session_state.update(conversation_mode="general"))
         return
+    with st.form("composer_form", clear_on_submit=True):
+        st.text_input(
+            "메시지",
+            key="composer_text",
+            label_visibility="collapsed",
+            placeholder="관심 테마, 종목 또는 금융 지표를 질문해 주세요",
+        )
+        st.form_submit_button("보내기", key="composer_submit", on_click=_queue_submission, type="primary")
     with st.expander("이미지·문서 첨부"):
+        st.caption("TXT 내용은 답변에 참고합니다. 이미지와 PDF는 첨부 여부만 확인하며 본문은 읽지 않습니다.")
         st.file_uploader(
             "이미지 또는 문서 첨부",
             type=["png", "jpg", "jpeg", "webp", "txt", "pdf"],
@@ -537,22 +521,15 @@ def render_composer() -> None:
             key=f"composer_files_{st.session_state.get('composer_generation', 0)}",
             help="파일당 5MB, 이미지·문서 각각 2개. txt는 읽을 수 있고 이미지·PDF 본문은 아직 읽지 않습니다.",
         )
-    with st.form("composer_form", clear_on_submit=True):
-        st.text_input(
-            "메시지",
-            key="composer_text",
-            label_visibility="collapsed",
-            placeholder="증권 관련 내용을 입력하세요",
-        )
-        st.form_submit_button("보내기", key="composer_submit", on_click=_queue_submission)
 
 
 def render_conversation() -> None:
     state = st.session_state
     messages = list(state.get("chat_messages", ()))
     if not messages:
-        st.info("관심 테마나 종목에 대해 질문해 주세요. 확인된 자료를 바탕으로 답변합니다.")
-        st.caption("예시: 반도체 관련 종목 찾아줘 · PER이 뭐야? · 삼성전자 최근 뉴스는?")
+        with st.container(key="chat_welcome"):
+            st.markdown("### 어떤 종목이 궁금하십니까?")
+            st.caption("관심 테마나 종목, 금융 지표를 질문해 주세요. 확인된 자료를 바탕으로 설명합니다.")
     prompt_index = -1
     discovery = state.get("candidate_result")
     for index, message in enumerate(messages):
@@ -563,22 +540,27 @@ def render_conversation() -> None:
             prompt_index = index
     for index, message in enumerate(messages):
         with st.chat_message(message["role"]):
+            if message.get("sent_at"):
+                label = "질문 시각" if message["role"] == "user" else "답변 시각"
+                st.caption(f"{label}: {time_label(message['sent_at'])}")
             if message.get("analysis_error"):
                 st.error(message["analysis_error"])
             if message.get("news_missing"):
                 st.info("뉴스 제목을 확보하지 못해 뉴스 기반 분석은 생성하지 않았습니다.")
             if message.get("text"):
-                st.markdown(message["text"] if message["role"] == "assistant" else escape_markdown(message["text"]), unsafe_allow_html=False)
+                if message["role"] == "assistant":
+                    render_answer(message)
+                else:
+                    st.markdown(escape_markdown(message["text"]), unsafe_allow_html=False)
             for attachment in message.get("attachments") or ():
                 st.caption(f"첨부 {attachment['kind']}: {attachment['name']}")
-            if message.get("target") and message["target"] != "일반 설명":
+            saved_result = get_result(state, message["result_id"]) if message.get("result_id") else None
+            result_target = message.get("result_target") or (
+                {"name": saved_result.financial.stock.name, "code": saved_result.target_code} if saved_result else None)
+            if result_target:
+                st.caption(f"분석 대상: {result_target['name']} ({result_target['code']})")
+            elif message.get("target") and message["target"] != "일반 설명":
                 st.caption("답변 대상: " + message["target"])
-            for item in message.get("evidence", ()):
-                st.markdown(escape_markdown(f"[{item['id']}] {item['text']}"))
-                st.caption(" · ".join(str(item[key]) for key in ("source", "period", "fs_div", "as_of", "published_at", "retrieved_at") if item.get(key)))
-                url = safe_news_url(item.get("url"))
-                if url:
-                    st.link_button("답변 근거 원문", url)
             if index == prompt_index and discovery is not None:
                 render_related_candidate_buttons(discovery.candidates, state.get("selected_code"), key_prefix="msg_select")
                 with st.expander("후보 상세 정보"):
@@ -590,7 +572,13 @@ def render_conversation() -> None:
             if message.get("role") == "assistant" and follow:
                 st.markdown(follow)
             if message.get("result_id"):
-                st.button("차트·근거 보기", key=f"message_canvas_{index}", on_click=_on_add_canvas, args=(message["result_id"],))
+                if saved_result is not None:
+                    st.button("차트·근거 보기", key=f"message_canvas_{index}", on_click=_on_add_canvas, args=(message["result_id"],))
+                else:
+                    st.caption("이 답변의 상세 자료는 보관 범위를 벗어났습니다. 다시 조회하면 새로운 결과가 생성됩니다.")
+                    if result_target and result_target.get("code"):
+                        st.button("이 종목 재조회 질문 작성", key=f"expired_result_{index}", on_click=_fill_prompt,
+                                  args=(f"{result_target['code']} 분석 자료를 다시 조회해줘",))
     if state.get("retry_submission") and not state.get("inflight_request"):
         st.button("마지막 요청 다시 시도", key="retry_last_request", on_click=_on_retry_submission)
 
@@ -631,7 +619,8 @@ def main() -> None:
         title.title("테마주 인사이트 리포트")
         reset.button("새 대화 시작", key="clear_results", on_click=reset_all_state, args=(st.session_state,))
         st.caption("테마와 종목을 대화로 탐색합니다. 분석 답변에서 ‘차트·근거 보기’를 누르면 상세 자료가 열립니다.")
-    panel_height = 360 if not st.session_state.get("chat_messages") else panel_content_height()
+    panel_height = panel_content_height()
+    has_conversation = bool(st.session_state.get("chat_messages") or st.session_state.get("queued_submission") or st.session_state.get("queued_prompt"))
     canvases = list(st.session_state.get("canvases") or [])
     if canvases:
         chat_panel, data_panel = st.columns([2, 3], gap="large")
@@ -641,7 +630,9 @@ def main() -> None:
         data_panel = None
     with chat_context:
         st.subheader("AI와 대화")
-        message_slot = st.container(height=panel_height, key="chat_scroll", autoscroll=True)
+        # 첫 진입은 내용만큼만 사용한다. 대화가 시작된 뒤에만 스크롤 높이를 둔다.
+        message_slot = (st.container(height=panel_height, key="chat_scroll", autoscroll=True)
+                        if has_conversation else st.container(key="chat_scroll"))
         controls_slot = st.container(key="chat_controls")
     if data_panel is not None:
         with data_panel:
@@ -664,9 +655,11 @@ def main() -> None:
         if "latest_error" in st.session_state:
             st.error(st.session_state["latest_error"])
     with controls_slot:
-        with st.container(border=True):
-            render_guide_buttons()
-            render_composer()
+        if st.session_state.get("chat_messages") or st.session_state.get("conversation_mode") == "theme_search":
+            render_state_context()
+        render_question_suggestions()
+        render_composer()
+        render_guide_buttons()
     if data_panel is not None:
         with canvas_slot:
             render_canvases()

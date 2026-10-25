@@ -18,7 +18,7 @@ from src.ui.charts import (
     build_price_volume_figure,
     build_quarter_performance_figure,
 )
-from src.ui.formatting import (
+from src.formatting import (
     format_change_summary,
     format_eok,
     format_multiple,
@@ -55,12 +55,8 @@ def show_statement(title: str, statement: Statement | None):
         st.caption(f"재무 근거: {fact_refs}")
 
 
-def _resolve_roe_metric(result: AnalysisResult) -> MetricValue | None:
-    if result.financial_ratios and result.financial_ratios.roe is not None:
-        return result.financial_ratios.roe
-    if result.financial.roe_metric is not None:
-        return result.financial.roe_metric
-    return None
+# 이전 진입점의 이름도 유지한다.
+from src.models import resolve_roe_metric as _resolve_roe_metric
 
 
 def render_metrics(result: AnalysisResult):

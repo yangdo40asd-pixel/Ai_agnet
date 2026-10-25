@@ -1,0 +1,122 @@
+{
+  "synthetic_data": true,
+  "purpose": "도입/실질 답변/자료 한계/근거 없는 원인의 대조 기준",
+  "cases": [
+    {
+      "case_id": "intro_with_answer",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "expected_status": "accepted",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "scope": "headline_only",
+            "url": "https://example.com/synthetic",
+            "source": "가상 검수 자료"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "뉴스의 핵심을 설명합니다. 제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다. 계획 발표만으로 실제 가동이나 실적 개선을 확정할 수는 없습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "preamble_only",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "expected_status": "rejected",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "scope": "headline_only",
+            "url": "https://example.com/synthetic",
+            "source": "가상 검수 자료"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "수집된 뉴스 제목을 기준으로 이 종목의 이슈를 분석해 드리겠습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "bounded_cancel",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "expected_status": "accepted",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 공급 계약 취소 공시",
+            "scope": "headline_only",
+            "url": "https://example.com/synthetic",
+            "source": "가상 검수 자료"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "수집된 제목에 따르면 공급 계약 취소가 공시됐습니다. 취소 사유와 실적에 미치는 영향은 이 제목만으로 확인할 수 없습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "unsupported_cause",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "expected_status": "rejected",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 공급 계약 취소 공시",
+            "scope": "headline_only",
+            "url": "https://example.com/synthetic",
+            "source": "가상 검수 자료"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "수집된 제목에 따르면 공급 계약이 취소됐습니다. 수요 감소로 인한 취소이며, 손실 규모는 이 제목만으로 확인할 수 없습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -18,6 +18,7 @@ WORKSPACE_CSS = """
 }
 .st-key-chat_controls {padding-top: .4rem;}
 .st-key-chat_controls [data-testid="stForm"] {padding: .65rem;}
+.st-key-chat_welcome {padding: 1rem;}
 @media (max-width: 899px) {
     .stMainBlockContainer {padding: 1rem .75rem;}
     section.stMain {overflow: auto;}

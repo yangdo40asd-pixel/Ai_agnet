@@ -14,7 +14,7 @@ NEWS_URL = "https://naverapihub.apigw.ntruss.com/search/v1/news"
 
 
 def news_query(theme: str, stock_name: str) -> str:
-    from src.agents.request import discovery_theme
+    from src.text import discovery_theme
     keyword = discovery_theme(theme)
     if keyword == stock_name or not keyword:
         return stock_name

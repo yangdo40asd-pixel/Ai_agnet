@@ -1,14 +1,14 @@
 """대화 의도/근거 검사 및 Streamlit 다중 턴 회귀 검사. 외부 호출은 대체한다."""
 
 import unittest
+from review_fixtures import with_review_units
 from unittest.mock import patch
 
 import test_user_flow as flow
 from src.agents.chat import (
     answer_question, attachments_for_model, build_evidence, conversation_context,
-    lecture_dump, loose_per_wording, prefers_dialogue, unnatural_answer, unsupported_chat_claim, validate_answer,
+    prefers_dialogue, unsupported_chat_claim, validate_answer,
     normalize_attachments, normalize_message, prepare_submission, resolve_follow_up, route_message,
-    unique_follow_up,
 )
 from src.agents.report import CHAT_TEMPERATURE, FACT_TEMPERATURE, _comment_text, _invoke, response_format
 from src.config import Settings
@@ -76,9 +76,9 @@ class ChatUnitTests(unittest.TestCase):
         self.assertEqual(self.route("PER").action, "answer")
 
     def test_answer_attaches_exact_values_from_current_result(self):
-        with patch("src.agents.chat._invoke", side_effect=[
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([
             {"text":"이익과 주가를 비교하는 지표입니다.","evidence_ids":["PER"],"follow_up":""},
-            {"supported":True,"answers_question":True,"reason":""}]):
+            {"checks": {'evidence_match': True, 'time_basis': True, 'question_focus': True, 'explanation': True, 'scope_disclosed': True, 'context_consistent': True}, "supported":True,"answers_question":True,"reason":""}])):
             text, evidence, follow = answer_question("PER 설명", self.result, [], self.settings)
         self.assertIn("지표", text)
         self.assertIn("15.20배", evidence[0]["text"])
@@ -104,10 +104,10 @@ class ChatUnitTests(unittest.TestCase):
         self.assertEqual(evidence, [])
 
     def test_invalid_answer_is_regenerated_once(self):
-        with patch("src.agents.chat._invoke", side_effect=[
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([
             {"text":"PER는 99배입니다.","evidence_ids":["PER"],"follow_up":""},
             {"text":"주당 이익과 주가를 비교합니다.","evidence_ids":["PER"],"follow_up":""},
-            {"supported":True,"answers_question":True,"reason":""}]) as invoke:
+            {"checks": {'evidence_match': True, 'time_basis': True, 'question_focus': True, 'explanation': True, 'scope_disclosed': True, 'context_consistent': True}, "supported":True,"answers_question":True,"reason":""}])) as invoke:
             answer, evidence, _ = answer_question("지표 설명", self.result, [], self.settings)
         self.assertEqual(invoke.call_count, 3)
         self.assertIn("주당", answer)
@@ -172,11 +172,11 @@ class ChatUnitTests(unittest.TestCase):
             with self.subTest(text=text):
                 with self.assertRaises(AppError):
                     _comment_text(text)
-        with patch("src.agents.chat._invoke", side_effect=[
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([
             {"text": rejected[1], "evidence_ids": [], "follow_up": "그래서 저평가인가요?"},
             {"text": "PER는 주가를 주당순이익으로 나눈 값입니다. 수치의 높고 낮음만으로 가치를 단정할 수 없습니다.",
              "evidence_ids": [], "follow_up": "업종 평균과 함께 보는 이유를 설명할까요?"},
-        ]) as invoke:
+        ])) as invoke:
             answer, evidence, follow = answer_question("PER는 무슨 뜻이야?", None, [], self.settings)
         invoke.assert_not_called()
         self.assertNotIn("저렴", answer)
@@ -197,9 +197,9 @@ class ChatUnitTests(unittest.TestCase):
             self.assertEqual(self.route("반도체 업황이 무슨 뜻이야").action, "answer")
 
     def test_invalid_follow_up_keeps_answer_without_retry(self):
-        with patch("src.agents.chat._invoke", side_effect=[
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([
             {"text":"이익과 주가를 비교하는 지표입니다.","evidence_ids":["PER"],"follow_up":"99배인가요?"},
-            {"supported":True,"answers_question":True,"reason":""}]) as invoke:
+            {"checks": {'evidence_match': True, 'time_basis': True, 'question_focus': True, 'explanation': True, 'scope_disclosed': True, 'context_consistent': True}, "supported":True,"answers_question":True,"reason":""}])) as invoke:
             _, evidence, follow = answer_question("PER 설명", self.result, [], self.settings)
         self.assertEqual(invoke.call_count,2)
         self.assertEqual(follow,"")
@@ -212,24 +212,24 @@ class ChatUnitTests(unittest.TestCase):
     def test_missing_metric_still_requires_its_evidence_for_current_stock(self):
         answer = {"text": "이번 조회에서 해당 지표를 확인하지 못했어요.",
                   "evidence_ids": [], "follow_up": "다른 지표도 알아볼까요?"}
-        with patch("src.agents.chat._invoke", side_effect=[answer, dict(answer, evidence_ids=["PBR"])]) as invoke:
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([answer, dict(answer, evidence_ids=["PBR"])])) as invoke:
             _, evidence, _ = answer_question("현재 종목의 PBR 정보가 없어", self.result, [], self.settings)
         invoke.assert_not_called()
         self.assertIn("정보 없음", evidence[0]["text"])
 
     def test_number_error_retry_reports_reason_without_raw_response(self):
-        with patch("src.agents.chat._invoke", side_effect=[
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([
             {"text":"PER는 99배입니다.","evidence_ids":["PER"],"follow_up":""},
             {"text":"주가를 주당순이익으로 나눈 값입니다.","evidence_ids":["PER"],"follow_up":""},
-            {"supported":True,"answers_question":True,"reason":""}]) as invoke:
+            {"checks": {'evidence_match': True, 'time_basis': True, 'question_focus': True, 'explanation': True, 'scope_disclosed': True, 'context_consistent': True}, "supported":True,"answers_question":True,"reason":""}])) as invoke:
             answer_question("PER 설명",self.result,[],self.settings)
         request=invoke.call_args_list[1].args[2]
         self.assertEqual(request["validation_error"],"chat_numbers")
         self.assertNotIn("99배",str(request))
 
-    def test_repeated_follow_up_changes(self):
+    def test_repeated_follow_up_is_omitted(self):
         messages = [{"role": "assistant", "text": "설명", "follow_up": "이어서 궁금한 지표가 있나요?"}]
-        self.assertNotEqual(unique_follow_up("이어서 궁금한 지표가 있나요?", messages), messages[0]["follow_up"])
+        self.assertEqual(resolve_follow_up("이어서 궁금한 지표가 있나요?", messages, None), "")
         self.assertEqual(resolve_follow_up("", messages, None, None), "")
 
     def test_guide_actions_follow_result_state(self):
@@ -242,7 +242,7 @@ class ChatUnitTests(unittest.TestCase):
         self.assertEqual(ready, ["find", "risk", "refresh", "canvas"])
 
     def test_suggested_prompts_follow_current_state(self):
-        self.assertEqual(suggested_prompts({}), ("반도체 관련 종목을 찾아줘","PER와 PBR의 차이를 설명해줘"))
+        self.assertEqual(suggested_prompts({}), ("반도체 관련 종목을 찾아줘", "삼성전자를 분석해줘", "PER와 PBR의 차이를 설명해줘"))
         self.assertFalse(any("비교" in p for p in suggested_prompts({"candidate_result":self.discovery})))
         self.assertIn("현재 종목의 PER와 PBR을 설명해줘", suggested_prompts({"dashboard_result":self.result}))
 
@@ -388,7 +388,8 @@ class ChatFlowTests(unittest.TestCase):
         self.llm.invoke.side_effect = [
             flow.response({"text": text, "evidence_ids": ["PER"] if ids is None else ids,
                            "follow_up": "이 지표의 한계를 더 확인하시겠습니까?"}),
-            flow.response({"supported": True, "answers_question": True, "reason": ""}),
+            flow.response({"checks": {'evidence_match': True, 'time_basis': True, 'question_focus': True, 'explanation': True, 'scope_disclosed': True, 'context_consistent': True}, "supported": True, "answers_question": True, "reason": "",
+                           "unit_reviews": [{"id": "intro_0", "reason": "모의 문장 판정", "supported": True}]}),
         ]
 
     def test_named_company_question_verifies_that_stock_without_theme_candidates(self):

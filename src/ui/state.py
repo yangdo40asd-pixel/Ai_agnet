@@ -6,7 +6,7 @@ from dataclasses import replace
 from typing import Any
 
 from src.export.excel import build_export_filename, build_workbook_bytes
-from src.models import AnalysisResult, CandidateDiscoveryResult, QueryOptions
+from src.models import AnalysisResult, CandidateDiscoveryResult, QueryOptions, now_kst
 
 ALL_STATE_KEYS = (
     "candidate_result",
@@ -127,7 +127,7 @@ def store_candidate_discovery(
 def append_chat_message(state: MutableMapping[str, Any], role: str, text: str, **extra: Any) -> None:
     """세션 내 최근 40개 메시지를 보존한다. 새로고침에서 중복 추가하지 않는다."""
     messages = list(state.get("chat_messages", ()))
-    messages.append({"role": role, "text": text, **extra})
+    messages.append({"role": role, "text": text, "sent_at": now_kst().isoformat(), **extra})
     state["chat_messages"] = messages[-40:]
 
 
@@ -201,8 +201,8 @@ def update_query_options(state: MutableMapping[str, Any], **changes: Any) -> Que
     current = state.get("query_options")
     if not isinstance(current, QueryOptions):
         current = QueryOptions()
-    if "price_period" in changes:
-        changes["price_range"] = changes["price_period"]
+    if "price_range" in changes:
+        changes.setdefault("price_period", changes.pop("price_range"))
     updated = replace(current, **changes)
     if updated != current:
         reset_selection_result(state)
@@ -314,7 +314,7 @@ def select_canvas_candidate(
     select_candidate(state, code)
     options = result.query_options
     if price_period is not None:
-        options = replace(options, price_period=price_period, price_range=price_period)
+        options = replace(options, price_period=price_period)
     state["query_options"] = options
     return True
 
@@ -361,7 +361,9 @@ def suggested_prompts(state: MutableMapping[str, Any]) -> tuple[str, ...]:
         # 연관성을 조사하지 않은 후보에게 사업 설명/비교를 약속하지 않는다.
         prompts.append("PER의 뜻을 설명해줘")
     else:
-        prompts.extend(("반도체 관련 종목을 찾아줘", "PER와 PBR의 차이를 설명해줘"))
+        if not state.get("chat_messages"):
+            prompts.extend(("반도체 관련 종목을 찾아줘", "삼성전자를 분석해줘", "PER와 PBR의 차이를 설명해줘"))
+        # 대화가 시작되면 첫 화면 예시를 계속 반복하지 않는다.
     recent = {m.get("text") for m in list(state.get("chat_messages", ()))[-6:] if m.get("role") == "user"}
     return tuple(p for p in prompts if p not in recent)[:3]
 
@@ -375,3 +377,18 @@ def trigger_refresh(state: MutableMapping[str, Any]) -> QueryOptions:
     reset_selection_result(state)
     state["query_options"] = updated
     return updated
+
+
+def prepare_analysis_request(state: MutableMapping[str, Any], *, scope: str, question: str = "",
+                             period: str = "", code: str | None = None, refresh: bool = False) -> None:
+    """선택/재조회 요청을 준비한다. 기존 초기화·보류 질문·기간 적용 순서를 보존한다."""
+    if not refresh:
+        select_candidate(state, code)
+    state["request_scope"] = scope
+    if refresh:
+        state["pending_question"] = question
+        trigger_refresh(state)
+    if period:
+        update_query_options(state, price_period=period)
+    if not refresh:
+        state["pending_question"] = question

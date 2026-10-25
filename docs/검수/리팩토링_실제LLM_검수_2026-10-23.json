@@ -1,0 +1,71 @@
+{
+  "checked_at": "2026-10-23T10:11:13.646619+09:00",
+  "model": "openai/gpt-oss-20b",
+  "synthetic_data": true,
+  "cases": [
+    {
+      "question": "이 종목의 PER을 어떻게 해석해야 합니까?",
+      "status": "returned",
+      "text": "가상검수회사의 PER은 12.50배입니다. 이는 현재 주가가 주당순이익(EPS)의 12.50배 수준임을 의미합니다. PER은 기업의 이익 대비 주가 수준을 나타내는 지표이며, 단독으로 해석할 때는 기업의 성장 전망, 산업 평균, 시장 상황 등과 함께 비교해 보는 것이 일반적입니다. 현재 제공된 자료에서는 EPS, PBR, ROE 등 추가 지표가 없으므로 PER만으로 종합적인 평가를 내리기 어렵습니다. PER을 참고 지표로 활용하시되, 다른 재무지표와 시장 상황을 함께 검토하시기 바랍니다.",
+      "evidence_ids": [
+        "PER"
+      ],
+      "follow_up": "",
+      "elapsed_seconds": 4.61,
+      "path": "live_llm",
+      "quality_review": {
+        "reviewer": "coding_assistant",
+        "note": "확인 PER와 정의는 맞음. 기준 시각/기간 미확인 명시 및 답변 길이는 추가 개선 필요. 전체 품질 완료 아님.",
+        "full_quality_acceptance": false
+      }
+    },
+    {
+      "question": "매수와 매도의 차이는 무엇입니까?",
+      "status": "returned",
+      "text": "매수와 매도는 주식 거래에서의 거래 방향을 의미합니다. 매수는 주식을 사는 행위이며, 매도는 주식을 파는 행위입니다. 두 행위는 거래 방향이 다르지만, 실제 거래가 성사되는 가격은 지정가나 시장가 등 주문 방식에 따라 결정됩니다. 따라서 매수·매도는 거래 방향을, 지정가·시장가는 가격 조건을 나타내는 개념으로 구분됩니다.",
+      "evidence_ids": [],
+      "follow_up": "",
+      "elapsed_seconds": 1.92,
+      "path": "live_llm",
+      "quality_review": {
+        "reviewer": "coding_assistant",
+        "note": "거래 방향과 주문 방식의 차이 설명 확인. 전체 대화 품질 검수는 별도.",
+        "full_quality_acceptance": false
+      }
+    },
+    {
+      "question": "현재 PBR은 왜 없습니까?",
+      "status": "returned",
+      "text": "가상검수회사 · PBR: 정보 없음.\n\n이번 자료에서는 누락 원인을 확인할 수 없습니다. 값이 영이라는 뜻은 아닙니다.",
+      "evidence_ids": [
+        "PBR"
+      ],
+      "follow_up": "",
+      "elapsed_seconds": 0.0,
+      "path": "deterministic",
+      "quality_review": {
+        "reviewer": "coding_assistant",
+        "note": "누락 원인을 추측하지 않는 코드 기반 안내 확인. 실제 LLM 생성 사례 아님.",
+        "full_quality_acceptance": false
+      }
+    },
+    {
+      "question": "테마 검색 말고 삼성전자만 보고 싶습니다.",
+      "status": "classified",
+      "intent": {
+        "action": "lookup",
+        "theme": "삼성전자",
+        "code": "",
+        "company": "삼성전자",
+        "scope": "all",
+        "period": "",
+        "reason": ""
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "86c702b07acb4b14f0d0fc2949d2b376f044ed27ea099a2977873db67bfff655",
+    "src/agents/request.py": "a1e2b95c5e9e9b40f150c95a9f2d201edaae99b87f52b4488f983160dfad6b99",
+    "src/ui/app.py": "ddefd4de5205628a8a6ee67eb9230ccc3d7a08d9de060e0ea6598b0880dc5151"
+  }
+}

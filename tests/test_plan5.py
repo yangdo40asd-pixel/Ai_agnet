@@ -1,6 +1,7 @@
 """계획5의 사용자 요구를 검증한다. 수치·회사명·외부 응답은 모두 가상 자료다."""
 import unittest
 from dataclasses import replace
+from review_fixtures import with_review_units
 from unittest.mock import patch
 import pandas as pd
 
@@ -43,7 +44,7 @@ class Plan5Contracts(unittest.TestCase):
         with patch("src.agents.request._invoke", return_value={"action": "lookup", "theme": "", "code": "", "company": "삼성전자"}):
             intent = route_message("테마 검색 말고 삼성전자만 보고 싶습니다.", None, None, [], self.settings)
         self.assertEqual((intent.action, intent.company), ("lookup", "삼성전자"))
-        question = suggested_prompts({})[1]
+        question = next(p for p in suggested_prompts({}) if "PBR" in p)
         with patch("src.agents.request._invoke") as route, patch("src.agents.chat._invoke") as answer:
             self.assertEqual(route_message(question, None, None, [], self.settings).action, "answer")
             result, _, _ = answer_question(question, None, [], self.settings)
@@ -64,9 +65,9 @@ class Plan5Contracts(unittest.TestCase):
 
     def test_general_trading_explanation_checks_knowledge_reference(self):
         incorrect = {"text": "매수는 현재가보다 낮은 가격으로 사는 행위입니다.", "evidence_ids": [], "follow_up": ""}
-        with patch("src.agents.chat._invoke", side_effect=[incorrect, {"supported": False, "answers_question": True, "reason": "direction_vs_order"},
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([incorrect, {"checks": {'evidence_match': False, 'time_basis': False, 'question_focus': False, 'explanation': False, 'scope_disclosed': False, 'context_consistent': False}, "supported": False, "answers_question": True, "reason": "direction_vs_order"},
                     {"text": "매수는 주식을 사는 행위이고 매도는 파는 행위입니다.", "evidence_ids": [], "follow_up": ""},
-                    {"supported": True, "answers_question": True, "reason": ""}]) as call:
+                    {"checks": {'evidence_match': True, 'time_basis': True, 'question_focus': True, 'explanation': True, 'scope_disclosed': True, 'context_consistent': True}, "supported": True, "answers_question": True, "reason": ""}])) as call:
             answer, _, _ = answer_question("매수와 매도의 차이는?", None, [], self.settings)
         self.assertNotIn("낮은", answer)
         self.assertIn("주문 방식", call.call_args.args[2]["concept_reference"])
@@ -111,9 +112,9 @@ class Plan5Contracts(unittest.TestCase):
         self.assertEqual((intent.action, intent.scope), ("answer", "history"))
 
     def test_metric_cause_question_is_not_replaced_by_value_only(self):
-        with patch("src.agents.chat._invoke", side_effect=[
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([
             {"text": "현재 PER는 {{PER}}입니다. 과거 비교 자료가 없어 낮아진 원인은 확인할 수 없습니다.", "evidence_ids": ["PER"], "follow_up": ""},
-            {"supported": True, "answers_question": True, "reason": ""}]) as invoke:
+            {"checks": {'evidence_match': True, 'time_basis': True, 'question_focus': True, 'explanation': True, 'scope_disclosed': True, 'context_consistent': True}, "supported": True, "answers_question": True, "reason": ""}])) as invoke:
             answer, _, _ = answer_question("PER가 왜 낮아졌는지 알려줘", self.result, [], self.settings)
         self.assertEqual(invoke.call_count, 2)
         self.assertIn("원인은 확인할 수 없습니다", answer)
@@ -203,8 +204,8 @@ class Plan5Contracts(unittest.TestCase):
 
     def test_semantic_review_rejects_unrelated_factory_claim_with_valid_per_id(self):
         fabricated = {"text": "이 회사의 공장이 중단되었습니다.", "evidence_ids": ["PER"], "follow_up": ""}
-        reject = {"supported": False, "answers_question": False, "reason": "unrelated"}
-        with patch("src.agents.chat._invoke", side_effect=[fabricated, reject, fabricated, reject]) as call:
+        reject = {"checks": {'evidence_match': False, 'time_basis': False, 'question_focus': False, 'explanation': False, 'scope_disclosed': False, 'context_consistent': False}, "supported": False, "answers_question": False, "reason": "unrelated"}
+        with patch("src.agents.chat._invoke", side_effect=with_review_units([fabricated, reject, fabricated, reject])) as call:
             with self.assertRaises(AppError):
                 answer_question("현재 종목의 위험 요인을 설명해줘", self.result, [], self.settings)
         self.assertEqual(call.call_count, 4)
@@ -222,7 +223,7 @@ class Plan5Contracts(unittest.TestCase):
 
     def test_grounding_schema_is_not_candidate_schema(self):
         schema = response_format({"task": "chat_grounding_review"}, "openai/gpt-oss-20b")["json_schema"]["schema"]
-        self.assertEqual(set(schema["properties"]), {"supported", "answers_question", "reason"})
+        self.assertEqual(set(schema["properties"]), {"supported", "answers_question", "reason", "checks", "unit_reviews"})
 
     def test_news_only_refresh_does_not_fetch_finance_history_or_report(self):
         with patch("src.pipeline.fetch_news", return_value=NewsData((), now_kst())) as news, \

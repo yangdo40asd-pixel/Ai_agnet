@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.export.excel import reconcile_workbook_values
 from src.models import now_kst
-from src.ui.formatting import (
+from src.formatting import (
     format_multiple,
     format_per_share_krw,
     format_percent,

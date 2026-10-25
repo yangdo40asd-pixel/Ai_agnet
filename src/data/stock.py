@@ -10,7 +10,7 @@ from numbers import Real
 import pandas as pd
 
 from src.models import AppError, FinancialData, KST, MetricValue, StockCandidate, now_kst
-from src.ui.formatting import format_multiple, format_per_share_krw, format_price
+from src.formatting import format_multiple, format_per_share_krw, format_price
 
 
 def normalize_name(name: str) -> str:

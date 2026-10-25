@@ -1,0 +1,1071 @@
+{
+  "checked_at": "2026-10-24T09:24:32.716294+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "cases": [
+    {
+      "question": "이 종목의 뉴스 이슈를 분석해줘",
+      "status": "returned",
+      "text": "가상검수회사의 최근 뉴스 이슈는 신규 생산라인 가동 계획 발표와 별도 공급 계약 취소 공시 두 가지가 있습니다.\n\n**신규 생산라인 가동 계획**\n가상검수회사는 신규 생산라인 가동을 계획하고 있음을 발표했습니다. 이는 사업 확장 단계이며, 실제 가동 여부와 시점은 아직 확인되지 않았습니다.\n\n**별도 공급 계약 취소**\n가상검수회사는 별도 공급 계약을 취소한 사실을 공시했습니다. 계약 취소의 사유와 영향은 아직 확인되지 않았습니다.",
+      "blocks": [
+        {
+          "title": "신규 생산라인 가동 계획",
+          "text": "가상검수회사는 신규 생산라인 가동을 계획하고 있음을 발표했습니다. 이는 사업 확장 단계이며, 실제 가동 여부와 시점은 아직 확인되지 않았습니다.",
+          "evidence_ids": [
+            "NEWS_1"
+          ]
+        },
+        {
+          "title": "별도 공급 계약 취소",
+          "text": "가상검수회사는 별도 공급 계약을 취소한 사실을 공시했습니다. 계약 취소의 사유와 영향은 아직 확인되지 않았습니다.",
+          "evidence_ids": [
+            "NEWS_2"
+          ]
+        }
+      ],
+      "evidence_ids": [
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 3.45,
+      "case_id": "issues",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 최근 뉴스 이슈는 신규 생산라인 가동 계획 발표와 별도 공급 계약 취소 공시 두 가지가 있습니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "신규 생산라인 가동 계획",
+                "text": "가상검수회사는 신규 생산라인 가동을 계획하고 있음을 발표했습니다. 이는 사업 확장 단계이며, 실제 가동 여부와 시점은 아직 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "별도 공급 계약 취소",
+                "text": "가상검수회사는 별도 공급 계약을 취소한 사실을 공시했습니다. 계약 취소의 사유와 영향은 아직 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "reason": "Answer accurately reflects headline-only evidence, does not infer dates or causality, and stays within requested scope."
+          }
+        }
+      ],
+      "quality_review": {
+        "verdict": "partial",
+        "notes": "제목 반복은 줄었지만 사업 확장 단계라는 미확인 해석과 본문 수집 범위 누락이 남음."
+      }
+    },
+    {
+      "question": "이 종목 뉴스를 세 줄로 요약해줘",
+      "status": "returned",
+      "text": "가상검수회사 신규 생산라인 가동 계획이 발표되었습니다. 가상검수회사는 별도 공급 계약을 취소하였으며, 현재 이와 관련된 추가 조치가 진행 중입니다. 이 요약은 수집된 뉴스 제목 기준이며, 기사 본문은 확인하지 않았습니다.",
+      "blocks": [],
+      "evidence_ids": [
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 2.37,
+      "case_id": "summary",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사 신규 생산라인 가동 계획이 발표되었습니다. 가상검수회사는 별도 공급 계약을 취소하였으며, 현재 이와 관련된 추가 조치가 진행 중입니다. 이 요약은 수집된 뉴스 제목 기준이며, 기사 본문은 확인하지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "reason": "Answer accurately reflects the headline-only evidence, does not infer event dates or causality, and stays within the requested scope. All required checks are satisfied."
+          }
+        }
+      ],
+      "quality_review": {
+        "verdict": "failed",
+        "notes": "자료에 없는 추가 조치 진행 중 주장을 생성했고 자체 검증도 통과. 이후 저장 응답 재검증에서 거절함."
+      }
+    },
+    {
+      "question": "이 종목의 PER을 어떻게 해석해야 합니까?",
+      "status": "returned",
+      "text": "가상검수회사의 PER은 12.50배입니다. 이는 주가가 주당순이익의 12.5배에 해당함을 의미합니다. PER은 기업의 이익 대비 주가 수준을 나타내는 지표이지만, 이 값만으로 기업의 가치를 판단하기는 어렵습니다. 특히 기준 기간이나 자료 시각이 명확하지 않으므로, 이 PER이 최근 실적 변동을 반영하고 있는지 여부를 확인할 필요가 있습니다.",
+      "blocks": [],
+      "evidence_ids": [
+        "PER"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 2.28,
+      "case_id": "per",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 PER은 12.50배입니다. 이는 주가가 주당순이익의 12.5배에 해당함을 의미합니다. PER은 기업의 이익 대비 주가 수준을 나타내는 지표이지만, 이 값만으로 기업의 가치를 판단하기는 어렵습니다. 특히 기준 기간이나 자료 시각이 명확하지 않으므로, 이 PER이 최근 실적 변동을 반영하고 있는지 여부를 확인할 필요가 있습니다.",
+            "evidence_ids": [
+              "PER"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "reason": "Answer correctly cites the PER value (12.5배) from the evidence and explains its basic meaning. It does not introduce any unsupported claims, does not conflate order types, and does not treat the PER as a causal indicator of stock performance. The answer acknowledges the lack of a specified period or data timestamp, which satisfies the requirement to disclose uncertainty. No additional unrelated metrics or events are added, and the explanation stays within the scope of the question. Therefore all quality checks are satisfied.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "answers_question": true
+          }
+        }
+      ],
+      "quality_review": {
+        "verdict": "passed_sample",
+        "notes": "가상 값/정의 일치, 단일 지표 판단 한계와 기준 기간/자료 시각 미확인을 설명함. 한 표본 평가."
+      }
+    },
+    {
+      "question": "그러면 그 발표로 실적 개선이 확정된 건가요?",
+      "status": "error",
+      "error_code": "chat_grounding",
+      "message": "답변의 사실 근거나 질문 충족 여부를 확인하지 못했습니다.",
+      "case_id": "followup",
+      "fixture": {
+        "question_history": [
+          {
+            "role": "user",
+            "text": "이 종목의 생산라인 뉴스는 무엇입니까?"
+          },
+          {
+            "role": "assistant",
+            "text": "제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다."
+          }
+        ],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "해당 발표는 신규 생산라인 가동 계획에 관한 것으로, 아직 실적 개선이 확정된 것은 아닙니다. 계획 단계이므로 실제 가동 여부와 실적 반영 시점은 별도로 확인이 필요합니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "reason": "Answer correctly states that the announcement is a plan and does not confirm earnings improvement. All facts (plan, not confirmed) match the headline evidence. No inference about actual operation, performance, or causality is made. The answer does not use the prior assistant reply as independent evidence, stays within the scope of the headline, and does not add unrelated metrics or events. It acknowledges that the published date is separate from the event date and that further confirmation is needed. Therefore all quality checks are satisfied, but the claim is not supported by concrete evidence of actual performance, so supported is false.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": false,
+            "answers_question": true
+          }
+        },
+        {
+          "task": "answer_validation",
+          "error_code": "chat_grounding"
+        },
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "해당 발표는 신규 생산라인 가동 계획에 관한 것으로, 아직 실적 개선이 확정된 것은 아닙니다. 계획 단계이므로 실제 가동 여부와 실적 반영 시점은 별도로 확인이 필요합니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "reason": "Answer correctly states that the announcement is a plan and does not confirm earnings improvement. All facts (plan, not confirmed) match the headline evidence. No inference about actual operation, performance, or causality is made. The answer does not use the prior assistant reply as independent evidence, stays within the scope of the headline, and does not add unrelated metrics or events. It acknowledges that the published date is separate from the event date and that further confirmation is needed. Therefore all quality checks are satisfied, but the claim is not supported by concrete evidence of actual performance, so supported is false.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": false,
+            "answers_question": true
+          }
+        },
+        {
+          "task": "answer_validation",
+          "error_code": "chat_grounding"
+        }
+      ],
+      "quality_review": {
+        "verdict": "false_rejection",
+        "notes": "계획과 확정 실적을 구분한 적절한 답변을 검증기가 실적 근거 부재라는 이유로 거절함. 이후 재검증에서 허용함."
+      }
+    },
+    {
+      "question": "기사마다 가동 여부가 다른데 실제 가동을 시작한 건가요?",
+      "status": "returned",
+      "text": "기사 제목만으로는 가상검수회사의 신규 생산라인이 실제로 가동되었는지 여부를 확정할 수 없습니다.\n\n**가동 여부 확인 필요**\n가동 개시 보도와 가동 여부 미확인 보도가 동시에 존재하므로, 실제 가동이 시작되었는지 여부는 현황 보고서나 공식 공시를 통해 확인해야 합니다.\n\n**제목 기준임을 명시**\n본 답변은 수집된 뉴스 제목을 기준으로 작성되었으며, 기사 본문이나 실제 공시 원문은 확인하지 않았습니다.",
+      "blocks": [
+        {
+          "title": "가동 여부 확인 필요",
+          "text": "가동 개시 보도와 가동 여부 미확인 보도가 동시에 존재하므로, 실제 가동이 시작되었는지 여부는 현황 보고서나 공식 공시를 통해 확인해야 합니다.",
+          "evidence_ids": [
+            "NEWS_1",
+            "NEWS_2"
+          ]
+        },
+        {
+          "title": "제목 기준임을 명시",
+          "text": "본 답변은 수집된 뉴스 제목을 기준으로 작성되었으며, 기사 본문이나 실제 공시 원문은 확인하지 않았습니다.",
+          "evidence_ids": [
+            "NEWS_STATUS"
+          ]
+        }
+      ],
+      "evidence_ids": [
+        "NEWS_STATUS",
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 2.1,
+      "case_id": "conflict",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 개시 보도",
+            "url": "https://example.com/start",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 신규 생산라인 가동 여부 미확인 보도",
+            "url": "https://example.org/unknown",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "기사 제목만으로는 가상검수회사의 신규 생산라인이 실제로 가동되었는지 여부를 확정할 수 없습니다.",
+            "evidence_ids": [
+              "NEWS_STATUS"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "가동 여부 확인 필요",
+                "text": "가동 개시 보도와 가동 여부 미확인 보도가 동시에 존재하므로, 실제 가동이 시작되었는지 여부는 현황 보고서나 공식 공시를 통해 확인해야 합니다.",
+                "evidence_ids": [
+                  "NEWS_1",
+                  "NEWS_2"
+                ]
+              },
+              {
+                "title": "제목 기준임을 명시",
+                "text": "본 답변은 수집된 뉴스 제목을 기준으로 작성되었으며, 기사 본문이나 실제 공시 원문은 확인하지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_STATUS"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "reason": "Answer correctly states that headline-only evidence is insufficient to confirm operation, does not infer causality or timing, and explicitly discloses scope and limitations. All required checks are satisfied."
+          }
+        }
+      ],
+      "quality_review": {
+        "verdict": "partial",
+        "notes": "가동 여부를 확정하지 않은 내용은 적절함. 범위 고지를 별도 이슈 카드로 만들고 NEWS_STATUS를 사실 요약 근거로 사용하는 구조가 아쉬움."
+      }
+    },
+    {
+      "question": "이 종목의 PBR가 없는데 회사가 공시를 안 해서 그런 건가요? 왜 그런지 해석해줘",
+      "status": "error",
+      "error_code": "chat_grounding",
+      "message": "누락의 원인을 자료 없이 추측했습니다.",
+      "case_id": "missing",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:24:32.716294+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 PBR이 ‘정보 없음’으로 표시된 것은 해당 지표가 현재 공개된 자료에 포함되지 않았음을 의미합니다. 이는 회사가 PBR을 계산할 수 있는 재무정보(주당순자산)를 제공하지 않았거나, 데이터 제공자가 해당 정보를 수집하지 못했기 때문일 수 있습니다. PBR만으로 회사의 가치를 판단하기는 어렵습니다. 주가가 순자산 대비 얼마나 높은지, 자산의 질과 수익성을 함께 살펴볼 필요가 있습니다. 현재 기준 기간이나 자료 시각이 명시되지 않아 정확한 해석이 제한됩니다.",
+            "evidence_ids": [
+              "PBR"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "answer_validation",
+          "error_code": "chat_grounding"
+        },
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 PBR이 ‘정보 없음’으로 표시된 것은 현재 공개된 자료에 해당 지표가 포함되지 않았음을 의미합니다. 이는 회사가 주당순자산 정보를 제공하지 않았거나, 데이터 제공자가 해당 정보를 수집하지 못했기 때문일 수 있습니다. PBR만으로 회사의 가치를 판단하기는 어렵습니다. 주가가 순자산 대비 얼마나 높은지, 자산의 질과 수익성을 함께 살펴볼 필요가 있습니다. 현재 기준 기간이나 자료 시각이 명시되지 않아 정확한 해석이 제한됩니다.",
+            "evidence_ids": [
+              "PBR"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "answer_validation",
+          "error_code": "chat_grounding"
+        }
+      ],
+      "quality_review": {
+        "verdict": "blocked_unsupported_answer",
+        "notes": "공시/제공자 사정을 추측한 답변을 두 번 거절했으나 사용자에게 정상 안내를 반환하지 못함."
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "a5cf16a21406fb552284313f751a089ffcd12f6b9fd77621e89fd00f4c03a7b0",
+    "src/agents/transport.py": "d3bc18b3b41e57cae44a76f3afcd10fda032dc3c7deedc3fa41c1abf00b9be37",
+    "src/models.py": "2a908fb95d176420202fad94ee70f0ad30081199a23074fe64dc6869e25db5cc",
+    "src/ui/answer.py": "3ec8b21465de311e84aea30bf2420042c03005354a3a2221991a6415967ea588"
+  },
+  "evaluation_note": "quality_review는 실제 출력에 대한 별도 수동 평가다. 가상 입력이며 실제 시장 데이터 연동 검사가 아니다. 자동 판정과 원문은 그대로 보존한다. passed_sample은 해당 표본만 충족하며 전체 품질 보증이 아니다."
+}

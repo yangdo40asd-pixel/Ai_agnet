@@ -191,7 +191,7 @@ class RealRequestRegressionTests(unittest.TestCase):
 
     def test_short_rate_limit_retries_once_without_leaking_error(self):
         response = SimpleNamespace(content=json.dumps({"ok":True}), response_metadata={})
-        with patch("langchain_groq.ChatGroq") as groq, patch("src.agents.report.time.sleep") as sleep:
+        with patch("langchain_groq.ChatGroq") as groq, patch("src.agents.transport.time.sleep") as sleep:
             groq.return_value.invoke.side_effect = [self.rate_error("1"), response]
             result = _invoke(Settings("test","test","test","test"), "test", {}, 20)
         self.assertEqual(result, {"ok":True})
@@ -201,7 +201,7 @@ class RealRequestRegressionTests(unittest.TestCase):
 
     def test_long_or_repeated_rate_limit_stops_with_clear_message(self):
         for failures in [[self.rate_error("60")], [self.rate_error("0"), self.rate_error("0")]]:
-            with patch("langchain_groq.ChatGroq") as groq, patch("src.agents.report.time.sleep"):
+            with patch("langchain_groq.ChatGroq") as groq, patch("src.agents.transport.time.sleep"):
                 groq.return_value.invoke.side_effect = failures
                 with self.assertRaises(AppError) as error:
                     _invoke(Settings("test","test","test","test"), "test", {}, 20)

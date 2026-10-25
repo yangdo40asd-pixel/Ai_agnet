@@ -25,7 +25,7 @@ from src.models import (
     StockCandidate,
     now_kst,
 )
-from src.ui.formatting import format_eok, format_percent
+from src.formatting import format_eok, format_percent
 
 # 표준 XBRL account_id 및 확인된 계정명 매핑
 ACCOUNT_RULES: dict[str, dict[str, object]] = {
@@ -416,6 +416,26 @@ def _extract_provided_roe(
     return None
 
 
+def _income_margin(revenue, income, *, name, numerator_label, raw_field, period, loss_reason):
+    """동일 매출 분모를 쓰는 두 이익률만 공통화한다. ROE·부채비율은 별도 규칙이다."""
+    value = None
+    if revenue is None or income is None:
+        status = "missing"
+        reason = f"매출액 또는 {numerator_label} 항목이 없어 계산할 수 없습니다."
+    elif Decimal(str(revenue)) <= 0:
+        status = "invalid"
+        reason = f"매출액이 0 이하여서 {name}을 계산하지 않습니다."
+    else:
+        value = round(float((Decimal(str(income)) / Decimal(str(revenue))) * Decimal("100")), 2)
+        status = "ok"
+        reason = loss_reason if value < 0 else ""
+    return MetricValue(
+        name=name, value=value, unit="%", currency="", source="OpenDART 재무제표 기반 계산",
+        raw_field=raw_field, period=period, status=status, basis="calculated",
+        formula=f"{numerator_label} / 매출액 × 100", reason=reason,
+    )
+
+
 def calculate_ratios(
     statement: FinancialStatementData,
     index_response: dict[str, object] | None = None,
@@ -444,97 +464,16 @@ def calculate_ratios(
     equity = get_standard_amount(statement, "total_equity")
     parent_equity = get_standard_amount(statement, "parent_equity")
 
-    # 1. 영업이익률 = 영업이익 / 매출액 * 100
-    if revenue is None or op_income is None:
-        op_margin_metric = MetricValue(
-            name="영업이익률",
-            value=None,
-            unit="%",
-            currency="",
-            source="OpenDART 재무제표 기반 계산",
-            raw_field="operating_income / revenue",
-            period=period_label,
-            status="missing",
-            basis="calculated",
-            formula="영업이익 / 매출액 × 100",
-            reason="매출액 또는 영업이익 항목이 없어 계산할 수 없습니다.",
-        )
-    elif Decimal(str(revenue)) <= 0:
-        op_margin_metric = MetricValue(
-            name="영업이익률",
-            value=None,
-            unit="%",
-            currency="",
-            source="OpenDART 재무제표 기반 계산",
-            raw_field="operating_income / revenue",
-            period=period_label,
-            status="invalid",
-            basis="calculated",
-            formula="영업이익 / 매출액 × 100",
-            reason="매출액이 0 이하여서 영업이익률을 계산하지 않습니다.",
-        )
-    else:
-        op_val = round(float((Decimal(str(op_income)) / Decimal(str(revenue))) * Decimal("100")), 2)
-        op_reason = "영업손실(적자)로 인해 영업이익률이 음수입니다." if op_val < 0 else ""
-        op_margin_metric = MetricValue(
-            name="영업이익률",
-            value=op_val,
-            unit="%",
-            currency="",
-            source="OpenDART 재무제표 기반 계산",
-            raw_field="operating_income / revenue",
-            period=period_label,
-            status="ok",
-            basis="calculated",
-            formula="영업이익 / 매출액 × 100",
-            reason=op_reason,
-        )
-
-    # 2. 순이익률 = 당기순이익 / 매출액 * 100
-    if revenue is None or net_income is None:
-        net_margin_metric = MetricValue(
-            name="순이익률",
-            value=None,
-            unit="%",
-            currency="",
-            source="OpenDART 재무제표 기반 계산",
-            raw_field="net_income / revenue",
-            period=period_label,
-            status="missing",
-            basis="calculated",
-            formula="당기순이익 / 매출액 × 100",
-            reason="매출액 또는 당기순이익 항목이 없어 계산할 수 없습니다.",
-        )
-    elif Decimal(str(revenue)) <= 0:
-        net_margin_metric = MetricValue(
-            name="순이익률",
-            value=None,
-            unit="%",
-            currency="",
-            source="OpenDART 재무제표 기반 계산",
-            raw_field="net_income / revenue",
-            period=period_label,
-            status="invalid",
-            basis="calculated",
-            formula="당기순이익 / 매출액 × 100",
-            reason="매출액이 0 이하여서 순이익률을 계산하지 않습니다.",
-        )
-    else:
-        net_val = round(float((Decimal(str(net_income)) / Decimal(str(revenue))) * Decimal("100")), 2)
-        net_reason = "당기순손실(적자)로 인해 순이익률이 음수입니다." if net_val < 0 else ""
-        net_margin_metric = MetricValue(
-            name="순이익률",
-            value=net_val,
-            unit="%",
-            currency="",
-            source="OpenDART 재무제표 기반 계산",
-            raw_field="net_income / revenue",
-            period=period_label,
-            status="ok",
-            basis="calculated",
-            formula="당기순이익 / 매출액 × 100",
-            reason=net_reason,
-        )
+    op_margin_metric = _income_margin(
+        revenue, op_income, name="영업이익률", numerator_label="영업이익",
+        raw_field="operating_income / revenue", period=period_label,
+        loss_reason="영업손실(적자)로 인해 영업이익률이 음수입니다.",
+    )
+    net_margin_metric = _income_margin(
+        revenue, net_income, name="순이익률", numerator_label="당기순이익",
+        raw_field="net_income / revenue", period=period_label,
+        loss_reason="당기순손실(적자)로 인해 순이익률이 음수입니다.",
+    )
 
     # 3. 부채비율 = 부채총계 / 자본총계 * 100 (자본 0/음수는 별도 해석 상태)
     if liabilities is None or equity is None:

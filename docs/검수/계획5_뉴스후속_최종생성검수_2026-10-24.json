@@ -1,0 +1,240 @@
+{
+  "checked_at": "2026-10-24T14:37:04.612993+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "cases": [
+    {
+      "question": "이 종목의 뉴스 이슈를 분석해줘",
+      "status": "error",
+      "error_code": "ai_rate_limit",
+      "message": "AI 요청 한도에 도달했습니다. 잠시 기다린 뒤 다시 입력해 주세요.",
+      "case_id": "issues",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T14:37:04.612993+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 최근 뉴스 이슈를 분석해 드립니다. 현재 확보된 자료는 두 개의 헤드라인과 그 상태 정보입니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "신규 생산라인 가동 계획",
+                "text": "가상검수회사가 신규 생산라인 가동을 계획하고 있다는 내용이 헤드라인에 제시되었습니다. 이 발표는 계획 단계이며, 실제 가동 여부나 시점은 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "별도 공급 계약 취소 공시",
+                "text": "가상검수회사가 별도 공급 계약을 취소했다는 공시가 있었습니다. 계약 취소가 실제로 이루어졌는지, 그 원인 및 영향은 아직 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "reason": "All statements either directly match the headline evidence or are restatements that do not add unsupported claims. The answer stays within the scope of headline-only information, does not infer dates or outcomes, and focuses on the requested news analysis.",
+            "supported": true,
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Generic introduction, not directly supported by evidence",
+                "supported": false
+              },
+              {
+                "id": "intro_1",
+                "reason": "Accurately reflects evidence of two headlines",
+                "supported": true
+              },
+              {
+                "id": "block_0_0",
+                "reason": "Title matches evidence content",
+                "supported": true
+              },
+              {
+                "id": "block_0_1",
+                "reason": "Restatement of headline, supported by evidence",
+                "supported": true
+              },
+              {
+                "id": "block_0_2",
+                "reason": "Claim that announcement is at planning stage, supported by headline",
+                "supported": true
+              },
+              {
+                "id": "block_0_3",
+                "reason": "Uncertainty about operation status, supported by lack of detail in headline",
+                "supported": true
+              },
+              {
+                "id": "block_1_0",
+                "reason": "Title matches evidence exactly",
+                "supported": true
+              },
+              {
+                "id": "block_1_1",
+                "reason": "Restatement of headline, supported by evidence",
+                "supported": true
+              },
+              {
+                "id": "block_1_2",
+                "reason": "Uncertainty about cancellation, supported by headline only",
+                "supported": true
+              }
+            ]
+          }
+        },
+        {
+          "task": "answer_validation",
+          "error_code": "chat_grounding"
+        }
+      ],
+      "quality_review": {
+        "status": "incomplete_after_review_and_rate_limit",
+        "note": "초기 답변과 검증 응답은 생성됐다. 전체 검증은 true이나 도입문을 근거 없음으로 false 처리해 코드가 거절했고, 재작성 호출이 한도로 중단됐다. 뒤 후속 사례는 실행하지 못했다.",
+        "manual_findings": [
+          "단순 도입문에는 회사 사실 주장이 없어 근거 없음만으로 거절한 판정은 부적절하다. 도입뿐인지 여부는 전체 답변으로 평가해야 한다.",
+          "계약 취소 공시를 전달한 뒤 취소 자체도 미확인이라고 되돌리는 표현은 읽는 사람에게 혼란을 줄 수 있다. 제목이 보도한 사실과 원인/영향의 미확인을 구분할 필요가 있다."
+        ],
+        "followup_change": "판정 지시에 비사실 도입의 처리 기준, 생성 지시에 보도 사실과 미확인 원인/규모의 구분을 보완했다. 이 마지막 지시 보완은 실제 재검수하지 못했다."
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "5cee22104440eec5a504f38c1af118fe760bb0e9778e253b771665ee35248a3d",
+    "src/agents/answer_quality.py": "d70aca9df4a0c8f0db90d00d2a209c55ce48a12905796c15c50fe4efeee93322",
+    "src/agents/transport.py": "5c3b53e7e602dc9277c6108ab1b6a682bf1ddb9ffb83ed48e53f5491f946d096",
+    "src/models.py": "2a908fb95d176420202fad94ee70f0ad30081199a23074fe64dc6869e25db5cc",
+    "src/ui/answer.py": "3ec8b21465de311e84aea30bf2420042c03005354a3a2221991a6415967ea588"
+  },
+  "evaluation_note": "사용 한도 오류로 중단한 기록. 직전 가상 대조 검수 7개와 별개이며, 실제 시장 정보 조회를 수행하지 않았다."
+}

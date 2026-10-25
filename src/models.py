@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
+_UNSET = object()
+
 KST = timezone(timedelta(hours=9))
 
 
@@ -52,19 +54,33 @@ class CandidateDiscoveryResult:
         return tuple(candidate for candidate in self.candidates if candidate.selectable)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, init=False)
 class QueryOptions:
     price_period: str = "3M"
     bsns_year: str | None = None
     reprt_code: str = "11011"
     fs_div: str = "CFS"
     refresh_generation: int = 0
-    price_range: str = ""
 
-    def __post_init__(self):
-        if self.price_range and self.price_period == "3M":
-            object.__setattr__(self, "price_period", self.price_range)
-        object.__setattr__(self, "price_range", self.price_period)
+    def __init__(
+        self,
+        price_period: str = _UNSET,
+        bsns_year: str | None = None,
+        reprt_code: str = '11011',
+        fs_div: str = 'CFS',
+        refresh_generation: int = 0,
+        price_range: str = '',
+    ):
+        """별칭 인수는 생성 시 변환하고 정식 필드만 저장한다."""
+        object.__setattr__(self, "price_period", (price_range or "3M") if price_period is _UNSET else price_period)
+        object.__setattr__(self, "bsns_year", bsns_year)
+        object.__setattr__(self, "reprt_code", reprt_code)
+        object.__setattr__(self, "fs_div", fs_div)
+        object.__setattr__(self, "refresh_generation", refresh_generation)
+
+    @property
+    def price_range(self):
+        return self.price_period
 
 
 @dataclass(frozen=True)
@@ -330,6 +346,7 @@ class FinancialData:
     bps_metric: MetricValue | None = None
     roe_metric: MetricValue | None = None
     metrics: dict[str, MetricValue] = field(default_factory=dict)
+    collection_status: str = "collected"
 
     @property
     def eps(self) -> float | None:
@@ -371,6 +388,32 @@ class Statement:
 
 
 @dataclass(frozen=True)
+class AnswerBlock:
+    """검증된 설명 하나와 그 설명에만 연결되는 근거 ID."""
+    title: str
+    text: str
+    evidence_ids: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class ChatResponse:
+    """화면은 블록을 사용하고 기존 호출자는 세 값으로 풀어 읽을 수 있다."""
+    intro: str
+    evidence: list[dict]
+    follow_up: str = ""
+    blocks: tuple[AnswerBlock, ...] = ()
+    lead_evidence_ids: tuple[str, ...] = ()
+
+    @property
+    def text(self) -> str:
+        return "\n\n".join([self.intro, *(f"**{b.title}**\n{b.text}" for b in self.blocks)])
+
+    def __iter__(self):
+        # 기존 스크립트와 테스트의 text, evidence, follow_up 반환 계약.
+        return iter((self.text, self.evidence, self.follow_up))
+
+
+@dataclass(frozen=True)
 class Commentary:
     theme_trend: tuple[Statement, ...]
     stock_comment: str
@@ -380,7 +423,7 @@ class Commentary:
     financial_commentary: tuple[Statement, ...] = ()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, init=False)
 class AnalysisResult:
     theme: str
     candidates: tuple[StockCandidate, ...]
@@ -392,31 +435,70 @@ class AnalysisResult:
     query_options: QueryOptions = field(default_factory=QueryOptions)
     price_history: PriceHistory | None = None
     financial_statements: tuple[FinancialStatementData, ...] = ()
-    statements: FinancialStatementData | None = None
     annual_summaries: tuple[AnnualFinancialSummary, ...] = ()
     quarterly_summaries: tuple[QuarterlyFinancialSummary, ...] = ()
     financial_ratios: FinancialRatios | None = None
-    ratios: FinancialRatios | None = None
     financial_facts: tuple[FinancialFact, ...] = ()
     related_stocks: tuple[RelatedStockSummary, ...] = ()
-    related_summaries: tuple[RelatedStockSummary, ...] = ()
     section_status: dict[str, str] = field(default_factory=dict)
     timings_ms: dict[str, float] = field(default_factory=dict)
     result_id: str = ""
 
-    def __post_init__(self):
-        if self.financial_ratios is None and self.ratios is not None:
-            object.__setattr__(self, "financial_ratios", self.ratios)
-        elif self.ratios is None and self.financial_ratios is not None:
-            object.__setattr__(self, "ratios", self.financial_ratios)
-        if not self.related_stocks and self.related_summaries:
-            object.__setattr__(self, "related_stocks", self.related_summaries)
-        elif self.related_stocks and not self.related_summaries:
-            object.__setattr__(self, "related_summaries", self.related_stocks)
-        if not self.financial_statements and self.statements is not None:
-            object.__setattr__(self, "financial_statements", (self.statements,))
-        elif self.financial_statements and self.statements is None:
-            object.__setattr__(self, "statements", self.financial_statements[0])
+    def __init__(
+        self,
+        theme: str,
+        candidates: tuple[StockCandidate, ...],
+        financial: FinancialData,
+        news: NewsData,
+        commentary: Commentary | None,
+        ai_error: str | None = None,
+        selected_code: str | None = None,
+        query_options: QueryOptions = None,
+        price_history: PriceHistory | None = None,
+        financial_statements: tuple[FinancialStatementData, ...] = _UNSET,
+        statements: FinancialStatementData | None = None,
+        annual_summaries: tuple[AnnualFinancialSummary, ...] = (),
+        quarterly_summaries: tuple[QuarterlyFinancialSummary, ...] = (),
+        financial_ratios: FinancialRatios | None = _UNSET,
+        ratios: FinancialRatios | None = None,
+        financial_facts: tuple[FinancialFact, ...] = (),
+        related_stocks: tuple[RelatedStockSummary, ...] = _UNSET,
+        related_summaries: tuple[RelatedStockSummary, ...] = (),
+        section_status: dict[str, str] = None,
+        timings_ms: dict[str, float] = None,
+        result_id: str = '',
+    ):
+        """별칭 인수는 생성 시 변환하고 정식 필드만 저장한다."""
+        object.__setattr__(self, "theme", theme)
+        object.__setattr__(self, "candidates", candidates)
+        object.__setattr__(self, "financial", financial)
+        object.__setattr__(self, "news", news)
+        object.__setattr__(self, "commentary", commentary)
+        object.__setattr__(self, "ai_error", ai_error)
+        object.__setattr__(self, "selected_code", selected_code)
+        object.__setattr__(self, "query_options", QueryOptions() if query_options is None else query_options)
+        object.__setattr__(self, "price_history", price_history)
+        object.__setattr__(self, "financial_statements", ((statements,) if statements is not None else ()) if financial_statements is _UNSET else financial_statements)
+        object.__setattr__(self, "annual_summaries", annual_summaries)
+        object.__setattr__(self, "quarterly_summaries", quarterly_summaries)
+        object.__setattr__(self, "financial_ratios", ratios if financial_ratios is _UNSET else financial_ratios)
+        object.__setattr__(self, "financial_facts", financial_facts)
+        object.__setattr__(self, "related_stocks", related_summaries if related_stocks is _UNSET else related_stocks)
+        object.__setattr__(self, "section_status", dict() if section_status is None else section_status)
+        object.__setattr__(self, "timings_ms", dict() if timings_ms is None else timings_ms)
+        object.__setattr__(self, "result_id", result_id)
+
+    @property
+    def statements(self):
+        return self.financial_statements[0] if self.financial_statements else None
+
+    @property
+    def ratios(self):
+        return self.financial_ratios
+
+    @property
+    def related_summaries(self):
+        return self.related_stocks
 
     @property
     def commentary_error(self) -> str | None:
@@ -439,3 +521,10 @@ class AnalysisResult:
 
 
 DashboardResult = AnalysisResult
+
+
+def resolve_roe_metric(result: AnalysisResult) -> MetricValue | None:
+    """재무비율의 ROE를 우선하고 없으면 기본 금융 자료의 ROE를 사용한다."""
+    if result.financial_ratios and result.financial_ratios.roe is not None:
+        return result.financial_ratios.roe
+    return result.financial.roe_metric

@@ -1,5 +1,6 @@
 """설정된 LLM의 답변·분류를 가상 검수 자료로 확인한다. 실제 투자 데이터 검사가 아니다."""
 from pathlib import Path
+import argparse
 import hashlib
 import json
 import sys
@@ -13,6 +14,9 @@ from src.config import load_settings
 from src.models import AnalysisResult, AppError, FinancialData, NewsData, StockCandidate, now_kst
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=ROOT / "docs/검수/계획5_실제LLM_검수.json")
+    args = parser.parse_args()
     settings = load_settings()
     stock = StockCandidate("가상검수회사", "123456", "KOSPI", "123456.KS")
     result = AnalysisResult("가상테마", (stock,), FinancialData(stock, 10000, 12.5, now_kst()),
@@ -42,6 +46,6 @@ if __name__ == "__main__":
     report = {"checked_at": now_kst().isoformat(), "model": settings.groq_model, "synthetic_data": True,
               "cases": records, "sha256": {p: hashlib.sha256((ROOT/p).read_bytes()).hexdigest()
                   for p in ("src/agents/chat.py", "src/agents/request.py", "src/ui/app.py")}}
-    output = ROOT / "docs/검수/계획5_실제LLM_검수.json"
+    output = args.output
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"output": str(output), "cases": records}, ensure_ascii=True))

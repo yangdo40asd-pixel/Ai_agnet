@@ -1,0 +1,855 @@
+{
+  "checked_at": "2026-10-26T18:56:14.503840+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "cases": [
+    {
+      "question": "매출이 늘었으면 실적이 좋아진 거야?",
+      "status": "returned",
+      "text": "매출은 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승해 실적이 전반적으로 개선되었습니다.",
+      "blocks": [],
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 67.8,
+      "quality_review": "pass: 1차 생성('매출은 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승해 실적이 전반적으로 개선되었습니다.')이 재작성 없이 한 번에 숫자 구조 검사와 의미 심사(scope_disclosed=true 포함 6개 전체, unit_reviews 전체)를 통과해 반환됨. 매출·영업이익·영업이익률 세 지표가 빠짐없이 자연스러운 한국어 문장으로 제시됨.",
+      "case_id": "financial",
+      "fixture": {
+        "question_history": [
+          {
+            "role": "user",
+            "text": "가상검수회사의 최근 실적을 보여줘"
+          }
+        ],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 반도체 메모리 생산라인 가동 계획 발표",
+            "url": "https://example.com/memory",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상그룹 지주회사 이사회 경영 강화",
+            "url": "https://example.org/governance",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00"
+          },
+          "ANNUAL_2024_CFS": {
+            "text": "2024년 CFS 매출 10000000000, 영업이익 1000000000, 순이익 None (원)",
+            "source": "OpenDART",
+            "period": "2024",
+            "fs_div": "CFS",
+            "revenue": "10000000000",
+            "operating_income": "1000000000",
+            "net_income": null
+          },
+          "ANNUAL_2025_CFS": {
+            "text": "2025년 CFS 매출 12000000000, 영업이익 1800000000, 순이익 None (원)",
+            "source": "OpenDART",
+            "period": "2025",
+            "fs_div": "CFS",
+            "revenue": "12000000000",
+            "operating_income": "1800000000",
+            "net_income": null
+          },
+          "FIN_2024_CFS_REVENUE": {
+            "source": "OpenDART",
+            "period": "2024년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024
+            ],
+            "currency": "KRW",
+            "kind": "annual_financial",
+            "item": "revenue",
+            "value": "10000000000",
+            "value_text": "100.0억원",
+            "text": "2024년 매출액: 100.0억원",
+            "status": "ok"
+          },
+          "FIN_2024_CFS_OPERATING_INCOME": {
+            "source": "OpenDART",
+            "period": "2024년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024
+            ],
+            "currency": "KRW",
+            "kind": "annual_financial",
+            "item": "operating_income",
+            "value": "1000000000",
+            "value_text": "10.0억원",
+            "text": "2024년 영업이익: 10.0억원",
+            "status": "ok"
+          },
+          "FIN_2025_CFS_REVENUE": {
+            "source": "OpenDART",
+            "period": "2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_financial",
+            "item": "revenue",
+            "value": "12000000000",
+            "value_text": "120.0억원",
+            "text": "2025년 매출액: 120.0억원",
+            "status": "ok"
+          },
+          "FIN_2025_CFS_OPERATING_INCOME": {
+            "source": "OpenDART",
+            "period": "2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_financial",
+            "item": "operating_income",
+            "value": "1800000000",
+            "value_text": "18.0억원",
+            "text": "2025년 영업이익: 18.0억원",
+            "status": "ok"
+          },
+          "CMP_2024_2025_CFS_REVENUE": {
+            "source": "OpenDART",
+            "period": "2024년 → 2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024,
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_comparison",
+            "formula": "동일 연간·연결/별도 기준 비교",
+            "item": "revenue",
+            "text": "매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)",
+            "value_text": "2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)",
+            "previous": "10000000000",
+            "current": "12000000000",
+            "delta": "2000000000",
+            "change_pct": "20.0",
+            "change_state": "증가",
+            "status": "ok"
+          },
+          "CMP_2024_2025_CFS_OPERATING_INCOME": {
+            "source": "OpenDART",
+            "period": "2024년 → 2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024,
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_comparison",
+            "formula": "동일 연간·연결/별도 기준 비교",
+            "item": "operating_income",
+            "text": "영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)",
+            "value_text": "2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)",
+            "previous": "1000000000",
+            "current": "1800000000",
+            "delta": "800000000",
+            "change_pct": "80.0",
+            "change_state": "증가",
+            "status": "ok"
+          },
+          "CMP_2024_2025_CFS_OPERATING_MARGIN": {
+            "source": "OpenDART",
+            "period": "2024년 → 2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024,
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_comparison",
+            "formula": "영업이익 / 매출액 × 100; 이익률 차이는 %p",
+            "item": "operating_margin",
+            "text": "영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+            "value_text": "2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+            "previous": "10.0",
+            "current": "15.00",
+            "delta_pp": "5.00",
+            "status": "ok"
+          },
+          "FINANCIAL_STATUS": {
+            "text": "연간 재무자료 수집 상태",
+            "status": "unknown",
+            "source": "OpenDART",
+            "years_available": [
+              "2024",
+              "2025"
+            ]
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "매출은 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승해 실적이 전반적으로 개선되었습니다.",
+            "evidence_ids": [
+              "CMP_2024_2025_CFS_REVENUE",
+              "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "CMP_2024_2025_CFS_OPERATING_MARGIN"
+            ],
+            "follow_up": "",
+            "blocks": []
+          },
+          "selected_evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN",
+            "FINANCIAL_STATUS"
+          ],
+          "selection": {
+            "mode": "financials",
+            "missing_financial_items": []
+          },
+          "displayed_data_sources": []
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Supported by evidence.",
+                "supported": true
+              }
+            ],
+            "reason": "No issues found.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "answers_question": true
+          },
+          "selected_evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "selection": null,
+          "displayed_data_sources": [
+            {
+              "evidence_id": "CMP_2024_2025_CFS_REVENUE",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            },
+            {
+              "evidence_id": "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            },
+            {
+              "evidence_id": "CMP_2024_2025_CFS_OPERATING_MARGIN",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "반도체 테마에서 가상검수회사 선택",
+      "status": "returned",
+      "text": "**가상검수회사 조회 결과**\n\n관련 소식은 수집된 뉴스 제목을 기준으로 정리했습니다.\n\n**연간 실적**\n연결재무제표 · 매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)\n\n연결재무제표 · 영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)\n\n연결재무제표 · 영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)\n\n**테마 동향**\n이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+      "blocks": [
+        {
+          "title": "연간 실적",
+          "text": "연결재무제표 · 매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)\n\n연결재무제표 · 영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)\n\n연결재무제표 · 영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ]
+        },
+        {
+          "title": "테마 동향",
+          "text": "이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+          "evidence_ids": [
+            "NEWS_1"
+          ]
+        }
+      ],
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_1"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 131.94,
+      "quality_review": "pass: 1차 생성('이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.')이 주어('이 종목은'), 정중한 입니다·합니다체 서술어('발표했습니다.'), 마침표(.)를 모두 갖추고 무관한 지주회사 기사(NEWS_2)를 제외한 채 의미 심사를 1차에 통과해 최종 반환됨.",
+      "case_id": "basic_report",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 반도체 메모리 생산라인 가동 계획 발표",
+            "url": "https://example.com/memory",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상그룹 지주회사 이사회 경영 강화",
+            "url": "https://example.org/governance",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-26T18:56:14.503840+09:00"
+          },
+          "ANNUAL_2024_CFS": {
+            "text": "2024년 CFS 매출 10000000000, 영업이익 1000000000, 순이익 None (원)",
+            "source": "OpenDART",
+            "period": "2024",
+            "fs_div": "CFS",
+            "revenue": "10000000000",
+            "operating_income": "1000000000",
+            "net_income": null
+          },
+          "ANNUAL_2025_CFS": {
+            "text": "2025년 CFS 매출 12000000000, 영업이익 1800000000, 순이익 None (원)",
+            "source": "OpenDART",
+            "period": "2025",
+            "fs_div": "CFS",
+            "revenue": "12000000000",
+            "operating_income": "1800000000",
+            "net_income": null
+          },
+          "FIN_2024_CFS_REVENUE": {
+            "source": "OpenDART",
+            "period": "2024년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024
+            ],
+            "currency": "KRW",
+            "kind": "annual_financial",
+            "item": "revenue",
+            "value": "10000000000",
+            "value_text": "100.0억원",
+            "text": "2024년 매출액: 100.0억원",
+            "status": "ok"
+          },
+          "FIN_2024_CFS_OPERATING_INCOME": {
+            "source": "OpenDART",
+            "period": "2024년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024
+            ],
+            "currency": "KRW",
+            "kind": "annual_financial",
+            "item": "operating_income",
+            "value": "1000000000",
+            "value_text": "10.0억원",
+            "text": "2024년 영업이익: 10.0억원",
+            "status": "ok"
+          },
+          "FIN_2025_CFS_REVENUE": {
+            "source": "OpenDART",
+            "period": "2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_financial",
+            "item": "revenue",
+            "value": "12000000000",
+            "value_text": "120.0억원",
+            "text": "2025년 매출액: 120.0억원",
+            "status": "ok"
+          },
+          "FIN_2025_CFS_OPERATING_INCOME": {
+            "source": "OpenDART",
+            "period": "2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_financial",
+            "item": "operating_income",
+            "value": "1800000000",
+            "value_text": "18.0억원",
+            "text": "2025년 영업이익: 18.0억원",
+            "status": "ok"
+          },
+          "CMP_2024_2025_CFS_REVENUE": {
+            "source": "OpenDART",
+            "period": "2024년 → 2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024,
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_comparison",
+            "formula": "동일 연간·연결/별도 기준 비교",
+            "item": "revenue",
+            "text": "매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)",
+            "value_text": "2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)",
+            "previous": "10000000000",
+            "current": "12000000000",
+            "delta": "2000000000",
+            "change_pct": "20.0",
+            "change_state": "증가",
+            "status": "ok"
+          },
+          "CMP_2024_2025_CFS_OPERATING_INCOME": {
+            "source": "OpenDART",
+            "period": "2024년 → 2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024,
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_comparison",
+            "formula": "동일 연간·연결/별도 기준 비교",
+            "item": "operating_income",
+            "text": "영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)",
+            "value_text": "2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)",
+            "previous": "1000000000",
+            "current": "1800000000",
+            "delta": "800000000",
+            "change_pct": "80.0",
+            "change_state": "증가",
+            "status": "ok"
+          },
+          "CMP_2024_2025_CFS_OPERATING_MARGIN": {
+            "source": "OpenDART",
+            "period": "2024년 → 2025년 연간",
+            "fs_div": "CFS",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation",
+            "years": [
+              2024,
+              2025
+            ],
+            "currency": "KRW",
+            "kind": "annual_comparison",
+            "formula": "영업이익 / 매출액 × 100; 이익률 차이는 %p",
+            "item": "operating_margin",
+            "text": "영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+            "value_text": "2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+            "previous": "10.0",
+            "current": "15.00",
+            "delta_pp": "5.00",
+            "status": "ok"
+          },
+          "FINANCIAL_STATUS": {
+            "text": "연간 재무자료 수집 상태",
+            "status": "unknown",
+            "source": "OpenDART",
+            "years_available": [
+              "2024",
+              "2025"
+            ]
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "basic_report",
+          "response": {
+            "stock_name": "가상검수회사",
+            "price": 10000,
+            "per": 12.5,
+            "theme_trend": [
+              {
+                "text": "이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+                "news_ids": [
+                  1
+                ]
+              }
+            ],
+            "stock_comment": "",
+            "opportunity": null,
+            "risk": null,
+            "summary": null
+          },
+          "selected_evidence_ids": [],
+          "selection": null,
+          "displayed_data_sources": []
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Methodology statement, no company fact claim.",
+                "supported": true
+              },
+              {
+                "id": "block_0_0",
+                "reason": "Heading does not assert new fact; evidence not required.",
+                "supported": true
+              },
+              {
+                "id": "block_0_1",
+                "reason": "Claim matches headline evidence.",
+                "supported": true
+              }
+            ],
+            "reason": "All units supported; evidence matches; no time inference; question addressed; scope disclosed; context consistent.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "answers_question": true
+          },
+          "selected_evidence_ids": [
+            "NEWS_1"
+          ],
+          "selection": null,
+          "displayed_data_sources": []
+        }
+      ]
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "ec559a91f9a520d2178310352b2a8fa97f8b945d6c20b56e8a5fcf0f80ab42f0",
+    "src/agents/answer_quality.py": "446efe400b7918e22feb65c229f65802875c0830e479420c193180905947ebbb",
+    "src/agents/transport.py": "9f0e7d732377584182680e132a4489c90e061cc768deab8bd0fa7473901d5a6b",
+    "src/agents/rate_control.py": "e360679f32493e1973b11cf9b67fc3146be3869e5e2ae904cbfa55ceb130f6d5",
+    "src/models.py": "2a908fb95d176420202fad94ee70f0ad30081199a23074fe64dc6869e25db5cc",
+    "src/ui/answer.py": "5ebcc13d75c3a099c3b4124ce3a1fc1a75fb5d7394195249fb2e06246e56e97b",
+    "src/agents/evidence.py": "b9acc77d9b40483e30d00bc168fb717fb5e2683a7bebbd101e8d70c457163c33",
+    "src/agents/grounding.py": "2a12458d30420fa5331a344a11e87eeea30dddaa1df4f6fa547a0ca9b943474e",
+    "src/agents/report.py": "40befb3944292d1d4a11351343cf00329a78950785067c5a80f5ad74fcc61ea4",
+    "src/analysis_flow.py": "4ef5ed400ff9263919c9d01309c0316727bc596d7ef2513538d7df1d4c8d1cea",
+    "src/data/financial_comparison.py": "e2bd8f1860f0a699eb8befebdeb5f83ffa62316d43ecc35351ab670bcfe92bc6",
+    "src/agents/financial_numbers.py": "cd9f6ab75eceb2dbd135412b95e0a2ea9108ca0734a356343d24f3105355a431",
+    "src/agents/report_presentation.py": "ab6a34e18b2b286e45ae374b35167597d8e9a018274ba84cd30e54e0356917ca",
+    "src/agents/schema_diagnostics.py": "be7d939e2fcb09160a0f1d0e9a52c85a537bc6e59afca33c7b9d62c8dc8aea59",
+    "src/source_presentation.py": "e087d0c28b39b0b69196d41a18ab0b007098f5b74dc1322e8c113250218366a3"
+  },
+  "rate_control": {
+    "interval_seconds": 65.0,
+    "max_wait_seconds": 180.0,
+    "max_requests": 6,
+    "request_count": 4,
+    "halted": false,
+    "scope": "one_verification_process",
+    "events": [
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 999,
+          "limit_tokens": 8000,
+          "remaining_tokens": 4063,
+          "reset_tokens_seconds": 29.527,
+          "reset_requests_seconds": 86.4
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 3253,
+        "completion_tokens": 117,
+        "total_tokens": 3370
+      },
+      {
+        "event": "wait",
+        "seconds": 64.82
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 998,
+          "limit_tokens": 8000,
+          "remaining_tokens": 4149,
+          "reset_tokens_seconds": 28.882,
+          "reset_requests_seconds": 172.8
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 3571,
+        "completion_tokens": 458,
+        "total_tokens": 4029
+      },
+      {
+        "event": "wait",
+        "seconds": 64.836
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 997,
+          "limit_tokens": 8000,
+          "remaining_tokens": 6215,
+          "reset_tokens_seconds": 13.387,
+          "reset_requests_seconds": 259.2
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 1668,
+        "completion_tokens": 111,
+        "total_tokens": 1779
+      },
+      {
+        "event": "wait",
+        "seconds": 64.83
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 996,
+          "limit_tokens": 8000,
+          "remaining_tokens": 4961,
+          "reset_tokens_seconds": 22.792,
+          "reset_requests_seconds": 345.6
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 2581,
+        "completion_tokens": 900,
+        "total_tokens": 3481
+      }
+    ]
+  }
+}

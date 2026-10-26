@@ -21,6 +21,16 @@
       ],
       "follow_up": "",
       "blocks": []
+    },
+    {
+      "text": "매출이 20.00% 증가한 2025년 120.0억원은 영업이익이 80.00% 증가한 18.0억원과 영업이익률이 5.00%p 상승한 15.00%로 이어져 실적이 전반적으로 개선되었습니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN"
+      ],
+      "follow_up": "",
+      "blocks": []
     }
   ]
 }

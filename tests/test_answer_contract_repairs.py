@@ -43,6 +43,8 @@ class FinancialLiteralTests(unittest.TestCase):
         payload = deepcopy(self.saved["responses"][0])
         payload["text"] = "2025년 매출은 20% 증가했습니다. 2025년 영업이익은 80% 증가했습니다."
         self.assertEqual(validate_response(payload, self.saved["evidence"], "plain").text, payload["text"])
+        payload["text"] = "2024년 대비 2025년 매출은 100.0억원에서 120.0억원으로 20.00% 증가했고 영업이익은 10.0억원에서 18.0억원으로 80.00% 증가했으며 영업이익률은 10.00%에서 15.00%로 5.00%p 상승했습니다."
+        self.assertEqual(validate_response(payload, self.saved["evidence"], "plain").text, payload["text"])
 
     def test_single_year_cannot_borrow_another_sentences_values_or_unknown_events(self):
         for text in (
@@ -53,6 +55,10 @@ class FinancialLiteralTests(unittest.TestCase):
             "매출은 20% 증가했습니다. 2024년 대비 2025년 계약이 증가했습니다.",
             "2024년 대비 2025년 계약이 늘었고 매출은 20% 증가했습니다.",
             "2025년 매출은 21% 증가했습니다.",
+            "매출이 20.00% 증가한 2025년 18.0억원은 실적이 개선됐습니다.",
+            "매출이 20.00% 증가한 2025년 100.0억원은 실적이 개선됐습니다.",
+            "매출은 120.0억원에서 100.0억원으로 20.00% 증가했습니다.",
+            "2025년 매출은 120.0억원입니다.",
         ):
             payload = dict(text=text, evidence_ids=["CMP_2024_2025_CFS_REVENUE"], follow_up="", blocks=[])
             with self.subTest(text=text), self.assertRaises(AppError) as caught:
@@ -149,6 +155,17 @@ class ReportContractTests(unittest.TestCase):
             if any(key.startswith("NEWS_") for key in block.evidence_ids):
                 self.assertIn(block.text, review["answer"])
                 self.assertIn(block.title, review["answer"])
+        for bad_text in (
+            "반도체 메모리 생산라인 가동 계획 발표",
+            "예시회사의 반도체 메모리 생산라인 가동 계획을 발표했습니다",
+            "이 종목의 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+        ):
+            bad_payload = deepcopy(payload)
+            bad_payload["theme_trend"] = [{"text": bad_text, "news_ids": [1]}]
+            with self.subTest(bad_text=bad_text), self.assertRaises(AppError) as caught:
+                from src.agents.report import validate_report
+                validate_report(bad_payload, example_financial(), example_news(), "반도체")
+            self.assertEqual(caught.exception.code, "report_voice")
 
     def test_financial_per_news_and_new_stock_use_current_evidence_through_conversation(self):
         result = replace(sample_result(), annual_summaries=annuals())

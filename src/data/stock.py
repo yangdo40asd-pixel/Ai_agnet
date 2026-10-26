@@ -287,8 +287,17 @@ def fetch_financial(stock: StockCandidate) -> FinancialData:
     try:
         ticker = yf.Ticker(stock.ticker)
         info = ticker.get_info()
-    except Exception:
-        raise AppError("finance_failed", "주가·PER 조회에 실패했습니다. 잠시 후 다시 시도해 주세요.") from None
+    except Exception as error:
+        error_name = type(error).__name__.casefold()
+        if "timeout" in error_name:
+            code, message = "finance_timeout", "주가·PER 조회 시간이 초과되었습니다."
+        elif "rate" in error_name or "limit" in error_name:
+            code, message = "finance_rate_limit", "주가·PER 제공처의 요청 한도에 도달했습니다."
+        elif "auth" in error_name or "unauthor" in error_name or "crumb" in error_name:
+            code, message = "finance_auth_error", "주가·PER 제공처 인증에 실패했습니다."
+        else:
+            code, message = "finance_failed", "주가·PER 조회에 실패했습니다. 잠시 후 다시 시도해 주세요."
+        raise AppError(code, message) from None
     financial = financial_from_info(stock, info)
     if (
         (financial.per is not None and financial.eps is not None)

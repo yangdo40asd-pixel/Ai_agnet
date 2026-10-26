@@ -244,7 +244,16 @@ def fetch_price_history(
     try:
         ticker = yf.Ticker(stock.ticker)
         frame = ticker.history(period=yf_period, interval="1d", auto_adjust=False)
-    except Exception:
+    except Exception as error:
+        error_name = type(error).__name__.casefold()
+        if "timeout" in error_name:
+            error_code = "yahoo_timeout"
+        elif "rate" in error_name or "limit" in error_name:
+            error_code = "yahoo_rate_limit"
+        elif "auth" in error_name or "unauthor" in error_name or "crumb" in error_name:
+            error_code = "yahoo_auth_error"
+        else:
+            error_code = "yahoo_request_failed"
         return PriceHistory(
             code=stock.code,
             ticker=stock.ticker,
@@ -257,6 +266,7 @@ def fetch_price_history(
             retrieved_at=fetched_at,
             status="failed",
             message="일별 주가·거래량 이력 조회에 실패했습니다.",
+            error_code=error_code,
         )
     return normalize_price_history(
         stock,

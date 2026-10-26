@@ -173,9 +173,18 @@ def render_financial_summary(result: AnalysisResult, key_prefix: str = ""):
         or result.financial_ratios
     )
 
+    if dart_status == "partial":
+        st.warning("OpenDART 자료 중 일부만 조회되었습니다. 표시된 기간과 누락된 지표를 확인해 주세요.")
+
     if not has_financials:
-        if dart_status == "failed":
-            st.warning("기업 재무제표(OpenDART) 조회에 실패했습니다. 주가·뉴스 자료는 정상 표시됩니다.")
+        dart_errors = {
+            "auth_error": "OpenDART 인증에 실패했습니다. API 키와 이용 권한을 확인해 주세요.",
+            "rate_limit": "OpenDART 요청 한도에 도달했습니다. 잠시 후 다시 시도해 주세요.",
+            "timeout": "OpenDART 응답 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.",
+            "failed": "OpenDART 재무제표 조회에 실패했습니다.",
+        }
+        if dart_status in dart_errors:
+            st.warning(f"{dart_errors[dart_status]} 주가·뉴스 자료는 정상 표시됩니다.")
         else:
             st.info("공시된 기업 재무제표 자료가 없거나 아직 조회되지 않았습니다. 임의의 추정 실적을 표시하지 않습니다.")
         return

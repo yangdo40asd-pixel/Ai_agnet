@@ -144,6 +144,7 @@ class PriceHistory:
     retrieved_at: datetime = field(default_factory=now_kst)
     status: str = "ok"
     message: str = ""
+    error_code: str = ""
 
     def __post_init__(self):
         if self.timezone_name != "Asia/Seoul" and self.timezone == "Asia/Seoul":
@@ -378,6 +379,7 @@ class NewsData:
     message: str = ""
     source: str = "NAVER 뉴스 검색 API"
     sort: str = "date"
+    error_code: str = ""
 
 
 @dataclass(frozen=True)

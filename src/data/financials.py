@@ -920,11 +920,13 @@ def collect_company_financials(
     *,
     preferred_fs_div: str = "CFS",
     years: tuple[str, ...] | None = None,
+    bsns_year: str | None = None,
+    reprt_code: str = "11011",
 ) -> dict[str, object]:
-    """선택 종목의 DART 기업번호 매핑 → 최근 3개년 연간 재무제표·주요지표 수집 → 비교·비율·fact 생성을 수행한다.
+    """선택 종목의 DART 기업번호를 확인하고 요청된 기간·보고서의 재무 자료를 수집한다.
 
-    DART 미설정·미공시·오류가 발생해도 예외를 밖으로 던져 주가·뉴스를 중단시키지 않고
-    영역 상태(ok/empty/failed)로 반환한다.
+    사업연도가 지정되면 해당 연도만, 지정되지 않으면 최근 3개 사업연도를 조회한다.
+    DART 오류는 서비스별 상태로 반환해 주가·뉴스 조회를 중단시키지 않는다.
     """
     if not stock.verified or not stock.code:
         return {
@@ -952,7 +954,12 @@ def collect_company_financials(
         corp_map = fetch_corp_codes(settings)
         corp_code = resolve_corp_code(stock.code, corp_map)
     except AppError as error:
-        status_kind = "empty" if error.code == "dart_corp_unmapped" else "failed"
+        status_kind = {
+            "dart_corp_unmapped": "empty",
+            "dart_auth_error": "auth_error",
+            "dart_rate_limit": "rate_limit",
+            "dart_timeout": "timeout",
+        }.get(error.code, "failed")
         return {
             "status": status_kind,
             "message": error.message,
@@ -963,24 +970,38 @@ def collect_company_financials(
             "facts": (),
         }
 
-    target_years = years or candidate_annual_years(count=3)
+    if reprt_code not in REPRT_CODES:
+        return {
+            "status": "failed", "message": "지원하지 않는 보고서 코드입니다.",
+            "statements": (), "annual_summaries": (), "quarterly_summaries": (),
+            "ratios": None, "facts": (),
+        }
+    if bsns_year is not None and not re.fullmatch(r"\d{4}", str(bsns_year).strip()):
+        return {
+            "status": "failed", "message": "사업연도는 4자리 연도로 지정해 주세요.",
+            "statements": (), "annual_summaries": (), "quarterly_summaries": (),
+            "ratios": None, "facts": (),
+        }
+    target_years = (str(bsns_year).strip(),) if bsns_year else years or candidate_annual_years(count=3)
     target_fs = preferred_fs_div if preferred_fs_div in FS_DIVS else "CFS"
     is_fallback = False
     collected_statements: list[FinancialStatementData] = []
     index_by_year: dict[str, dict[str, object]] = {}
     last_error_msg = ""
+    last_error_status = "failed"
     had_failure = False
 
     # 최신 연도부터 확인해 CFS가 전부 empty(013)이면 OFS로 일괄 전환(계열 혼합 금지)
     raw_by_year: dict[str, dict[str, object]] = {}
+    index_requests_blocked = False
     for year in target_years:
-        resp = fetch_statement(corp_code, year, "11011", target_fs, settings=settings)
+        resp = fetch_statement(corp_code, year, reprt_code, target_fs, settings=settings)
         raw_by_year[year] = resp
         if resp.get("status") in {"auth_error", "rate_limit", "timeout", "failed"}:
             had_failure = True
             last_error_msg = str(resp.get("message") or "")
-            if resp.get("status") in {"auth_error", "rate_limit"}:
-                break
+            last_error_status = str(resp.get("status") or "failed")
+            break
 
     if (
         not had_failure
@@ -990,10 +1011,11 @@ def collect_company_financials(
         # 연결재무제표가 없는 개별 기업인 경우 별도재무제표(OFS)로 전체 계열 재조회
         ofs_raw: dict[str, dict[str, object]] = {}
         for year in target_years:
-            resp = fetch_statement(corp_code, year, "11011", "OFS", settings=settings)
+            resp = fetch_statement(corp_code, year, reprt_code, "OFS", settings=settings)
             ofs_raw[year] = resp
-            if resp.get("status") in {"auth_error", "rate_limit"}:
+            if resp.get("status") in {"auth_error", "rate_limit", "timeout", "failed"}:
                 had_failure = True
+                last_error_status = str(resp.get("status") or "failed")
                 last_error_msg = str(resp.get("message") or "")
                 break
         if any(r.get("status") == "ok" for r in ofs_raw.values()):
@@ -1009,17 +1031,22 @@ def collect_company_financials(
         if norm.status == "ok":
             collected_statements.append(norm)
             # 2023년 이후 연도에 대해 주요 재무지표(수익성지표 M210000) 조회 시도
-            if int(year) >= 2023:
+            if int(year) >= 2023 and not index_requests_blocked:
                 idx_resp = fetch_financial_indices(
-                    corp_code, year, "11011", "M210000", settings=settings
+                    corp_code, year, reprt_code, "M210000", settings=settings
                 )
                 if idx_resp.get("status") == "ok":
                     index_by_year[year] = idx_resp
+                elif idx_resp.get("status") in {"auth_error", "rate_limit", "timeout", "failed"}:
+                    had_failure = True
+                    last_error_status = str(idx_resp.get("status") or "failed")
+                    last_error_msg = str(idx_resp.get("message") or "OpenDART 주요 재무지표 조회에 실패했습니다.")
+                    index_requests_blocked = True
 
     if not collected_statements:
         return {
-            "status": "failed" if had_failure else "empty",
-            "message": last_error_msg or "공시된 연간 재무제표 자료가 없습니다.",
+            "status": last_error_status if had_failure else "empty",
+            "message": last_error_msg or "공시된 재무제표 자료가 없습니다.",
             "statements": (),
             "annual_summaries": (),
             "quarterly_summaries": (),
@@ -1039,8 +1066,8 @@ def collect_company_financials(
     facts = build_financial_facts(stock, annual_summaries, latest_ratios)
 
     return {
-        "status": "ok",
-        "message": latest_stmt.message,
+        "status": "partial" if had_failure else "ok",
+        "message": last_error_msg or latest_stmt.message,
         "statements": tuple(collected_statements),
         "annual_summaries": annual_summaries,
         "quarterly_summaries": quarterly_summaries,

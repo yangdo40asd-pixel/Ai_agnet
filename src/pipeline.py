@@ -160,6 +160,8 @@ def analyze_selected_stock(
             target,
             active_settings,
             preferred_fs_div=options.fs_div,
+            bsns_year=options.bsns_year,
+            reprt_code=options.reprt_code,
         )
         timings["dart_ms"] = round((time.perf_counter() - t_dart) * 1000.0, 2)
         dart_status = str(dart_bundle.get("status") or "empty")

@@ -1,7 +1,9 @@
 """화면과 독립적인 자료 갱신 판단 및 결과 메시지 조립."""
 from datetime import datetime
 from src.models import AnalysisResult, AnswerBlock, ChatResponse
-from src.agents.chat import build_evidence
+from src.agents.evidence import build_evidence
+from src.agents.answer_quality import select_evidence
+from src.agents.report_presentation import HEADLINE_SCOPE, news_sections
 
 
 def needs_data(result: AnalysisResult, scope: str, text: str, period: str = "", *,
@@ -31,16 +33,24 @@ def analysis_message(result: AnalysisResult, scope: str = "all") -> tuple[str, l
 def analysis_response(result: AnalysisResult, scope: str = "all") -> ChatResponse:
     """수집 결과와 근거를 채팅용 내용으로 조립한다. 상태를 변경하지 않는다."""
     evidence_map = build_evidence(result)
-    evidence = [{"id": key, **item} for key, item in evidence_map.items() if key in {"PRICE", "PER", "PBR", "ROE"}]
+    evidence = []
     commentary = result.commentary
     summary_parts = [f"**{result.financial.stock.name} 조회 결과**"]
     blocks = []
+    comparison = select_evidence("실적", [], evidence_map, []).evidence
+    compared = {k: v for k, v in comparison.items() if v.get("kind") == "annual_comparison"}
+    if compared and scope in {"all", "financials"}:
+        labels = {"CFS": "연결재무제표", "OFS": "별도재무제표"}
+        lines = [f"{labels.get(item['fs_div'], item['fs_div'])} · {item['text']}" for item in compared.values()]
+        blocks.append(AnswerBlock("연간 실적", "\n\n".join(lines), tuple(compared)))
+        evidence.extend(dict(item, id=key) for key, item in compared.items())
+    elif result.financial.price is not None and scope in {"all", "finance"}:
+        summary_parts.append("조회된 주가는 " + evidence_map["PRICE"]["value_text"] + "입니다.")
+        evidence.append(dict(evidence_map["PRICE"], id="PRICE"))
     seen = {}
     if commentary:
-        summary_parts.append(commentary.stock_comment)
-        for label, statements in (("종합 분석", (commentary.summary,)), ("테마 동향", commentary.theme_trend), ("기회 요인", (commentary.opportunity,)),
-                                  ("위험 요인", (commentary.risk,)),
-                                  ("재무 분석", commentary.financial_commentary)):
+        for label, statements in (*news_sections(commentary),
+                                  ("재무 분석", () if compared else commentary.financial_commentary)):
             for statement in statements:
                 if statement:
                     ids = tuple(key for key in [*(f"NEWS_{n}" for n in statement.news_ids), *(f"FACT_{n}" for n in statement.fact_ids)] if key in evidence_map)
@@ -56,9 +66,9 @@ def analysis_response(result: AnalysisResult, scope: str = "all") -> ChatRespons
                             evidence.append({"id": key, **evidence_map[key]})
     elif scope == "all":
         summary_parts.append("자료 수집 결과를 표시합니다. AI 종합 설명은 생성되지 않았습니다.")
-    if result.news.status != "ok":
-        summary_parts.append(result.news.message or "뉴스 자료를 확인하지 못했습니다.")
-    if not result.complete:
-        summary_parts.append("일부 자료가 없거나 설명이 생성되지 않았습니다. 확인된 범위에서 해석해야 합니다.")
+    if any(key.startswith("NEWS_") for block in blocks for key in block.evidence_ids):
+        summary_parts.append(HEADLINE_SCOPE)
+    if result.ai_error and commentary is None and compared:
+        summary_parts.append("AI 설명을 생성하지 못해 확인된 연간 수치를 먼저 표시합니다.")
     return ChatResponse("\n\n".join(summary_parts), evidence, blocks=tuple(blocks),
-                        lead_evidence_ids=tuple(e["id"] for e in evidence if e["id"] in {"PRICE", "PER", "PBR", "ROE"}))
+                        lead_evidence_ids=tuple(e["id"] for e in evidence if e["id"] == "PRICE"))

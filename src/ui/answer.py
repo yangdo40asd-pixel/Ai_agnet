@@ -2,7 +2,6 @@
 from dataclasses import asdict
 from datetime import datetime
 import re
-from urllib.parse import urlparse
 
 import streamlit as st
 
@@ -49,36 +48,62 @@ def evidence_metadata(item: dict) -> str:
     return " · ".join(f"{name}: {value}" for name, value in fields if value)
 
 
-def render_evidence(items, linked_urls: set[str]) -> None:
-    seen = set()
-    for item in items:
-        url = safe_news_url(item.get("url"))
-        identity = url or item["id"]
-        if identity in seen:
+def source_groups(message: dict):
+    """답변 안의 표시 번호를 원본 근거 ID에 연결한다. 원본 자료는 보존한다."""
+    refs = {e["id"]: e for e in message.get("evidence", ())}
+    blocks = message.get("blocks") or ()
+    ids = (list(message.get("lead_evidence_ids", ())) +
+           [i for block in blocks for i in block["evidence_ids"]]) if blocks else list(refs)
+    groups, by_identity, numbers = [], {}, {}
+    for key in dict.fromkeys(ids):
+        if key not in refs:
             continue
-        seen.add(identity)
-        st.caption(escaped(evidence_metadata(item)))
-        if url and url not in linked_urls:
-            domain = urlparse(url).hostname
-            st.link_button(f"{domain} · {item['text']}", url)
-            linked_urls.add(url)
+        item = refs[key]
+        url = safe_news_url(item.get("url"))
+        identity = ("url", url) if url else ("data", item.get("source"), item.get("period"), item.get("fs_div"))
+        if identity not in by_identity:
+            by_identity[identity] = len(groups) + 1
+            groups.append({"number": len(groups) + 1, "url": url, "items": []})
+        number = by_identity[identity]
+        numbers[key] = number
+        groups[number - 1]["items"].append(item)
+    return groups, numbers
+
+
+def _reference_marks(ids, numbers):
+    return " ".join(f"[{n}]" for n in dict.fromkeys(numbers[k] for k in ids if k in numbers))
+
+
+def render_sources(groups):
+    if not groups:
+        return
+    st.caption("출처")
+    for group in groups:
+        item = group["items"][0]
+        label = f"[{group['number']}] " + str(item.get("source") or "자료 출처")
+        if group["url"]:
+            st.link_button(label + " · " + item["text"], group["url"])
         else:
-            st.caption(escaped(f"[{item['id']}] {item['text']}" + (" · 위에 표시한 원문과 동일한 출처" if url else "")))
+            from src.source_presentation import data_source_label
+            label = f"[{group['number']}] " + data_source_label(item)
+            st.caption(escaped(label))
+    with st.expander("출처 상세 · 기준과 조회 시각", expanded=False):
+        for group in groups:
+            for item in group["items"]:
+                st.caption(escaped(f"[{group['number']}] {item.get('text', '')}"))
+                st.caption(escaped(evidence_metadata(item)))
 
 
 def render_answer(message: dict) -> None:
-    refs = {e["id"]: e for e in message.get("evidence", ())}
+    groups, numbers = source_groups(message)
     blocks = message.get("blocks") or ()
-    linked_urls = set()
     if blocks:
-        st.markdown(message.get("intro", ""), unsafe_allow_html=False)
-        block_ids = {key for block in blocks for key in block["evidence_ids"]}
-        render_evidence([refs[i] for i in message.get("lead_evidence_ids", ()) if i in refs and i not in block_ids], linked_urls)
+        marks = _reference_marks(message.get("lead_evidence_ids", ()), numbers)
+        st.markdown(message.get("intro", "") + (" " + marks if marks else ""), unsafe_allow_html=False)
         for block in blocks:
-            with st.container():
-                st.markdown("**" + escaped(block["title"]) + "**")
-                st.markdown(block["text"], unsafe_allow_html=False)
-                render_evidence([refs[i] for i in block["evidence_ids"] if i in refs], linked_urls)
+            st.markdown("**" + escaped(block["title"]) + "**")
+            marks = _reference_marks(block["evidence_ids"], numbers)
+            st.markdown(block["text"] + (" " + marks if marks else ""), unsafe_allow_html=False)
     else:
         st.markdown(message.get("text", ""), unsafe_allow_html=False)
-        render_evidence(refs.values(), linked_urls)
+    render_sources(groups)

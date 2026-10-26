@@ -60,7 +60,8 @@ class Plan5Contracts(unittest.TestCase):
             answer, refs, _ = answer_question("이 종목 PER을 어떻게 해석합니까?", self.result, [], self.settings)
         self.assertEqual(call.call_count, 2)
         self.assertIn("12.50배", answer)
-        self.assertIn("기준 기간 미확인", answer)
+        self.assertIn("미확인", refs[0]["period"])
+        self.assertNotIn("자료 기준:", answer)
         self.assertEqual(refs[0]["answer_origin"], "verified_metric_fallback")
 
     def test_general_trading_explanation_checks_knowledge_reference(self):

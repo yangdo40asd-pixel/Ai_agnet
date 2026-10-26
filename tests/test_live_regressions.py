@@ -7,6 +7,8 @@ from types import SimpleNamespace
 import json
 
 import pandas as pd
+from review_fixtures import with_review_units
+from src.agents.answer_quality import QUALITY_CHECKS
 
 from src.agents.report import generate_commentary, _invoke, response_format, _comment_text, validate_report
 from src.config import Settings
@@ -28,10 +30,11 @@ class LiveRegressionTests(unittest.TestCase):
     def test_news_year_in_text_gets_one_validated_rewrite(self):
         invalid = example_payload()
         invalid["theme_trend"][0]["text"] = "2026 로보월드 관련 소식입니다."
-        with patch("src.agents.report._invoke", side_effect=[invalid, example_payload()]) as invoke:
+        verdict = dict(checks=dict.fromkeys(QUALITY_CHECKS, True), supported=True, answers_question=True)
+        with patch("src.agents.report._invoke", side_effect=with_review_units([invalid, example_payload(), verdict])) as invoke:
             result = self.generate()
-        self.assertEqual(invoke.call_count, 2)
-        self.assertIn("revision_reason", invoke.call_args.args[2])
+        self.assertEqual(invoke.call_count, 3)
+        self.assertIn("revision_reason", invoke.call_args_list[1].args[2])
         self.assertEqual(result.theme_trend[0].news_ids, (1,))
 
     def test_rewrite_still_rejects_numbers_and_stops_after_one_retry(self):
@@ -63,9 +66,10 @@ class LiveRegressionTests(unittest.TestCase):
         financial = replace(example_financial(), per=-971.8608716546611)
         payload = example_payload()
         payload["per"] = -971.86
-        with patch("src.agents.report._invoke", return_value=payload) as invoke:
+        verdict = dict(checks=dict.fromkeys(QUALITY_CHECKS, True), supported=True, answers_question=True)
+        with patch("src.agents.report._invoke", side_effect=with_review_units([payload, verdict])) as invoke:
             generate_commentary("로봇", financial, example_news(), self.settings)
-        self.assertEqual(invoke.call_args.args[2]["per"], -971.86)
+        self.assertEqual(invoke.call_args_list[0].args[2]["per"], -971.86)
         self.assertEqual(financial.per, -971.8608716546611)
         payload["per"] = -971.85
         with self.assertRaises(AppError):
@@ -169,7 +173,7 @@ class RealRequestRegressionTests(unittest.TestCase):
         self.assertEqual(properties["per"]["type"], "null")
         self.assertEqual(properties["theme_trend"]["maxItems"], 2)
         self.assertEqual(properties["stock_comment"]["pattern"], "^[^0-9]*$")
-        self.assertEqual(properties["risk"]["properties"]["news_ids"]["items"]["enum"], [2])
+        self.assertEqual(properties["risk"]["anyOf"][0]["properties"]["news_ids"]["items"]["enum"], [2])
         self.assertEqual(response_format({}, "other-model"), {"type":"json_object"})
 
     def test_strict_no_news_schema_requires_empty_insights(self):

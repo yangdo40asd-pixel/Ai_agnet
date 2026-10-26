@@ -61,7 +61,20 @@ class UserFlowTests(unittest.TestCase):
              "pubDate": "Tue, 13 Oct 2026 09:00:00 +0900"}]}
         self.news_request = self.stack.enter_context(patch("src.data.news.requests.get", return_value=self.news_response))
         self.groq = self.stack.enter_context(patch("langchain_groq.ChatGroq"))
-        self.llm = self.groq.return_value
+        self.llm = Mock()
+        self.base_reviews = []
+        def sdk_invoke(messages):
+            import json
+            from src.agents.answer_quality import QUALITY_CHECKS
+            request = json.loads(messages[1][1])
+            if request.get("review_origin") == "basic_report":
+                self.base_reviews.append(request)
+                return response({"checks": dict.fromkeys(QUALITY_CHECKS, True), "supported": True,
+                                 "answers_question": True, "reason": "모의 기본 리포트 검증",
+                                 "unit_reviews": [{"id": u["id"], "supported": True, "reason": "모의 판정"}
+                                                  for u in request["review_units"]]})
+            return self.llm.invoke(messages)
+        self.groq.return_value.invoke.side_effect = sdk_invoke
         self.set_responses()
         self.app = AppTest.from_file(str(APP_PATH), default_timeout=15)
         self.app.run()

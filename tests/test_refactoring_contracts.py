@@ -126,7 +126,7 @@ class AITransportContracts(unittest.TestCase):
         report = props(self.cases[4][0])
         self.assertEqual(report["price"]["enum"], [100])
         self.assertEqual(report["per"]["type"], "null")
-        self.assertEqual(report["summary"]["properties"]["news_ids"]["items"]["enum"], [7])
+        self.assertEqual(report["summary"]["anyOf"][0]["properties"]["news_ids"]["items"]["enum"], [7])
         empty = props(dict(self.cases[4][0], headlines=[]))
         self.assertEqual(empty["summary"], {"type": "null"})
         self.assertEqual(empty["theme_trend"]["maxItems"], 0)

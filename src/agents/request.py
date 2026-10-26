@@ -58,6 +58,7 @@ def prefers_dialogue(text: str) -> bool:
 
 
 def company_to_lookup(text: str) -> str:
+    text = re.sub(r"^(?:그럼|그러면|그렇다면|그래서)[,\s]+", "", text)
     match = re.match(r"^(.+?)(?:의|은|는|을|를)?\s+(?:(?:현재|최근|지금)\s*)?(?:주가|PER|PBR|ROE|EPS|BPS|뉴스|차트|분석|사도|살까)", text, re.I)
     if not match:
         return ""

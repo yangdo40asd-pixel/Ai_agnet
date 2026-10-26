@@ -1,0 +1,26 @@
+{
+  "origin": "docs\\검수\\계획5_18절_계약수정_실제답변검수_2026-10-26.json",
+  "synthetic_data": true,
+  "responses": [
+    {
+      "text": "매출이 20.00% 증가한 2025년에도 영업이익이 80.00% 증가하고 영업이익률이 5.00%p 상승했습니다. 따라서 매출 증가와 함께 실적이 전반적으로 개선된 것으로 판단됩니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN"
+      ],
+      "follow_up": "",
+      "blocks": []
+    },
+    {
+      "text": "매출이 20.00% 증가한 2025년에도 영업이익이 80.00% 증가하고 영업이익률이 5.00%p 상승했습니다. 따라서 매출 증가와 함께 실적이 전반적으로 개선된 것으로 판단됩니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN"
+      ],
+      "follow_up": "",
+      "blocks": []
+    }
+  ]
+}

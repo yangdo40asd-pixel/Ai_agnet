@@ -52,6 +52,20 @@ def rate_limit_error(error):
     return AppError("ai_rate_limit", message)
 
 
+def verification_stop(error):
+    """SDK가 감싼 자체 검수 중단만 복원한다. 공급자 오류 본문은 해석하지 않는다."""
+    pending, seen = [error], set()
+    while pending:
+        current = pending.pop()
+        if id(current) in seen:
+            continue
+        seen.add(id(current))
+        if isinstance(current, AppError) and current.code in {"ai_verification_budget", "ai_rate_limit"}:
+            return current
+        pending.extend(e for e in (current.__cause__, current.__context__) if isinstance(e, BaseException))
+    return None
+
+
 class VerificationPacer:
     """한 검수 프로세스의 HTTP 요청을 제어한다. 다른 프로세스/조직 사용량은 통제하지 못한다."""
 
@@ -112,6 +126,13 @@ class VerificationPacer:
                  if type(usage.get(key)) is int and usage[key] >= 0}
         if clean:
             self.events.append({"event": "usage", **clean})
+
+    def record_schema_failure(self, detail, response_format, task):
+        # 원문 오류·모델 생성문·API 키를 로그나 다음 프롬프트로 복사하지 않는다.
+        from src.agents.schema_diagnostics import schema_failure_summary
+        event = schema_failure_summary(detail, response_format, task)
+        self.events.append(event)
+        print(f"API 스키마 검사: {event}", flush=True)
 
     def report(self):
         return {"interval_seconds": self.interval, "max_wait_seconds": self.max_wait,

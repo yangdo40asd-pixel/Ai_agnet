@@ -29,12 +29,12 @@ def verified_metric_explanation(key, item):
     """LLM 재작성도 검증 실패한 단일 지표 질문에만 확인값·정의로 응답한다."""
     meaning, formula, _, limit = TERMS[key]
     value = item.get("value_text", "정보 없음")
-    paragraphs = ["AI 해석의 근거를 확인하지 못해 조회값과 지표의 기본 의미를 제공합니다.",
-                  f"{item['text']}입니다.", f"{key}는 {meaning} 계산식은 {formula}입니다."]
+    paragraphs = [f"{item['text']}입니다."]
     if item.get("value") is None:
         paragraphs.append(item.get("reason") or "값이 없는 원인은 이번 자료에서 확인할 수 없습니다.")
     elif key == "PER":
-        paragraphs.append(f"조회된 {value}는 주가가 계산에 사용된 주당순이익의 {value}라는 의미입니다.")
-    paragraphs.extend([limit, f"자료 기준: {item.get('as_of', '미확인')} · 계산 기간: {item.get('period', '미확인')}.",
-                       "업종·과거 비교 자료를 확인하지 않았으므로 상대적인 평가 수준은 판단하지 않습니다."])
+        paragraphs.append(f"주가가 계산에 사용된 주당순이익의 {value}라는 의미입니다.")
+    else:
+        paragraphs.append(f"{key}는 {meaning} 계산식은 {formula}입니다.")
+    paragraphs.append("AI의 추가 해석은 검증하지 못해 확인된 값과 기본 의미를 먼저 제공합니다.")
     return "\n\n".join(paragraphs)

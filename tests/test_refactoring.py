@@ -93,9 +93,10 @@ class RequestBoundaryTests(unittest.TestCase):
         text, refs = analysis_message(self.result)
         self.assertTrue(text.startswith("**삼성전자 조회 결과**"))
         self.assertIn("**종합 분석**", text)
-        self.assertIn("**재무 분석**", text)
+        self.assertIn("**연간 실적**", text)
         ids = [r["id"] for r in refs]
-        self.assertEqual(ids[:4], ["PRICE", "PER", "PBR", "ROE"])
+        self.assertTrue(all(key.startswith("CMP_") for key in ids[:3]))
+        self.assertNotIn("PBR", ids)
         self.assertEqual(ids.count("NEWS_1"), 1)
 
     def test_roe_fallback_is_same_in_chat_and_display(self):

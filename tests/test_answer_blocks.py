@@ -201,7 +201,7 @@ def render_fixture():
 
 
 class SourceRenderingTests(unittest.TestCase):
-    def test_source_links_stay_under_their_blocks_and_duplicate_urls_are_linked_once(self):
+    def test_source_links_follow_answer_and_duplicate_urls_share_numbers(self):
         payload = issue_payload()
         payload["evidence_ids"] = []
         response = validate_response(payload, build_evidence(sample_result()), "issues")
@@ -212,19 +212,21 @@ class SourceRenderingTests(unittest.TestCase):
         self.assertEqual(len(app.exception), 0)
         links = app.get("link_button")
         self.assertEqual([link.proto.url for link in links], ["https://example.com/plan", "https://other.example/cancel"])
-        # 각 블록의 컨테이너 안에 자기 링크만 존재한다.
-        for block in (node for node in app.main.children.values() if node.type == "flex_container"):
-            siblings = list(block)
-            link = next(node for node in siblings if node.type == "link_button")
-            bodies = [node.value for node in siblings if node.type == "markdown"]
-            expected = "생산 확대" if "plan" in link.proto.url else "공급 계약"
-            self.assertTrue(any(expected in b for b in bodies))
+        nodes = list(app.main)
+        first_link = next(i for i, node in enumerate(nodes) if node.type == "link_button")
+        last_body = max(i for i, node in enumerate(nodes) if node.type == "markdown")
+        self.assertGreater(first_link, last_body)
+        self.assertTrue(any("[1]" in node.value for node in app.markdown))
+        self.assertTrue(any("[2]" in node.value for node in app.markdown))
+        self.assertEqual(len(app.expander), 1)
+        self.assertFalse(app.expander[0].proto.expanded)
         duplicate = deepcopy(message)
         duplicate["evidence"][1]["url"] = duplicate["evidence"][0]["url"]
         app.session_state["message"] = duplicate
         app.run()
         self.assertEqual(len(app.get("link_button")), 1)
-        self.assertTrue(any("동일한 출처" in c.value for c in app.caption))
+        self.assertFalse(any("[2]" in node.value for node in app.markdown))
+        self.assertFalse(any("NEWS_" in node.value for node in app.caption))
         absent = deepcopy(message)
         absent["evidence"][0]["url"] = None
         absent["evidence"][1]["url"] = "javascript:bad"

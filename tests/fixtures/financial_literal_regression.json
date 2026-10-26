@@ -1,0 +1,96 @@
+{
+  "origin": "docs\\검수\\계획5_18절_실제답변검수_2026-10-25.json",
+  "synthetic_data": true,
+  "note": "실제 생성 실패 원문. 구조 검증 통과는 의미/품질 통과가 아님.",
+  "responses": [
+    {
+      "text": "매출이 늘어났다고 해서 실적이 반드시 좋아진 것은 아닙니다. 가상검수회사의 경우 2024년 대비 2025년 매출이 20% 증가했으나 영업이익은 80% 증가했고 영업이익률도 5%p 상승했습니다. 따라서 매출 증가와 함께 영업이익과 이익률이 개선되었으므로 실적이 전반적으로 좋아졌다고 판단할 수 있습니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN"
+      ],
+      "follow_up": "",
+      "blocks": []
+    },
+    {
+      "text": "매출이 늘었으나 실적이 좋아졌는지는 영업이익과 영업이익률을 함께 살펴야 합니다. 가상검수회사의 경우 2024년 대비 2025년 매출이 20.00% 증가했으며, 영업이익은 80.00% 증가하고 영업이익률은 5.00%p 상승했습니다. 따라서 매출 증가와 함께 영업이익과 이익률이 개선되었으므로 실적이 전반적으로 좋아졌다고 판단할 수 있습니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN"
+      ],
+      "follow_up": "",
+      "blocks": []
+    }
+  ],
+  "evidence": {
+    "CMP_2024_2025_CFS_REVENUE": {
+      "source": "OpenDART",
+      "period": "2024년 → 2025년 연간",
+      "fs_div": "CFS",
+      "stock_code": "123456",
+      "result_id": "synthetic-block-evaluation",
+      "years": [
+        2024,
+        2025
+      ],
+      "currency": "KRW",
+      "kind": "annual_comparison",
+      "formula": "동일 연간·연결/별도 기준 비교",
+      "item": "revenue",
+      "text": "매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)",
+      "value_text": "2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)",
+      "previous": "10000000000",
+      "current": "12000000000",
+      "delta": "2000000000",
+      "change_pct": "20.0",
+      "change_state": "증가",
+      "status": "ok"
+    },
+    "CMP_2024_2025_CFS_OPERATING_INCOME": {
+      "source": "OpenDART",
+      "period": "2024년 → 2025년 연간",
+      "fs_div": "CFS",
+      "stock_code": "123456",
+      "result_id": "synthetic-block-evaluation",
+      "years": [
+        2024,
+        2025
+      ],
+      "currency": "KRW",
+      "kind": "annual_comparison",
+      "formula": "동일 연간·연결/별도 기준 비교",
+      "item": "operating_income",
+      "text": "영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)",
+      "value_text": "2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)",
+      "previous": "1000000000",
+      "current": "1800000000",
+      "delta": "800000000",
+      "change_pct": "80.0",
+      "change_state": "증가",
+      "status": "ok"
+    },
+    "CMP_2024_2025_CFS_OPERATING_MARGIN": {
+      "source": "OpenDART",
+      "period": "2024년 → 2025년 연간",
+      "fs_div": "CFS",
+      "stock_code": "123456",
+      "result_id": "synthetic-block-evaluation",
+      "years": [
+        2024,
+        2025
+      ],
+      "currency": "KRW",
+      "kind": "annual_comparison",
+      "formula": "영업이익 / 매출액 × 100; 이익률 차이는 %p",
+      "item": "operating_margin",
+      "text": "영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+      "value_text": "2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+      "previous": "10.0",
+      "current": "15.00",
+      "delta_pp": "5.00",
+      "status": "ok"
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "checked_at": "2026-10-24T14:27:15.882302+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "source": "docs\\검수\\계획5_답변품질_2026-10-24_02.json",
+  "cases": [
+    {
+      "case_id": "issues",
+      "original_payload": {
+        "text": "가상검수회사의 최근 뉴스 이슈는 신규 생산라인 가동 계획과 별도 공급 계약 취소 두 가지가 있습니다.",
+        "evidence_ids": [
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "follow_up": "",
+        "blocks": [
+          {
+            "title": "신규 생산라인 가동 계획",
+            "text": "가상검수회사는 신규 생산라인 가동을 계획하고 있음을 발표했습니다. 이는 사업 확장 단계이며, 실제 가동 여부는 아직 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ]
+          },
+          {
+            "title": "별도 공급 계약 취소",
+            "text": "가상검수회사는 별도 공급 계약을 취소한 사실을 공시했습니다. 계약 취소의 원인이나 재무적 영향은 아직 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_2"
+            ]
+          }
+        ]
+      },
+      "status": "rejected",
+      "error_code": "chat_grounding",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": false,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "reason": "Answer contains statements that are not directly supported by the headline evidence, such as \"사업 확장 단계이며\", \"실제 가동 여부는 아직 확인되지 않았습니다\", and \"계약 취소의 원인이나 재무적 영향은 아직 확인되지 않았습니다\". These claims are not present in the provided headline texts, so they lack direct evidence. Other statements are supported by the headlines. Therefore, overall evidence_match is false, but other checks are true.",
+            "supported": false,
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Statement indicates that the information is based on collected news headlines, which is supported by the presence of both headline entries.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Claims that the recent news issues are the two headline topics; both headlines confirm this.",
+                "supported": true
+              },
+              {
+                "id": "block_0_0",
+                "reason": "Title matches the headline \"가상검수회사 신규 생산라인 가동 계획 발표\".",
+                "supported": true
+              },
+              {
+                "id": "block_0_1",
+                "reason": "Headline states that a new production line plan was announced, supporting the claim of an announcement.",
+                "supported": true
+              },
+              {
+                "id": "block_0_2",
+                "reason": "The phrase \"사업 확장 단계이며\" is not present in the headline; no evidence supports this claim.",
+                "supported": false
+              },
+              {
+                "id": "block_0_3",
+                "reason": "The headline does not mention whether the line has actually started operating; no evidence for this claim.",
+                "supported": false
+              },
+              {
+                "id": "block_1_0",
+                "reason": "Title matches the headline \"가상검수회사 별도 공급 계약 취소 공시\".",
+                "supported": true
+              },
+              {
+                "id": "block_1_1",
+                "reason": "Headline indicates a cancellation was announced, supporting the claim of a public notice.",
+                "supported": true
+              },
+              {
+                "id": "block_1_2",
+                "reason": "The headline does not provide reasons or financial impact; no evidence for this claim.",
+                "supported": false
+              }
+            ]
+          }
+        }
+      ],
+      "quality_review": {
+        "status": "partial",
+        "note": "사업 확장 단계는 거절했지만 자료 한계 설명도 근거 없다고 판정했다. 부정 사례 거절을 검증기 전체 정확성으로 해석하지 않는다."
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "4cfa547a6efd6f8700cb244e11e4dd77070cdbf9680fa5df63a0174f9784221a",
+    "src/agents/answer_quality.py": "c7ea7bcc1a741096ca042d0c376cc5e0eeb713efcdc85bd6031d96f3ab5e3aa3",
+    "src/agents/transport.py": "5c3b53e7e602dc9277c6108ab1b6a682bf1ddb9ffb83ed48e53f5491f946d096"
+  },
+  "evaluation_note": "사람 기준의 표본 평가이며 실제 모델 응답·자동 판정은 보존한다. 가상 입력이며 실제 시장 정보 조회가 아니다."
+}

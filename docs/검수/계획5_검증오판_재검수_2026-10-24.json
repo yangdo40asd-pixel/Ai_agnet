@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-10-24T09:30:40.512532+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "source": "docs\\검수\\계획5_답변품질_2026-10-24_01.json",
+  "cases": [
+    {
+      "case_id": "summary",
+      "original_payload": {
+        "text": "가상검수회사 신규 생산라인 가동 계획이 발표되었습니다. 가상검수회사는 별도 공급 계약을 취소하였으며, 현재 이와 관련된 추가 조치가 진행 중입니다. 이 요약은 수집된 뉴스 제목 기준이며, 기사 본문은 확인하지 않았습니다.",
+        "evidence_ids": [
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "follow_up": "",
+        "blocks": []
+      },
+      "status": "rejected",
+      "error_code": "chat_grounding",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": false,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": false,
+            "reason": "Answer does not use line breaks, violating the requirement of three separate lines. It also contains an unsupported claim that ‘추가 조치가 진행 중입니다’, which is not supported by the provided evidence. Consequently, the answer fails to meet the answer_requirements and the supported flag is set to false."
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "followup",
+      "original_payload": {
+        "text": "해당 발표는 신규 생산라인 가동 계획에 관한 것으로, 아직 실적 개선이 확정된 것은 아닙니다. 계획 단계이므로 실제 가동 여부와 실적 반영 시점은 별도로 확인이 필요합니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "follow_up": "",
+        "blocks": []
+      },
+      "status": "accepted",
+      "checked_text": "수집된 뉴스 제목 기준입니다. 해당 발표는 신규 생산라인 가동 계획에 관한 것으로, 아직 실적 개선이 확정된 것은 아닙니다. 계획 단계이므로 실제 가동 여부와 실적 반영 시점은 별도로 확인이 필요합니다.",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "reason": "All checks passed; no issues found.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "answers_question": true
+          }
+        }
+      ]
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "a1e0521f9bde1dd27855d197acabd7869f8d744db98bb7ac4e1303d33e14d3ce",
+    "src/agents/answer_quality.py": "319bc28c3dbe24e9141827c771759a7a90bf643b47a8109e97f92fc18ef54e72",
+    "src/agents/transport.py": "f7615b67b41353155bd29f866f431f9e5b876f244f2ce97f4d85f7c0d8b41e14"
+  }
+}

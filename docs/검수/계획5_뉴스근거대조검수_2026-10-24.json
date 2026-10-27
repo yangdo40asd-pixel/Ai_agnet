@@ -1,0 +1,636 @@
+{
+  "checked_at": "2026-10-24T14:29:33.044148+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "source": "tests\\fixtures\\headline_review_cases.json",
+  "cases": [
+    {
+      "case_id": "unsupported_expansion",
+      "question": "이 종목의 뉴스 이슈를 분석해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "가상검수회사의 최근 뉴스 이슈는 신규 생산라인 가동 계획과 별도 공급 계약 취소 두 가지가 있습니다.",
+        "evidence_ids": [
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "follow_up": "",
+        "blocks": [
+          {
+            "title": "신규 생산라인 가동 계획",
+            "text": "가상검수회사는 신규 생산라인 가동을 계획하고 있음을 발표했습니다. 이는 사업 확장 단계이며, 실제 가동 여부는 아직 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ]
+          },
+          {
+            "title": "별도 공급 계약 취소",
+            "text": "가상검수회사는 별도 공급 계약을 취소한 사실을 공시했습니다. 계약 취소의 원인이나 재무적 영향은 아직 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_2"
+            ]
+          }
+        ]
+      },
+      "status": "rejected",
+      "error_code": "chat_grounding",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": false,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "reason": "Answer repeats headline facts but adds statements not present in the headlines (사업 확장 단계, 가동 여부, 원인 및 재무적 영향). Therefore evidence_match is false and overall supported is false.",
+            "supported": false,
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Statement declares that the answer is based on headlines, which is supported by the presence of headline evidence.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Summarizes the two headline topics; both headlines provide this information.",
+                "supported": true
+              },
+              {
+                "id": "block_0_0",
+                "reason": "Title matches the headline text exactly.",
+                "supported": true
+              },
+              {
+                "id": "block_0_1",
+                "reason": "Headline indicates an announcement of a new production line plan, supporting this claim.",
+                "supported": true
+              },
+              {
+                "id": "block_0_2",
+                "reason": "Claim about business expansion is not stated in the headline.",
+                "supported": false
+              },
+              {
+                "id": "block_0_3",
+                "reason": "Claim about actual operation status is not in the headline.",
+                "supported": false
+              },
+              {
+                "id": "block_1_0",
+                "reason": "Title matches the headline text exactly.",
+                "supported": true
+              },
+              {
+                "id": "block_1_1",
+                "reason": "Headline indicates a cancellation announcement, supporting this claim.",
+                "supported": true
+              },
+              {
+                "id": "block_1_2",
+                "reason": "Claim about reasons or financial impact is not in the headline.",
+                "supported": false
+              }
+            ]
+          }
+        }
+      ],
+      "expected_status": "rejected",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 개별 문장 이유의 정확성까지 모두 통과했다는 뜻은 아니다.",
+        "limitation": "실제 잘못된 주장 외에 미확인 설명도 거절한 항목이 있다. 자료 한계와 회사 사실 부재를 구분하는 세부 판정은 불안정하다."
+      }
+    },
+    {
+      "case_id": "explicit_expansion_plan",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 사업 확장을 위한 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "제목에는 사업 확장을 위한 신규 생산라인 가동 계획 발표가 담겨 있습니다. 사업 확장 계획이며, 실제 가동 여부는 이 제목만으로 확인할 수 없습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "accepted",
+      "checked_text": "제목에는 사업 확장을 위한 신규 생산라인 가동 계획 발표가 담겨 있습니다. 사업 확장 계획이며, 실제 가동 여부는 이 제목만으로 확인할 수 없습니다.",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Matches headline text.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Derived from headline.",
+                "supported": true
+              },
+              {
+                "id": "intro_2",
+                "reason": "Acknowledges limitation; no evidence for operation.",
+                "supported": true
+              }
+            ],
+            "reason": "No issues found; all statements are supported by evidence and meet answer requirements.",
+            "checks": {
+              "evidence_match": true,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": true,
+            "answers_question": true
+          }
+        }
+      ],
+      "expected_status": "accepted",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 개별 문장 이유의 정확성까지 모두 통과했다는 뜻은 아니다."
+      }
+    },
+    {
+      "case_id": "replacement_not_expansion",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 기존 생산라인 교체 계획 발표",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "제목에는 기존 생산라인 교체 계획이 담겨 있습니다. 이는 사업 규모를 확대하는 단계이며, 실제 가동 여부는 확인되지 않았습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "rejected",
+      "error_code": "chat_grounding",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "evidence_match": false,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": false,
+              "context_consistent": true
+            },
+            "supported": false,
+            "reason": "답변은 제목에 있는 ‘가상검수회사 기존 생산라인 교체 계획 발표’를 정확히 인용했으나, ‘사업 규모 확대’와 ‘실제 가동 여부’에 대한 주장은 본 헤드라인에 근거가 없으며, 이러한 추가 해석은 근거가 부족한 상태에서 확정적으로 제시되었습니다. 또한 답변에 ‘뉴스 제목 기준’이라는 범위 고지가 없으므로 범위가 명시되지 않았습니다.",
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "헤드라인 ‘가상검수회사 기존 생산라인 교체 계획 발표’와 일치합니다.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "헤드라인은 ‘생산라인 교체 계획’만을 언급하고 있으며, ‘사업 규모 확대’라는 내용은 근거가 없습니다.",
+                "supported": false
+              },
+              {
+                "id": "intro_2",
+                "reason": "헤드라인은 가동 여부에 대한 정보를 제공하지 않으므로 ‘실제 가동 여부는 확인되지 않았습니다’라는 주장은 근거가 없습니다.",
+                "supported": false
+              }
+            ]
+          }
+        }
+      ],
+      "expected_status": "rejected",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 개별 문장 이유의 정확성까지 모두 통과했다는 뜻은 아니다.",
+        "limitation": "실제 잘못된 주장 외에 미확인 설명도 거절한 항목이 있다. 자료 한계와 회사 사실 부재를 구분하는 세부 판정은 불안정하다."
+      }
+    },
+    {
+      "case_id": "plan_not_realized",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다. 공장 가동이 시작됐으며, 매출 증가는 아직 확인되지 않았습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "rejected",
+      "error_code": "chat_grounding",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "증거가 제목에 \"신규 생산라인 가동 계획 발표\"를 명시하고 있어, 해당 문장은 증거와 일치합니다.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "증거는 계획 발표만을 담고 있으며, 실제 가동 시작 여부를 언급하지 않으므로 이 문장은 증거와 일치하지 않습니다.",
+                "supported": false
+              },
+              {
+                "id": "intro_2",
+                "reason": "증거에는 매출에 관한 내용이 없으므로, 매출 증가는 아직 확인되지 않았다는 주장은 증거와 일치하지 않습니다.",
+                "supported": false
+              }
+            ],
+            "reason": "두 번째와 세 번째 문장은 증거에 근거하지 않으며, 실제 가동 여부와 매출 상황을 추정한 부정확한 주장이다.",
+            "checks": {
+              "evidence_match": false,
+              "time_basis": false,
+              "question_focus": false,
+              "explanation": true,
+              "scope_disclosed": false,
+              "context_consistent": true
+            },
+            "supported": false,
+            "answers_question": false
+          }
+        }
+      ],
+      "expected_status": "rejected",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 개별 문장 이유의 정확성까지 모두 통과했다는 뜻은 아니다.",
+        "limitation": "실제 잘못된 주장 외에 미확인 설명도 거절한 항목이 있다. 자료 한계와 회사 사실 부재를 구분하는 세부 판정은 불안정하다."
+      }
+    },
+    {
+      "case_id": "bounded_unknown",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다. 실제 가동 여부와 사업 규모 변화는 이 제목만으로 확인할 수 없습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "accepted",
+      "checked_text": "제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다. 실제 가동 여부와 사업 규모 변화는 이 제목만으로 확인할 수 없습니다.",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "reason": "Answer accurately reflects headline content and acknowledges limitations; all statements are supported by evidence.",
+            "supported": true,
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "문장과 근거가 일치하며, 제목에 ‘신규 생산라인 가동 계획 발표’가 포함되어 있음",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "제목에 가동 여부나 사업 규모 변화가 명시되지 않았음을 근거로 한 제한적 진술",
+                "supported": true
+              }
+            ]
+          }
+        }
+      ],
+      "expected_status": "accepted",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 개별 문장 이유의 정확성까지 모두 통과했다는 뜻은 아니다."
+      }
+    },
+    {
+      "case_id": "invented_cause",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 공급 계약 취소 공시",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "제목에는 공급 계약 취소 공시가 담겨 있습니다. 취소는 수요 감소 때문이며, 영향 규모는 확인되지 않았습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "rejected",
+      "error_code": "chat_grounding",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "제목에 ‘가상검수회사 공급 계약 취소 공시’가 포함되어 있어 사실이 확인됩니다.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "제목에 수요 감소가 언급되지 않아 ‘취소는 수요 감소 때문’이라는 주장은 근거가 없습니다.",
+                "supported": false
+              },
+              {
+                "id": "intro_2",
+                "reason": "제목에 영향 규모가 명시되지 않아 ‘영향 규모는 확인되지 않았습니다’라는 주장은 근거가 없습니다.",
+                "supported": false
+              }
+            ],
+            "reason": "답변은 공급 계약 취소 사실을 정확히 반영했으나, 취소 원인과 영향 규모에 대한 주장이 근거 없이 제시되었습니다. 또한, 뉴스가 제목만을 기준으로 수집되었음을 명시하지 않아 범위가 불명확합니다. 이로 인해 evidence_match와 scope_disclosed가 충족되지 않았습니다.",
+            "checks": {
+              "evidence_match": false,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": false,
+              "context_consistent": true
+            },
+            "supported": false,
+            "answers_question": true
+          }
+        }
+      ],
+      "expected_status": "rejected",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 개별 문장 이유의 정확성까지 모두 통과했다는 뜻은 아니다.",
+        "limitation": "실제 잘못된 주장 외에 미확인 설명도 거절한 항목이 있다. 자료 한계와 회사 사실 부재를 구분하는 세부 판정은 불안정하다."
+      }
+    },
+    {
+      "case_id": "bounded_cancel",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 공급 계약 취소 공시",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "original_payload": {
+        "text": "제목에는 공급 계약 취소 공시가 담겨 있습니다. 취소 사유와 재무적 영향은 이 제목만으로 확인할 수 없습니다.",
+        "evidence_ids": [
+          "NEWS_1"
+        ],
+        "blocks": [],
+        "follow_up": ""
+      },
+      "status": "accepted",
+      "checked_text": "제목에는 공급 계약 취소 공시가 담겨 있습니다. 취소 사유와 재무적 영향은 이 제목만으로 확인할 수 없습니다.",
+      "parsed_response_trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "reason": "All statements directly reflect the headline evidence and do not infer additional facts. The answer remains within the scope of the headline, does not assume event dates, and stays focused on the user’s request.",
+            "supported": true,
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Headline explicitly contains '공급 계약 취소 공시', matching the statement.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Headline does not provide cancellation reason or financial impact; statement correctly notes lack of confirmation.",
+                "supported": true
+              }
+            ]
+          }
+        }
+      ],
+      "expected_status": "accepted",
+      "matches_expected": true,
+      "quality_review": {
+        "status": "expected_overall_decision",
+        "note": "사전에 지정한 전체 허용/거절과 일치했다. 개별 문장 이유의 정확성까지 모두 통과했다는 뜻은 아니다."
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "4cfa547a6efd6f8700cb244e11e4dd77070cdbf9680fa5df63a0174f9784221a",
+    "src/agents/answer_quality.py": "c7ea7bcc1a741096ca042d0c376cc5e0eeb713efcdc85bd6031d96f3ab5e3aa3",
+    "src/agents/transport.py": "5c3b53e7e602dc9277c6108ab1b6a682bf1ddb9ffb83ed48e53f5491f946d096"
+  },
+  "evaluation_note": "정상 3개 허용·오류 4개 거절로 전체 기대 판정 7/7 일치. 모두 가상 저장 답변에 대한 실제 검증 호출이며 새 답변 생성이나 시장 정보 검수가 아니다. 개별 판정의 과잉 거절은 미완료다."
+}

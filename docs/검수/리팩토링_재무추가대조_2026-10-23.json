@@ -1,0 +1,36 @@
+{
+  "baseline_commit": "b71e262",
+  "scope": "재무 계산 구조 변경 전후 비교",
+  "cases": 128,
+  "passed": 128,
+  "dimensions": {
+    "official_roe": [
+      null,
+      "0",
+      "-2.375",
+      "11.23456789"
+    ],
+    "prior_equity": [
+      null,
+      "200000000000",
+      "0",
+      "-1"
+    ],
+    "reports": [
+      "11011",
+      "11013"
+    ],
+    "fs_div": [
+      "CFS",
+      "OFS"
+    ],
+    "high_precision_decimal": [
+      false,
+      true
+    ]
+  },
+  "ignored": [
+    "retrieved_at"
+  ],
+  "live_api": false
+}

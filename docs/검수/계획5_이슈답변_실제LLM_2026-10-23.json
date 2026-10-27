@@ -1,0 +1,35 @@
+{
+  "checked_at": "2026-10-23T20:27:10.259709+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "cases": [
+    {
+      "question": "이 종목의 뉴스 이슈를 분석해줘",
+      "status": "error",
+      "error_code": "chat_numbers",
+      "message": "본문 수치는 확인된 값 자리표시자로 표시해야 합니다."
+    },
+    {
+      "question": "이 종목 뉴스를 세 줄로 요약해줘",
+      "status": "error",
+      "error_code": "ai_rate_limit",
+      "message": "AI 요청 한도에 도달했습니다. 잠시 기다린 뒤 다시 입력해 주세요."
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "65330fe681101548a7666a050e1091b18fa29618f7a1425a0ee0de4966868118",
+    "src/agents/transport.py": "dd077d776438ccd87b4e38efd29c461a1f11c2cf430bd5d026fa298cdb871b53",
+    "src/models.py": "2a908fb95d176420202fad94ee70f0ad30081199a23074fe64dc6869e25db5cc",
+    "src/ui/answer.py": "3ec8b21465de311e84aea30bf2420042c03005354a3a2221991a6415967ea588"
+  },
+  "review": {
+    "quality_passed": false,
+    "first_case": "수치 검증 거절. 당시 파싱 응답 trace를 저장하지 않아 원인 숫자·위치는 미확인.",
+    "second_case": "공급자 한도 도달로 중단.",
+    "unexecuted": [
+      "PER 해석",
+      "계획과 실적 후속 질문"
+    ],
+    "after_attempt": "재작성 안내와 검수 trace 저장을 보완했지만 실제 재검수는 하지 않음."
+  }
+}

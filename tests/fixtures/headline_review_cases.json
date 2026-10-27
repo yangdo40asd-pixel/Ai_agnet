@@ -1,0 +1,390 @@
+{
+  "synthetic_data": true,
+  "purpose": "실제 검증기의 오승인과 과잉 거절을 구분하는 가상 대조 사례. 시장 사실이 아닙니다.",
+  "cases": [
+    {
+      "question": "이 종목의 뉴스 이슈를 분석해줘",
+      "status": "returned",
+      "text": "수집된 뉴스 제목 기준입니다. 가상검수회사의 최근 뉴스 이슈는 신규 생산라인 가동 계획과 별도 공급 계약 취소 두 가지가 있습니다.\n\n**신규 생산라인 가동 계획**\n가상검수회사는 신규 생산라인 가동을 계획하고 있음을 발표했습니다. 이는 사업 확장 단계이며, 실제 가동 여부는 아직 확인되지 않았습니다.\n\n**별도 공급 계약 취소**\n가상검수회사는 별도 공급 계약을 취소한 사실을 공시했습니다. 계약 취소의 원인이나 재무적 영향은 아직 확인되지 않았습니다.",
+      "blocks": [
+        {
+          "title": "신규 생산라인 가동 계획",
+          "text": "가상검수회사는 신규 생산라인 가동을 계획하고 있음을 발표했습니다. 이는 사업 확장 단계이며, 실제 가동 여부는 아직 확인되지 않았습니다.",
+          "evidence_ids": [
+            "NEWS_1"
+          ]
+        },
+        {
+          "title": "별도 공급 계약 취소",
+          "text": "가상검수회사는 별도 공급 계약을 취소한 사실을 공시했습니다. 계약 취소의 원인이나 재무적 영향은 아직 확인되지 않았습니다.",
+          "evidence_ids": [
+            "NEWS_2"
+          ]
+        }
+      ],
+      "evidence_ids": [
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 5.58,
+      "case_id": "unsupported_expansion",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 최근 뉴스 이슈는 신규 생산라인 가동 계획과 별도 공급 계약 취소 두 가지가 있습니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "신규 생산라인 가동 계획",
+                "text": "가상검수회사는 신규 생산라인 가동을 계획하고 있음을 발표했습니다. 이는 사업 확장 단계이며, 실제 가동 여부는 아직 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "별도 공급 계약 취소",
+                "text": "가상검수회사는 별도 공급 계약을 취소한 사실을 공시했습니다. 계약 취소의 원인이나 재무적 영향은 아직 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "reason": "The answer accurately reflects the headline‑only evidence, does not infer causality or performance, keeps time basis separate, stays focused on the requested news items, discloses scope limitations, and remains context consistent. All checks are satisfied.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "supported": true,
+            "answers_question": true
+          }
+        }
+      ],
+      "quality_review": {
+        "verdict": "partial",
+        "notes": "제목 수집 범위/사건 단계/원인과 영향 미확인을 설명함. 신규 라인을 사업 확장 단계로 단정하는 과잉 해석은 남음."
+      },
+      "expected_status": "rejected"
+    },
+    {
+      "case_id": "explicit_expansion_plan",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 사업 확장을 위한 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "제목에는 사업 확장을 위한 신규 생산라인 가동 계획 발표가 담겨 있습니다. 사업 확장 계획이며, 실제 가동 여부는 이 제목만으로 확인할 수 없습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ],
+      "expected_status": "accepted"
+    },
+    {
+      "case_id": "replacement_not_expansion",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 기존 생산라인 교체 계획 발표",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "제목에는 기존 생산라인 교체 계획이 담겨 있습니다. 이는 사업 규모를 확대하는 단계이며, 실제 가동 여부는 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ],
+      "expected_status": "rejected"
+    },
+    {
+      "case_id": "plan_not_realized",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다. 공장 가동이 시작됐으며, 매출 증가는 아직 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ],
+      "expected_status": "rejected"
+    },
+    {
+      "case_id": "bounded_unknown",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다. 실제 가동 여부와 사업 규모 변화는 이 제목만으로 확인할 수 없습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ],
+      "expected_status": "accepted"
+    },
+    {
+      "case_id": "invented_cause",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 공급 계약 취소 공시",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "제목에는 공급 계약 취소 공시가 담겨 있습니다. 취소는 수요 감소 때문이며, 영향 규모는 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ],
+      "expected_status": "rejected"
+    },
+    {
+      "case_id": "bounded_cancel",
+      "question": "이 뉴스의 의미를 짧게 설명해줘",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "NEWS_1": {
+            "text": "가상검수회사 공급 계약 취소 공시",
+            "url": "https://example.com/synthetic-review",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:31:59.959584+09:00",
+            "scope": "headline_only"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "제목에는 공급 계약 취소 공시가 담겨 있습니다. 취소 사유와 재무적 영향은 이 제목만으로 확인할 수 없습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "blocks": [],
+            "follow_up": ""
+          }
+        }
+      ],
+      "expected_status": "accepted"
+    }
+  ]
+}

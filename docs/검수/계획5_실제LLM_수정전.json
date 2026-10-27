@@ -1,0 +1,51 @@
+{
+  "checked_at": "2026-10-21T16:29:24.884069+09:00",
+  "model": "openai/gpt-oss-20b",
+  "synthetic_data": true,
+  "cases": [
+    {
+      "question": "이 종목의 PER을 어떻게 해석해야 합니까?",
+      "status": "error",
+      "error_code": "chat_numbers",
+      "message": "본문 수치는 확인된 값 자리표시자로 표시해야 합니다."
+    },
+    {
+      "question": "매수와 매도의 차이는 무엇입니까?",
+      "status": "returned",
+      "text": "매수와 매도는 주식 거래에서 기본적인 두 가지 행위입니다. 매수는 투자자가 주식을 구매하는 행위이며, 매도는 보유 중인 주식을 판매하는 행위입니다. 매수 시에는 주식의 현재 가격보다 낮은 가격에 매입하려는 의도를 표시하고, 매도 시에는 보유 주식을 현재 시장 가격에 팔아 현금화하거나 다른 자산으로 교환하려는 의도를 표시합니다. 두 행위는 투자자의 포지션을 바꾸는 핵심적인 수단이며, 시장 가격 변동에 따라 수익이나 손실이 결정됩니다.\n\n- 매수: 주식 구매 → 포지션 증가\n- 매도: 주식 판매 → 포지션 감소\n\n이러한 차이는 거래 목적과 결과에 따라 구분됩니다. 매수는 상승 기대, 매도는 이익 실현 또는 손실 방지 등을 목적으로 합니다.",
+      "evidence_ids": [],
+      "follow_up": "",
+      "elapsed_seconds": 2.11,
+      "path": "live_llm"
+    },
+    {
+      "question": "현재 PBR은 왜 없습니까?",
+      "status": "returned",
+      "text": "가상검수회사 · PBR: 정보 없음.\n\n이번 자료에서는 누락 원인을 확인할 수 없습니다. 값이 영이라는 뜻은 아닙니다.",
+      "evidence_ids": [
+        "PBR"
+      ],
+      "follow_up": "",
+      "elapsed_seconds": 0.0,
+      "path": "deterministic"
+    },
+    {
+      "question": "테마 검색 말고 삼성전자만 보고 싶습니다.",
+      "status": "classified",
+      "intent": {
+        "action": "lookup",
+        "theme": "삼성전자",
+        "code": "",
+        "company": "삼성전자",
+        "scope": "all",
+        "period": "",
+        "reason": ""
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "1f8eeab74223b35717cc785091f186bc60c4a24ce6049fc8cb4dfbb5e4d27694",
+    "src/agents/request.py": "f862e320e44ae8a31a6c38bd12e96913f9769dbbb3af5302e33413bf6b4dc879",
+    "src/ui/app.py": "a475702a63726e5c690d50f8a0b3efeb6f22a8a97f9bb2203dc948d880b479fa"
+  }
+}

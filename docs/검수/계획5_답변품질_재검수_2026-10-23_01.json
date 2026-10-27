@@ -1,0 +1,138 @@
+{
+  "checked_at": "2026-10-23T20:52:59.294753+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "cases": [
+    {
+      "question": "이 종목의 뉴스 이슈를 분석해줘",
+      "status": "error",
+      "error_code": "chat_grounding",
+      "message": "답변의 사실 근거나 질문 충족 여부를 확인하지 못했습니다.",
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 최근 뉴스 이슈는 신규 생산라인 가동 계획과 별도 공급 계약 취소 두 가지가 있습니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "신규 생산라인 가동 계획",
+                "text": "가상검수회사는 2026년 10월 19일에 신규 생산라인 가동 계획을 발표했습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "별도 공급 계약 취소",
+                "text": "가상검수회사는 2026년 10월 20일에 별도 공급 계약을 취소했다고 보도되었습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 최근 뉴스 이슈는 신규 생산라인 가동 계획 발표와 별도 공급 계약 취소 공시 두 가지가 있습니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "신규 생산라인 가동 계획",
+                "text": "가상검수회사는 신규 생산라인 가동 계획을 발표했습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "별도 공급 계약 취소",
+                "text": "가상검수회사는 별도 공급 계약을 취소했다고 보도되었습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "supported": false,
+            "answers_question": false,
+            "reason": "Answer lacks analysis and does not address the question; evidence only repeated."
+          }
+        }
+      ],
+      "quality_review": {
+        "notes": "실제 응답의 날짜 생성이 chat_numbers로 거절됐고 재작성은 제목 반복으로 chat_grounding 거절. 사건 의미와 제목 수집 한계 설명 부족.",
+        "verdict": "failed"
+      }
+    },
+    {
+      "question": "이 종목 뉴스를 세 줄로 요약해줘",
+      "status": "returned",
+      "text": "가상검수회사는 신규 생산라인 가동 계획을 발표했습니다. 이어 별도 공급 계약이 취소되었다는 공시가 나왔습니다. 두 사건은 서로 다른 시점에 발생한 것으로 보입니다.",
+      "blocks": [],
+      "evidence_ids": [
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 14.5,
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사는 신규 생산라인 가동 계획을 발표했습니다. 이어 별도 공급 계약이 취소되었다는 공시가 나왔습니다. 두 사건은 서로 다른 시점에 발생한 것으로 보입니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "supported": true,
+            "answers_question": true,
+            "reason": ""
+          }
+        }
+      ],
+      "quality_review": {
+        "notes": "API 반환 및 자체 검증 통과. 발행 순서에서 사건 시점을 추정하고 제목 수집 범위를 누락. 수동 품질 미통과.",
+        "verdict": "failed"
+      }
+    },
+    {
+      "question": "이 종목의 PER을 어떻게 해석해야 합니까?",
+      "status": "error",
+      "error_code": "ai_rate_limit",
+      "message": "AI 요청 한도에 도달했습니다. 잠시 기다린 뒤 다시 입력해 주세요.",
+      "parsed_response_trace": [],
+      "quality_review": {
+        "notes": "ai_rate_limit로 생성 응답을 받지 못함.",
+        "verdict": "not_evaluated"
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "850aebc9ae84f3a7df0d3b50a43b5699d05494fe8d8be6390be1aec1c34d6cad",
+    "src/agents/transport.py": "dd077d776438ccd87b4e38efd29c461a1f11c2cf430bd5d026fa298cdb871b53",
+    "src/models.py": "2a908fb95d176420202fad94ee70f0ad30081199a23074fe64dc6869e25db5cc",
+    "src/ui/answer.py": "3ec8b21465de311e84aea30bf2420042c03005354a3a2221991a6415967ea588"
+  },
+  "evaluation_note": "실제 LLM + 가상 입력. 응답 원문/자동 판정은 그대로 보존하며 quality_review는 별도 수동 내용 평가다. 테스트 통과와 API 반환을 품질 통과로 세지 않는다."
+}

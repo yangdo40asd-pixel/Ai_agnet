@@ -1,0 +1,639 @@
+{
+  "checked_at": "2026-10-24T21:18:58.339328+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "cases": [
+    {
+      "question": "이 종목의 뉴스 이슈를 분석해줘",
+      "status": "error",
+      "error_code": "chat_grounding",
+      "message": "답변의 사실 근거나 질문 충족 여부를 확인하지 못했습니다.",
+      "case_id": "issues",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 최근 뉴스 이슈를 정리해 드립니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "신규 생산라인 가동 계획",
+                "text": "가상검수회사는 신규 생산라인 가동 계획을 발표했습니다. 이 제목만으로는 실제 가동 여부, 일정, 재무적 영향 등을 확인할 수 없습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "공급 계약 취소 공시",
+                "text": "가상검수회사는 별도 공급 계약을 취소했다고 공시했습니다. 계약 취소의 원인, 규모, 이후 조치 등에 대한 내용은 이 제목만으로는 알 수 없습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": false,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "reason": "각 문장은 제공된 증거와 일치하지 않아 근거가 부족합니다.",
+            "supported": true,
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "문장과 증거가 일치하지 않음",
+                "supported": false
+              },
+              {
+                "id": "intro_1",
+                "reason": "문장과 증거가 일치하지 않음",
+                "supported": false
+              },
+              {
+                "id": "block_0_0",
+                "reason": "문장과 증거가 일치하지 않음",
+                "supported": false
+              },
+              {
+                "id": "block_0_1",
+                "reason": "문장과 증거가 일치하지 않음",
+                "supported": false
+              },
+              {
+                "id": "block_0_2",
+                "reason": "문장과 증거가 일치하지 않음",
+                "supported": false
+              },
+              {
+                "id": "block_1_0",
+                "reason": "문장과 증거가 일치하지 않음",
+                "supported": false
+              },
+              {
+                "id": "block_1_1",
+                "reason": "문장과 증거가 일치하지 않음",
+                "supported": false
+              },
+              {
+                "id": "block_1_2",
+                "reason": "문장과 증거가 일치하지 않음",
+                "supported": false
+              }
+            ]
+          }
+        },
+        {
+          "task": "answer_validation",
+          "error_code": "chat_grounding"
+        },
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사의 최근 뉴스 이슈를 정리해 드립니다.",
+            "evidence_ids": [
+              "NEWS_STATUS"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "신규 생산라인 가동 계획",
+                "text": "가상검수회사는 신규 생산라인 가동 계획을 발표했습니다. 이 제목만으로는 실제 가동 여부, 일정, 재무적 영향 등을 확인할 수 없습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "별도 공급 계약 취소 공시",
+                "text": "가상검수회사는 별도 공급 계약을 취소했다고 공시했습니다. 계약 취소의 원인, 규모, 이후 조치 등에 대한 내용은 이 제목만으로는 알 수 없습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "answers_question": true,
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": false,
+              "explanation": true,
+              "question_focus": true,
+              "scope_disclosed": true,
+              "time_basis": true
+            },
+            "reason": "All statements are either introductory (not factual claims) or contain wording not fully present in the headline evidence; only the introductions are considered supported, the rest are not.",
+            "supported": true,
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Introductory statement, no factual claim; evidence not required.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Introductory statement, no factual claim; evidence not required.",
+                "supported": true
+              },
+              {
+                "id": "block_0_0",
+                "reason": "Partial headline; not fully matched to evidence.",
+                "supported": false
+              },
+              {
+                "id": "block_0_1",
+                "reason": "Adds verb not in headline; not fully matched.",
+                "supported": false
+              },
+              {
+                "id": "block_0_2",
+                "reason": "Statement not present in headline; not matched.",
+                "supported": false
+              },
+              {
+                "id": "block_1_0",
+                "reason": "Partial headline; not fully matched to evidence.",
+                "supported": false
+              },
+              {
+                "id": "block_1_1",
+                "reason": "Adds verb not in headline; not fully matched.",
+                "supported": false
+              },
+              {
+                "id": "block_1_2",
+                "reason": "Statement not present in headline; not matched.",
+                "supported": false
+              }
+            ]
+          }
+        },
+        {
+          "task": "answer_validation",
+          "error_code": "chat_grounding"
+        }
+      ],
+      "quality_review": {
+        "status": "false_rejection",
+        "note": "제목의 뜻을 유지한 서술문/제목/자료 한계 설명을 검증기가 문자 불일치로 거절했다. 본문 내용은 근거 범위에 부합하나 도입은 예고형이다. 사용자가 받을 완성 응답은 반환되지 않았다."
+      }
+    },
+    {
+      "question": "그러면 그 발표로 실적 개선이 확정된 건가요?",
+      "status": "returned",
+      "text": "제목에 따르면 가상검수회사의 신규 생산라인 가동 계획이 발표되었습니다. 이 발표만으로는 실적 개선이 확정된 것은 아닙니다. 실제 실적 개선 여부는 이후 재무제표나 공시에서 확인해야 합니다.",
+      "blocks": [],
+      "evidence_ids": [
+        "NEWS_1"
+      ],
+      "follow_up": "",
+      "path": "live_llm",
+      "elapsed_seconds": 132.37,
+      "quality_review": {
+        "status": "passed_sample",
+        "note": "앞서 질문한 생산라인 계획에 집중해 실적 개선 확정이 아님과 확인할 자료를 설명했다. 별도 계약 취소를 추가하지 않았다. 제목 기준 범위와 정중한 문체를 유지했다."
+      },
+      "case_id": "followup",
+      "fixture": {
+        "question_history": [
+          {
+            "role": "user",
+            "text": "이 종목의 생산라인 뉴스는 무엇입니까?"
+          },
+          {
+            "role": "assistant",
+            "text": "제목에는 신규 생산라인 가동 계획 발표가 담겨 있습니다."
+          }
+        ],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T21:18:58.339328+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "제목에 따르면 가상검수회사의 신규 생산라인 가동 계획이 발표되었습니다. 이 발표만으로는 실적 개선이 확정된 것은 아닙니다. 실제 실적 개선 여부는 이후 재무제표나 공시에서 확인해야 합니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "Evidence text \"가상검수회사 신규 생산라인 가동 계획 발표\" matches statement.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "Statement acknowledges lack of evidence for 실적 개선; evidence does not mention 실적 개선.",
+                "supported": true
+              },
+              {
+                "id": "intro_2",
+                "reason": "Statement correctly notes that 실적 개선 여부 requires later 재무제표 or 공시; evidence does not provide it.",
+                "supported": true
+              }
+            ],
+            "reason": "All statements are either directly supported by the headline evidence or appropriately qualify the lack of evidence. The answer consistently references the headline, does not infer event dates, stays within the scope of the headline, and addresses the user’s question without adding unrelated information.",
+            "checks": {
+              "evidence_match": true,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": true,
+            "answers_question": true
+          }
+        }
+      ]
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "518534cf70369b971531e8782fac050ce2b40c66418cb4c5fc2940b1366989c6",
+    "src/agents/answer_quality.py": "9039c1a37f4ddd4211fc4e4679e097015c1a60bb3d180f900084966c2eb80ec6",
+    "src/agents/transport.py": "7b089fa916d616de6f5a04c223e5e0c42a0f17b1ac8ae70467ca1784d3430ea3",
+    "src/agents/rate_control.py": "f623a71943cf3b5ce0a037bb372681de126de5cf4e40ec2ddc0f34efa93cc5c9",
+    "src/models.py": "2a908fb95d176420202fad94ee70f0ad30081199a23074fe64dc6869e25db5cc",
+    "src/ui/answer.py": "3ec8b21465de311e84aea30bf2420042c03005354a3a2221991a6415967ea588"
+  },
+  "rate_control": {
+    "interval_seconds": 65.0,
+    "max_wait_seconds": 180.0,
+    "scope": "one_verification_process",
+    "events": [
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 996,
+          "limit_tokens": 8000,
+          "remaining_tokens": 5311,
+          "reset_tokens_seconds": 20.167,
+          "reset_requests_seconds": 345.6
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 1835,
+        "completion_tokens": 197,
+        "total_tokens": 2032
+      },
+      {
+        "event": "wait",
+        "seconds": 64.813
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 995,
+          "limit_tokens": 8000,
+          "remaining_tokens": 3488,
+          "reset_tokens_seconds": 33.839,
+          "reset_requests_seconds": 432.0
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 4000,
+        "completion_tokens": 1682,
+        "total_tokens": 5682
+      },
+      {
+        "event": "wait",
+        "seconds": 64.815
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 994,
+          "limit_tokens": 8000,
+          "remaining_tokens": 5281,
+          "reset_tokens_seconds": 20.392,
+          "reset_requests_seconds": 518.4
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 2461,
+        "completion_tokens": 191,
+        "total_tokens": 2652
+      },
+      {
+        "event": "wait",
+        "seconds": 64.83
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 993,
+          "limit_tokens": 8000,
+          "remaining_tokens": 3965,
+          "reset_tokens_seconds": 30.262,
+          "reset_requests_seconds": 604.8
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 3840,
+        "completion_tokens": 1806,
+        "total_tokens": 5646
+      },
+      {
+        "event": "wait",
+        "seconds": 64.824
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 992,
+          "limit_tokens": 8000,
+          "remaining_tokens": 4331,
+          "reset_tokens_seconds": 27.517,
+          "reset_requests_seconds": 691.2
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 1863,
+        "completion_tokens": 93,
+        "total_tokens": 1956
+      },
+      {
+        "event": "wait",
+        "seconds": 64.826
+      },
+      {
+        "event": "response",
+        "status": 200,
+        "limits": {
+          "limit_requests": 1000,
+          "remaining_requests": 991,
+          "limit_tokens": 8000,
+          "remaining_tokens": 4802,
+          "reset_tokens_seconds": 23.985,
+          "reset_requests_seconds": 777.599
+        }
+      },
+      {
+        "event": "usage",
+        "prompt_tokens": 2978,
+        "completion_tokens": 909,
+        "total_tokens": 3887
+      }
+    ]
+  },
+  "evaluation_note": "HTTP 호출 6개 모두 200으로 한도 중단은 없었다. 뉴스 답변은 검증기의 과잉 거절로 미완료, 실제 후속 답변은 표본 기준 통과다. 사용한 코드 해시와 원문을 보존한다."
+}

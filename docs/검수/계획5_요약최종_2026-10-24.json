@@ -1,0 +1,173 @@
+{
+  "checked_at": "2026-10-24T09:37:24.522293+09:00",
+  "synthetic_data": true,
+  "model": "openai/gpt-oss-20b",
+  "cases": [
+    {
+      "question": "이 종목 뉴스를 세 줄로 요약해줘",
+      "status": "error",
+      "error_code": "ai_failed",
+      "message": "AI 호출에 실패했습니다. API 설정·모델 이름·이용 한도를 확인해 주세요.",
+      "case_id": "summary",
+      "fixture": {
+        "question_history": [],
+        "evidence": {
+          "PRICE": {
+            "text": "가상검수회사 · PRICE: 10,000.00원",
+            "value_text": "10,000.00원",
+            "value": 10000,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "2026-10-20T15:30:00+09:00",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PER": {
+            "text": "가상검수회사 · PER: 12.50배",
+            "value_text": "12.50배",
+            "value": 12.5,
+            "status": "ok",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "PBR": {
+            "text": "가상검수회사 · PBR: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "EPS": {
+            "text": "가상검수회사 · EPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "BPS": {
+            "text": "가상검수회사 · BPS: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "ROE": {
+            "text": "가상검수회사 · ROE: 정보 없음",
+            "value_text": "정보 없음",
+            "value": null,
+            "status": "missing",
+            "reason": "",
+            "source": "Yahoo Finance (yfinance)",
+            "formula": "",
+            "period": "기준 기간 미확인",
+            "as_of": "자료 기준 시각 미확인",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00",
+            "stock_code": "123456",
+            "result_id": "synthetic-block-evaluation"
+          },
+          "NEWS_1": {
+            "text": "가상검수회사 신규 생산라인 가동 계획 발표",
+            "url": "https://example.com/plan",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.com",
+            "published_at": "2026-10-19T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_2": {
+            "text": "가상검수회사 별도 공급 계약 취소 공시",
+            "url": "https://example.org/cancel",
+            "source": "NAVER 뉴스 검색 API",
+            "publisher_domain": "example.org",
+            "published_at": "2026-10-20T09:00:00+09:00",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00",
+            "scope": "headline_only"
+          },
+          "NEWS_STATUS": {
+            "text": "ok",
+            "status": "ok",
+            "source": "NAVER 뉴스 검색 API",
+            "retrieved_at": "2026-10-24T09:37:24.522293+09:00"
+          }
+        }
+      },
+      "parsed_response_trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사 신규 생산라인 가동 계획이 발표되었습니다. 가상검수회사는 별도 공급 계약을 취소했습니다. 현재까지 확인된 내용은 기사 제목에 한정됩니다.",
+            "evidence_ids": [
+              "NEWS_1",
+              "NEWS_2"
+            ],
+            "follow_up": "",
+            "blocks": []
+          }
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "reason": "Answer does not use polite ‘입니다·합니다’ style, does not state it is based solely on headlines, does not mention separation of publication date and event timing, and provides no explanation of limitations. Therefore it fails the answer requirements. Evidence matches the headlines, no time inference is made, the answer stays within the requested scope, but it lacks an explanation and scope disclosure. The claims made are supported by the headline evidence.",
+            "checks": {
+              "context_consistent": true,
+              "evidence_match": true,
+              "explanation": false,
+              "question_focus": true,
+              "scope_disclosed": false,
+              "time_basis": true
+            },
+            "supported": true,
+            "answers_question": false
+          }
+        },
+        {
+          "task": "answer_validation",
+          "error_code": "chat_grounding"
+        }
+      ],
+      "quality_review": {
+        "verdict": "incomplete",
+        "notes": "정상 과거형 문체와 제목 범위 고지를 검증기가 잘못 거절했고 재작성 호출은 ai_failed로 종료. 최종 품질 성공으로 세지 않음."
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "25bf4c3be24614f73c79f7a45b4443f7a657ec1864389838190ffd3534ff2001",
+    "src/agents/answer_quality.py": "319bc28c3dbe24e9141827c771759a7a90bf643b47a8109e97f92fc18ef54e72",
+    "src/agents/transport.py": "f7615b67b41353155bd29f866f431f9e5b876f244f2ce97f4d85f7c0d8b41e14",
+    "src/models.py": "2a908fb95d176420202fad94ee70f0ad30081199a23074fe64dc6869e25db5cc",
+    "src/ui/answer.py": "3ec8b21465de311e84aea30bf2420042c03005354a3a2221991a6415967ea588"
+  },
+  "evaluation_note": "quality_review는 실제 출력에 대한 별도 수동 평가다. 가상 입력이며 실제 시장 데이터 연동 검사가 아니다. 자동 판정과 원문은 그대로 보존한다. passed_sample은 해당 표본만 충족하며 전체 품질 보증이 아니다."
+}

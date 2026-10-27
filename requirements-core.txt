@@ -1,0 +1,12 @@
+# 현재 src 프로그램에 직접 필요한 패키지.
+# requirements.txt는 이전 실험·확장 후보까지 포함한 목록으로 유지한다.
+# autoscroll 컨테이너와 업로더 제한을 함께 검수한 버전 이상.
+streamlit>=1.63.0
+yfinance
+finance-datareader
+requests
+pandas
+plotly
+XlsxWriter
+python-dotenv
+langchain-groq

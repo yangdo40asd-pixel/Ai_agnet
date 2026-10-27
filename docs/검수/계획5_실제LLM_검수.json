@@ -1,0 +1,75 @@
+{
+  "checked_at": "2026-10-21T16:43:01.142928+09:00",
+  "model": "openai/gpt-oss-20b",
+  "synthetic_data": true,
+  "cases": [
+    {
+      "question": "이 종목의 PER을 어떻게 해석해야 합니까?",
+      "status": "returned",
+      "text": "AI 해석의 근거를 확인하지 못해 조회값과 지표의 기본 의미를 제공합니다.\n\n가상검수회사 · PER: 12.50배입니다.\n\nPER는 주가가 주당순이익의 몇 배인지 나타내는 지표입니다. 계산식은 주가 ÷ 주당순이익입니다.\n\n조회된 12.50배는 주가가 계산에 사용된 주당순이익의 12.50배라는 의미입니다.\n\n적자이거나 이익이 일시적으로 변한 경우 해석에 주의해야 합니다.\n\n자료 기준: 자료 기준 시각 미확인 · 계산 기간: 기준 기간 미확인.\n\n업종·과거 비교 자료를 확인하지 않았으므로 상대적인 평가 수준은 판단하지 않습니다.",
+      "evidence_ids": [
+        "PER"
+      ],
+      "follow_up": "",
+      "elapsed_seconds": 3.45,
+      "path": "verified_metric_fallback",
+      "quality_review": {
+        "reviewer": "coding_assistant",
+        "generation_quality": "failed_validation",
+        "displayed_answer": "verified_value_definition_limit_passed",
+        "note": "모델 해석 성공이 아니라 대체 설명 경로를 확인함"
+      }
+    },
+    {
+      "question": "매수와 매도의 차이는 무엇입니까?",
+      "status": "returned",
+      "text": "매수는 주식을 사는 행위이며, 매도는 주식을 파는 행위입니다. 두 행위는 거래 방향을 나타내며, 가격 조건(지정가·시장가)은 별개의 주문 방식입니다. 따라서 매수와 매도는 ‘사다’와 ‘팔다’라는 방향성 차이만이 핵심이며, 가격 조건은 거래 방식에 따라 달라집니다.",
+      "evidence_ids": [],
+      "follow_up": "",
+      "elapsed_seconds": 2.57,
+      "path": "live_llm",
+      "quality_review": {
+        "reviewer": "coding_assistant",
+        "generation_quality": "reviewed_sample_passed",
+        "displayed_answer": "거래 방향과 주문 방식을 구분함",
+        "note": "같은 결론의 반복은 개선 여지가 있음"
+      }
+    },
+    {
+      "question": "현재 PBR은 왜 없습니까?",
+      "status": "returned",
+      "text": "가상검수회사 · PBR: 정보 없음.\n\n이번 자료에서는 누락 원인을 확인할 수 없습니다. 값이 영이라는 뜻은 아닙니다.",
+      "evidence_ids": [
+        "PBR"
+      ],
+      "follow_up": "",
+      "elapsed_seconds": 0.0,
+      "path": "deterministic",
+      "quality_review": {
+        "reviewer": "coding_assistant",
+        "generation_quality": "not_applicable",
+        "displayed_answer": "missing_cause_unknown_passed",
+        "note": "원인 미확인을 안내한 코드 기반 응답"
+      }
+    },
+    {
+      "question": "테마 검색 말고 삼성전자만 보고 싶습니다.",
+      "status": "classified",
+      "intent": {
+        "action": "lookup",
+        "theme": "삼성전자",
+        "code": "",
+        "company": "삼성전자",
+        "scope": "all",
+        "period": "",
+        "reason": ""
+      }
+    }
+  ],
+  "sha256": {
+    "src/agents/chat.py": "bf7f38841ddc345d5d125b87240e73e58f4f9898a53d8335bfbf731fca601b20",
+    "src/agents/request.py": "0c1e3c84df92f68fc2ac43a5dbc7e3754d013974d67a91889c741e5bd278e870",
+    "src/ui/app.py": "14a22cc13df79f30b6fc7022f80370f61e762fd1a19bf615ef86b64390071413"
+  },
+  "review_scope": "저장된 최종 표본을 코딩 에이전트가 읽어 평가. 사용자 승인이나 E01~E13 전체 평가를 뜻하지 않음."
+}

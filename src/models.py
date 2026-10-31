@@ -43,15 +43,64 @@ class StockCandidate:
 
 
 @dataclass(frozen=True)
+class CompanyBusinessProfile:
+    """공식 목록의 회사 식별·업종·제품 원문. 수집 시각은 자료 갱신일이 아니다."""
+    stock_name: str
+    stock_code: str
+    industry: str
+    products: str
+    retrieved_at: datetime
+    source_url: str
+    website_url: str = ""
+
+
+@dataclass(frozen=True)
+class CompanyBusinessSource:
+    """한 회사·한 문서·한 절의 사업 근거. 조회일과 보고기간은 구별한다."""
+    stock_name: str
+    stock_code: str
+    document_id: str
+    document_title: str
+    section_title: str
+    text: str
+    source_url: str
+    retrieved_at: datetime
+    content_hash: str
+    parser_revision: str
+    published_at: str | None = None
+    reporting_period: str | None = None
+    source: str = "OpenDART 정기보고서 사업 원문"
+    corp_code: str = ""
+
+
+@dataclass(frozen=True)
+class BusinessSourceBatch:
+    """부분 성공을 보존한다. 상태에 인증키/외부 응답 원문을 넣지 않는다."""
+    sources: tuple[CompanyBusinessSource, ...] = ()
+    statuses: tuple[tuple[str, str], ...] = ()
+
+
+@dataclass(frozen=True)
 class CandidateDiscoveryResult:
     theme: str
     candidates: tuple[StockCandidate, ...]
     retrieved_at: datetime
     failure_reason: str = ""
+    batch_codes: tuple[str, ...] = ()
+    business_profiles: tuple[CompanyBusinessProfile, ...] = ()
+    business_error: str = ""
+    business_sources: tuple[CompanyBusinessSource, ...] = ()
+    business_source_statuses: tuple[tuple[str, str], ...] = ()
 
     @property
     def selectable_candidates(self) -> tuple[StockCandidate, ...]:
         return tuple(candidate for candidate in self.candidates if candidate.selectable)
+
+    @property
+    def latest_candidates(self) -> tuple[StockCandidate, ...]:
+        if not self.batch_codes:
+            return self.candidates
+        return tuple(stock for stock in self.candidates if stock.code in self.batch_codes)
 
 
 @dataclass(frozen=True, init=False)
@@ -368,6 +417,47 @@ class NewsArticle:
     url: str | None
     published_at: str | None
     publisher_domain: str | None
+    description: str = ""
+
+
+@dataclass(frozen=True)
+class NewsAssessment:
+    article_id: int
+    relation: str
+    subject_quote: str
+    support_quote: str
+    accepted: bool
+    reason: str
+
+
+@dataclass(frozen=True)
+class NewsAdmission:
+    target_code: str
+    target_name: str
+    theme: str
+    context_id: str
+    fingerprint: str
+    policy_version: str
+    model_key: str
+    assessments: tuple[NewsAssessment, ...]
+
+
+@dataclass(frozen=True)
+class CompanyRelation:
+    fact_id: str
+    target_code: str
+    target_name: str
+    subject_name: str
+    relation: str
+    quote: str
+    source_id: str
+    source_hash: str
+    span: tuple[int, int]
+    source_url: str
+    source: str = 'OpenDART 공시 원문'
+    published_at: str | None = None
+    retrieved_at: str = ''
+    validity: str = 'document_only'
 
 
 @dataclass(frozen=True)
@@ -378,6 +468,50 @@ class NewsData:
     message: str = ""
     source: str = "NAVER 뉴스 검색 API"
     sort: str = "date"
+    admission: NewsAdmission | None = None
+    queries: tuple[str, ...] = ()
+    collection_note: str = ""
+    relationships: tuple[CompanyRelation, ...] = ()
+
+
+@dataclass(frozen=True)
+class SourceDocument:
+    evidence_id: str
+    stock_code: str
+    stock_name: str
+    title: str
+    text: str
+    source: str
+    url: str
+    retrieved_at: datetime
+    scope: str = "official_disclosure"
+    published_at: str | None = None
+    document_id: str = ""
+
+
+@dataclass(frozen=True)
+class StructuredFact:
+    fact_id: str
+    evidence_id: str
+    item: str
+    target: str
+    value: Decimal
+    unit: str
+    direction: str
+    scope: str
+    raw_text: str
+    span: tuple[int, int]
+    source_hash: str
+    article_published_at: str | None = None
+    event_occurred_at: str | None = None
+    financial_period: str | None = None
+    status: str = "candidate"
+    reason: str = ""
+    qualifier: str = ""
+    validity: str = "current"
+    ownership_basis: str = "unknown"
+    input_fact_ids: tuple[str, ...] = ()
+    formula: str = ""
 
 
 @dataclass(frozen=True)
@@ -387,12 +521,48 @@ class Statement:
     fact_ids: tuple[str, ...] = ()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, init=False)
 class AnswerBlock:
     """검증된 설명 하나와 그 설명에만 연결되는 근거 ID."""
     title: str
     text: str
     evidence_ids: tuple[str, ...] = ()
+    implication: str | None = None
+
+    def __init__(self, title=_UNSET, text=_UNSET, evidence_ids=(), implication=None, *,
+                 headline=_UNSET, summary=_UNSET):
+        for legacy, alias, name in ((title,headline,'title/headline'),(text,summary,'text/summary')):
+            if legacy is _UNSET and alias is _UNSET:
+                raise TypeError('필수 필드 누락: '+name)
+            if legacy is not _UNSET and alias is not _UNSET and legacy!=alias:
+                raise TypeError('상충하는 필드: '+name)
+        object.__setattr__(self,'title',headline if title is _UNSET else title)
+        object.__setattr__(self,'text',summary if text is _UNSET else text)
+        object.__setattr__(self,'evidence_ids',tuple(evidence_ids))
+        object.__setattr__(self,'implication',implication or None)
+
+    @property
+    def headline(self):
+        return self.title
+
+    @property
+    def summary(self):
+        return self.text
+
+
+@dataclass(frozen=True)
+class CompanyCardSection:
+    role: str
+    text: str
+    evidence_ids: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class CompanyCard:
+    stock_code: str
+    stock_name: str
+    sections: tuple[CompanyCardSection, ...] = ()
+    card_id: str = ""
 
 
 @dataclass(frozen=True)
@@ -403,10 +573,22 @@ class ChatResponse:
     follow_up: str = ""
     blocks: tuple[AnswerBlock, ...] = ()
     lead_evidence_ids: tuple[str, ...] = ()
+    notices: tuple[str, ...] = ()
+    company_cards: tuple[CompanyCard, ...] = ()
 
     @property
     def text(self) -> str:
-        return "\n\n".join([self.intro, *(f"**{b.title}**\n{b.text}" for b in self.blocks)])
+        parts = [self.intro] if self.intro else []
+        if self.blocks:
+            parts.extend(f"**{b.title}**\n{b.text}" + ('\n' + b.implication if b.implication else '') for b in self.blocks)
+        elif self.company_cards:
+            for c in self.company_cards:
+                card_parts = [f"**{c.stock_name}**"]
+                for s in c.sections:
+                    if s.text:
+                        card_parts.append(s.text)
+                parts.append("\n".join(card_parts))
+        return "\n\n".join(p for p in parts if p)
 
     def __iter__(self):
         # 기존 스크립트와 테스트의 text, evidence, follow_up 반환 계약.
@@ -443,6 +625,7 @@ class AnalysisResult:
     section_status: dict[str, str] = field(default_factory=dict)
     timings_ms: dict[str, float] = field(default_factory=dict)
     result_id: str = ""
+    source_documents: tuple[SourceDocument, ...] = ()
 
     def __init__(
         self,
@@ -467,6 +650,7 @@ class AnalysisResult:
         section_status: dict[str, str] = None,
         timings_ms: dict[str, float] = None,
         result_id: str = '',
+        source_documents: tuple[SourceDocument, ...] = (),
     ):
         """별칭 인수는 생성 시 변환하고 정식 필드만 저장한다."""
         object.__setattr__(self, "theme", theme)
@@ -487,6 +671,7 @@ class AnalysisResult:
         object.__setattr__(self, "section_status", dict() if section_status is None else section_status)
         object.__setattr__(self, "timings_ms", dict() if timings_ms is None else timings_ms)
         object.__setattr__(self, "result_id", result_id)
+        object.__setattr__(self, "source_documents", tuple(source_documents))
 
     @property
     def statements(self):

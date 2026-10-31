@@ -1,0 +1,608 @@
+[
+  {
+    "response": {
+      "text": "삼성SDI는 최근 실적 부진과 수익성 악화로 인해 어려운 시기를 지나고 있습니다. 2025년 확정 실적 기준 매출은 2024년 대비 20.04% 감소한 132,667.3억원을 기록했으며, 영업이익은 363.3억원에서 -17,223.6억원으로 적자 전환되었습니다. 특히 영업이익률은 2024년 2.19%에서 2025년 -12.98%로 15.17%p 하락하며 수익성이 크게 저하된 상태입니다. 보도에 따르면 삼성SDI를 포함한 배터리 3사는 올해 3분기 본업 체력을 회복하지 못한 것으로 나타났습니다. 다만 최근 2차전지 업종 전반에 소재와 배터리 셀 관련 종목이 동반 상승하며 성장 기대감이 다시 나타나고 있는 흐름도 확인됩니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_2",
+        "NEWS_7"
+      ],
+      "follow_up": "",
+      "blocks": []
+    },
+    "evidence": {
+      "PRICE": {
+        "text": "삼성SDI · PRICE: 534,000.00원",
+        "value_text": "534,000.00원",
+        "value": 534000.0,
+        "status": "ok",
+        "reason": "",
+        "source": "Yahoo Finance (yfinance)",
+        "formula": "",
+        "period": "기준 기간 미확인",
+        "as_of": "2026-10-28T15:30:21+09:00",
+        "retrieved_at": "2026-10-28T23:21:46.569002+09:00",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "PER": {
+        "text": "삼성SDI · PER: 875.41배",
+        "value_text": "875.41배",
+        "value": 875.4098360655738,
+        "status": "ok",
+        "reason": "",
+        "source": "Yahoo Finance (yfinance)",
+        "formula": "주가 / 최근 12개월 희석 EPS",
+        "period": "2026-06-30",
+        "as_of": "자료 기준 시각 미확인",
+        "retrieved_at": "2026-10-28T23:21:46.569002+09:00",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "EPS": {
+        "text": "삼성SDI · EPS: 610.00원",
+        "value_text": "610.00원",
+        "value": 610.0,
+        "status": "ok",
+        "reason": "최근 12개월 희석 EPS(2026-06-30 종료) 기준입니다.",
+        "source": "Yahoo Finance (yfinance)",
+        "formula": "",
+        "period": "최근 12개월(TTM, 2026-06-30 종료)",
+        "as_of": "자료 기준 시각 미확인",
+        "retrieved_at": "2026-10-28T23:21:46.569002+09:00",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "ROE": {
+        "text": "삼성SDI · ROE: -2.59%",
+        "value_text": "-2.59%",
+        "value": -2.592,
+        "status": "ok",
+        "reason": "fnlttSinglIndx API 응답값(연결/별도 구분 인자 미제공 API)",
+        "source": "OpenDART 주요 재무지표 (fnlttSinglIndx)",
+        "formula": "OpenDART 공식 수익성지표 제공값",
+        "period": "2025년 사업보고서",
+        "as_of": "자료 기준 시각 미확인",
+        "retrieved_at": "2026-10-28T23:21:50.410011+09:00",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "NEWS_2": {
+        "text": "LG에너지솔루션·삼성SDI·SK온, 배터리3사 실적 '제자리걸음'..승부처는...",
+        "scope": "article_excerpt",
+        "stock_name": "삼성SDI",
+        "structured_facts": [
+          {
+            "fact_id": "NEWS_2_EX_F1",
+            "item": "financial_period",
+            "target": "삼성SDI",
+            "value": "3",
+            "unit": "분기",
+            "direction": "value",
+            "scope": "article_excerpt",
+            "qualifier": "reported",
+            "validity": "current",
+            "ownership_basis": "unknown",
+            "status": "verified"
+          }
+        ],
+        "excerpt": "28일 배터리업계에 따르면 삼성SDI와 SK온은 올해 3분기 본업 체력을 회복하지 못했다, 회사들은 오는 29일... 2차전지 담당 대형 증권사 연구원은 \"3분기 실적은 고객사 보상금과 합작 정산금 같은 일회성 요인에...",
+        "excerpt_scope": "article_excerpt",
+        "source": "NAVER 뉴스 검색 API",
+        "relation": "company",
+        "admitted": true,
+        "subject_quote": "삼성SDI",
+        "support_quote": "LG에너지솔루션·삼성SDI·SK온, 배터리3사 실적 '제자리걸음'"
+      },
+      "NEWS_4": {
+        "text": "[거래소 지수옵션 선물] 이차전지 선물 동반 상승…삼성SDI·에코프로비...",
+        "scope": "article_excerpt",
+        "stock_name": "삼성SDI",
+        "structured_facts": [],
+        "excerpt": "2차전지 업종에서는 삼성SDI와 포스코퓨처엠, 에코프로, 에코프로비엠, LG에너지솔루션이 모두 상승했다. 소재와 배터리 셀 관련 종목이 함께 강세를 보이며 업종 전반의 상승 흐름을 형성했다. 정유·화학·철강 관련...",
+        "excerpt_scope": "article_excerpt",
+        "source": "NAVER 뉴스 검색 API",
+        "relation": "company",
+        "admitted": true,
+        "subject_quote": "삼성SDI",
+        "support_quote": "이차전지 선물 동반 상승…삼성SDI·에코프로비"
+      },
+      "NEWS_7": {
+        "text": "전기차 넘어 ESS까지… 2차전지 업종에 되살아난 성장 기대",
+        "scope": "article_excerpt",
+        "stock_name": "삼성SDI",
+        "structured_facts": [],
+        "excerpt": "국내 증시에서 2차전지 관련주가 27일 소재와 장비, 부품, 배터리 제조사를 가리지 않고 상승 흐름을 보이고... 삼성SDI와 LG에너지솔루션이 상승했고, SK이노베이션도 강세를 나타냈다. POSCO홀딩스와 LG화학, 고려아연...",
+        "excerpt_scope": "article_excerpt",
+        "source": "NAVER 뉴스 검색 API",
+        "relation": "industry",
+        "admitted": true,
+        "subject_quote": "2차전지 업종",
+        "support_quote": "2차전지 업종에 되살아난 성장 기대"
+      },
+      "NEWS_9": {
+        "text": "[단독] 필에너지, 삼성SDI 후광 무색…실적 부진에 대금도 밀렸다",
+        "scope": "article_excerpt",
+        "stock_name": "삼성SDI",
+        "structured_facts": [],
+        "excerpt": "21일에는 861억원 규모의 2차전지 조립설비 공급계약을 추가로 공시했다. 계약 대상은 삼성SDI로 알려졌다. 계약금 비중은 각각 수주금액의 40%, 20%다. 팩토리얼 에너지 건은 공급금액이 비공개여서 구체적인 계약금...",
+        "excerpt_scope": "article_excerpt",
+        "source": "NAVER 뉴스 검색 API",
+        "relation": "company",
+        "admitted": true,
+        "subject_quote": "삼성SDI",
+        "support_quote": "필에너지, 삼성SDI 후광 무색…실적 부진에 대금도 밀렸다"
+      },
+      "NEWS_STATUS": {
+        "text": "ok",
+        "status": "ok",
+        "source": "NAVER 뉴스 검색 API",
+        "retrieved_at": "2026-10-28T23:21:50.661401+09:00"
+      },
+      "HISTORY_LAST_CLOSE": {
+        "text": "마지막 종가: 534,000.00원",
+        "value_text": "534,000.00원",
+        "source": "Yahoo Finance (yfinance)",
+        "period": "2026-07-28~2026-10-28",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "HISTORY_FIRST_VOLUME": {
+        "text": "첫날 거래량: 469,337주",
+        "value_text": "469,337주",
+        "source": "Yahoo Finance (yfinance)",
+        "period": "2026-07-28~2026-10-28",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "HISTORY_LAST_VOLUME": {
+        "text": "마지막 거래량: 479,396주",
+        "value_text": "479,396주",
+        "source": "Yahoo Finance (yfinance)",
+        "period": "2026-07-28~2026-10-28",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "HISTORY_CHANGE": {
+        "text": "구간 종가 변화율: +39.79%",
+        "value_text": "+39.79%",
+        "source": "Yahoo Finance (yfinance)",
+        "period": "2026-07-28~2026-10-28",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "ANNUAL_2023_CFS": {
+        "text": "2023년 CFS 매출 22708300498633, 영업이익 1633368964768, 순이익 2066046562201 (원)",
+        "source": "OpenDART",
+        "period": "2023",
+        "fs_div": "CFS",
+        "revenue": "22708300498633",
+        "operating_income": "1633368964768",
+        "net_income": "2066046562201"
+      },
+      "ANNUAL_2024_CFS": {
+        "text": "2024년 CFS 매출 16592248884388, 영업이익 363304463263, 순이익 575512415979 (원)",
+        "source": "OpenDART",
+        "period": "2024",
+        "fs_div": "CFS",
+        "revenue": "16592248884388",
+        "operating_income": "363304463263",
+        "net_income": "575512415979"
+      },
+      "ANNUAL_2025_CFS": {
+        "text": "2025년 CFS 매출 13266730679499, 영업이익 -1722360788760, 순이익 -584875358534 (원)",
+        "source": "OpenDART",
+        "period": "2025",
+        "fs_div": "CFS",
+        "revenue": "13266730679499",
+        "operating_income": "-1722360788760",
+        "net_income": "-584875358534"
+      },
+      "CMP_2024_2025_CFS_REVENUE": {
+        "source": "OpenDART",
+        "period": "2024년 → 2025년 연간",
+        "fs_div": "CFS",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057",
+        "years": [
+          2024,
+          2025
+        ],
+        "currency": "KRW",
+        "kind": "annual_comparison",
+        "formula": "동일 연간·연결/별도 기준 비교",
+        "item": "revenue",
+        "text": "매출액: 2024년 165,922.5억원 → 2025년 132,667.3억원 (20.04% 감소)",
+        "value_text": "2024년 165,922.5억원 → 2025년 132,667.3억원 (20.04% 감소)",
+        "previous": "16592248884388",
+        "current": "13266730679499",
+        "delta": "-3325518204889",
+        "change_pct": "-20.04260078341791771401889537",
+        "change_state": "감소",
+        "status": "ok"
+      },
+      "CMP_2024_2025_CFS_OPERATING_INCOME": {
+        "source": "OpenDART",
+        "period": "2024년 → 2025년 연간",
+        "fs_div": "CFS",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057",
+        "years": [
+          2024,
+          2025
+        ],
+        "currency": "KRW",
+        "kind": "annual_comparison",
+        "formula": "동일 연간·연결/별도 기준 비교",
+        "item": "operating_income",
+        "text": "영업이익: 2024년 3,633.0억원 → 2025년 -17,223.6억원 (적자 전환)",
+        "value_text": "2024년 3,633.0억원 → 2025년 -17,223.6억원 (적자 전환)",
+        "previous": "363304463263",
+        "current": "-1722360788760",
+        "delta": "-2085665252023",
+        "change_pct": null,
+        "change_state": "적자 전환",
+        "status": "ok"
+      },
+      "CMP_2024_2025_CFS_NET_INCOME": {
+        "source": "OpenDART",
+        "period": "2024년 → 2025년 연간",
+        "fs_div": "CFS",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057",
+        "years": [
+          2024,
+          2025
+        ],
+        "currency": "KRW",
+        "kind": "annual_comparison",
+        "formula": "동일 연간·연결/별도 기준 비교",
+        "item": "net_income",
+        "text": "당기순이익: 2024년 5,755.1억원 → 2025년 -5,848.8억원 (적자 전환)",
+        "value_text": "2024년 5,755.1억원 → 2025년 -5,848.8억원 (적자 전환)",
+        "previous": "575512415979",
+        "current": "-584875358534",
+        "delta": "-1160387774513",
+        "change_pct": null,
+        "change_state": "적자 전환",
+        "status": "ok"
+      },
+      "CMP_2024_2025_CFS_OPERATING_MARGIN": {
+        "source": "OpenDART",
+        "period": "2024년 → 2025년 연간",
+        "fs_div": "CFS",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057",
+        "years": [
+          2024,
+          2025
+        ],
+        "currency": "KRW",
+        "kind": "annual_comparison",
+        "formula": "영업이익 / 매출액 × 100; 이익률 차이는 %p",
+        "item": "operating_margin",
+        "text": "영업이익률: 2024년 2.19% → 2025년 -12.98% (15.17%p 하락)",
+        "value_text": "2024년 2.19% → 2025년 -12.98% (15.17%p 하락)",
+        "previous": "2.189603505796257066303481339",
+        "current": "-12.98255636877858597946288238",
+        "delta_pp": "-15.17215987457484304576636372",
+        "status": "ok"
+      },
+      "FINANCIAL_STATUS": {
+        "text": "연간 재무자료 수집 상태",
+        "status": "ok",
+        "source": "OpenDART",
+        "years_available": [
+          "2023",
+          "2024",
+          "2025"
+        ]
+      }
+    }
+  },
+  {
+    "response": {
+      "text": "삼성SDI는 최근 실적 부진과 수익성 악화로 인해 어려운 상황에 직면해 있습니다. 2025년 확정 실적 기준 매출은 2024년 대비 20.04% 감소한 13,266.7억원을 기록했으며, 영업이익은 3,633.0억원에서 -1,722.3억원으로 적자 전환되었습니다. 특히 영업이익률은 2024년 2.19%에서 2025년 -12.98%로 15.17%p 하락하며 수익성이 크게 저하되었습니다. 보도에 따르면 삼성SDI를 포함한 배터리 3사의 3분기 본업 체력 회복이 지연되고 있으며, 실적이 제자리걸음을 반복하고 있다는 분석이 있습니다. 다만, 최근 2차전지 업종 전반에 소재와 배터리 셀 관련 종목이 동반 상승하며 성장 기대감이 다시 나타나고 있는 흐름도 확인됩니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_2",
+        "NEWS_7"
+      ],
+      "follow_up": "",
+      "blocks": []
+    },
+    "evidence": {
+      "PRICE": {
+        "text": "삼성SDI · PRICE: 534,000.00원",
+        "value_text": "534,000.00원",
+        "value": 534000.0,
+        "status": "ok",
+        "reason": "",
+        "source": "Yahoo Finance (yfinance)",
+        "formula": "",
+        "period": "기준 기간 미확인",
+        "as_of": "2026-10-28T15:30:21+09:00",
+        "retrieved_at": "2026-10-28T23:21:46.569002+09:00",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "PER": {
+        "text": "삼성SDI · PER: 875.41배",
+        "value_text": "875.41배",
+        "value": 875.4098360655738,
+        "status": "ok",
+        "reason": "",
+        "source": "Yahoo Finance (yfinance)",
+        "formula": "주가 / 최근 12개월 희석 EPS",
+        "period": "2026-06-30",
+        "as_of": "자료 기준 시각 미확인",
+        "retrieved_at": "2026-10-28T23:21:46.569002+09:00",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "EPS": {
+        "text": "삼성SDI · EPS: 610.00원",
+        "value_text": "610.00원",
+        "value": 610.0,
+        "status": "ok",
+        "reason": "최근 12개월 희석 EPS(2026-06-30 종료) 기준입니다.",
+        "source": "Yahoo Finance (yfinance)",
+        "formula": "",
+        "period": "최근 12개월(TTM, 2026-06-30 종료)",
+        "as_of": "자료 기준 시각 미확인",
+        "retrieved_at": "2026-10-28T23:21:46.569002+09:00",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "ROE": {
+        "text": "삼성SDI · ROE: -2.59%",
+        "value_text": "-2.59%",
+        "value": -2.592,
+        "status": "ok",
+        "reason": "fnlttSinglIndx API 응답값(연결/별도 구분 인자 미제공 API)",
+        "source": "OpenDART 주요 재무지표 (fnlttSinglIndx)",
+        "formula": "OpenDART 공식 수익성지표 제공값",
+        "period": "2025년 사업보고서",
+        "as_of": "자료 기준 시각 미확인",
+        "retrieved_at": "2026-10-28T23:21:50.410011+09:00",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "NEWS_2": {
+        "text": "LG에너지솔루션·삼성SDI·SK온, 배터리3사 실적 '제자리걸음'..승부처는...",
+        "scope": "article_excerpt",
+        "stock_name": "삼성SDI",
+        "structured_facts": [
+          {
+            "fact_id": "NEWS_2_EX_F1",
+            "item": "financial_period",
+            "target": "삼성SDI",
+            "value": "3",
+            "unit": "분기",
+            "direction": "value",
+            "scope": "article_excerpt",
+            "qualifier": "reported",
+            "validity": "current",
+            "ownership_basis": "unknown",
+            "status": "verified"
+          }
+        ],
+        "excerpt": "28일 배터리업계에 따르면 삼성SDI와 SK온은 올해 3분기 본업 체력을 회복하지 못했다, 회사들은 오는 29일... 2차전지 담당 대형 증권사 연구원은 \"3분기 실적은 고객사 보상금과 합작 정산금 같은 일회성 요인에...",
+        "excerpt_scope": "article_excerpt",
+        "source": "NAVER 뉴스 검색 API",
+        "relation": "company",
+        "admitted": true,
+        "subject_quote": "삼성SDI",
+        "support_quote": "LG에너지솔루션·삼성SDI·SK온, 배터리3사 실적 '제자리걸음'"
+      },
+      "NEWS_4": {
+        "text": "[거래소 지수옵션 선물] 이차전지 선물 동반 상승…삼성SDI·에코프로비...",
+        "scope": "article_excerpt",
+        "stock_name": "삼성SDI",
+        "structured_facts": [],
+        "excerpt": "2차전지 업종에서는 삼성SDI와 포스코퓨처엠, 에코프로, 에코프로비엠, LG에너지솔루션이 모두 상승했다. 소재와 배터리 셀 관련 종목이 함께 강세를 보이며 업종 전반의 상승 흐름을 형성했다. 정유·화학·철강 관련...",
+        "excerpt_scope": "article_excerpt",
+        "source": "NAVER 뉴스 검색 API",
+        "relation": "company",
+        "admitted": true,
+        "subject_quote": "삼성SDI",
+        "support_quote": "이차전지 선물 동반 상승…삼성SDI·에코프로비"
+      },
+      "NEWS_7": {
+        "text": "전기차 넘어 ESS까지… 2차전지 업종에 되살아난 성장 기대",
+        "scope": "article_excerpt",
+        "stock_name": "삼성SDI",
+        "structured_facts": [],
+        "excerpt": "국내 증시에서 2차전지 관련주가 27일 소재와 장비, 부품, 배터리 제조사를 가리지 않고 상승 흐름을 보이고... 삼성SDI와 LG에너지솔루션이 상승했고, SK이노베이션도 강세를 나타냈다. POSCO홀딩스와 LG화학, 고려아연...",
+        "excerpt_scope": "article_excerpt",
+        "source": "NAVER 뉴스 검색 API",
+        "relation": "industry",
+        "admitted": true,
+        "subject_quote": "2차전지 업종",
+        "support_quote": "2차전지 업종에 되살아난 성장 기대"
+      },
+      "NEWS_9": {
+        "text": "[단독] 필에너지, 삼성SDI 후광 무색…실적 부진에 대금도 밀렸다",
+        "scope": "article_excerpt",
+        "stock_name": "삼성SDI",
+        "structured_facts": [],
+        "excerpt": "21일에는 861억원 규모의 2차전지 조립설비 공급계약을 추가로 공시했다. 계약 대상은 삼성SDI로 알려졌다. 계약금 비중은 각각 수주금액의 40%, 20%다. 팩토리얼 에너지 건은 공급금액이 비공개여서 구체적인 계약금...",
+        "excerpt_scope": "article_excerpt",
+        "source": "NAVER 뉴스 검색 API",
+        "relation": "company",
+        "admitted": true,
+        "subject_quote": "삼성SDI",
+        "support_quote": "필에너지, 삼성SDI 후광 무색…실적 부진에 대금도 밀렸다"
+      },
+      "NEWS_STATUS": {
+        "text": "ok",
+        "status": "ok",
+        "source": "NAVER 뉴스 검색 API",
+        "retrieved_at": "2026-10-28T23:21:50.661401+09:00"
+      },
+      "HISTORY_LAST_CLOSE": {
+        "text": "마지막 종가: 534,000.00원",
+        "value_text": "534,000.00원",
+        "source": "Yahoo Finance (yfinance)",
+        "period": "2026-07-28~2026-10-28",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "HISTORY_FIRST_VOLUME": {
+        "text": "첫날 거래량: 469,337주",
+        "value_text": "469,337주",
+        "source": "Yahoo Finance (yfinance)",
+        "period": "2026-07-28~2026-10-28",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "HISTORY_LAST_VOLUME": {
+        "text": "마지막 거래량: 479,396주",
+        "value_text": "479,396주",
+        "source": "Yahoo Finance (yfinance)",
+        "period": "2026-07-28~2026-10-28",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "HISTORY_CHANGE": {
+        "text": "구간 종가 변화율: +39.79%",
+        "value_text": "+39.79%",
+        "source": "Yahoo Finance (yfinance)",
+        "period": "2026-07-28~2026-10-28",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057"
+      },
+      "ANNUAL_2023_CFS": {
+        "text": "2023년 CFS 매출 22708300498633, 영업이익 1633368964768, 순이익 2066046562201 (원)",
+        "source": "OpenDART",
+        "period": "2023",
+        "fs_div": "CFS",
+        "revenue": "22708300498633",
+        "operating_income": "1633368964768",
+        "net_income": "2066046562201"
+      },
+      "ANNUAL_2024_CFS": {
+        "text": "2024년 CFS 매출 16592248884388, 영업이익 363304463263, 순이익 575512415979 (원)",
+        "source": "OpenDART",
+        "period": "2024",
+        "fs_div": "CFS",
+        "revenue": "16592248884388",
+        "operating_income": "363304463263",
+        "net_income": "575512415979"
+      },
+      "ANNUAL_2025_CFS": {
+        "text": "2025년 CFS 매출 13266730679499, 영업이익 -1722360788760, 순이익 -584875358534 (원)",
+        "source": "OpenDART",
+        "period": "2025",
+        "fs_div": "CFS",
+        "revenue": "13266730679499",
+        "operating_income": "-1722360788760",
+        "net_income": "-584875358534"
+      },
+      "CMP_2024_2025_CFS_REVENUE": {
+        "source": "OpenDART",
+        "period": "2024년 → 2025년 연간",
+        "fs_div": "CFS",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057",
+        "years": [
+          2024,
+          2025
+        ],
+        "currency": "KRW",
+        "kind": "annual_comparison",
+        "formula": "동일 연간·연결/별도 기준 비교",
+        "item": "revenue",
+        "text": "매출액: 2024년 165,922.5억원 → 2025년 132,667.3억원 (20.04% 감소)",
+        "value_text": "2024년 165,922.5억원 → 2025년 132,667.3억원 (20.04% 감소)",
+        "previous": "16592248884388",
+        "current": "13266730679499",
+        "delta": "-3325518204889",
+        "change_pct": "-20.04260078341791771401889537",
+        "change_state": "감소",
+        "status": "ok"
+      },
+      "CMP_2024_2025_CFS_OPERATING_INCOME": {
+        "source": "OpenDART",
+        "period": "2024년 → 2025년 연간",
+        "fs_div": "CFS",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057",
+        "years": [
+          2024,
+          2025
+        ],
+        "currency": "KRW",
+        "kind": "annual_comparison",
+        "formula": "동일 연간·연결/별도 기준 비교",
+        "item": "operating_income",
+        "text": "영업이익: 2024년 3,633.0억원 → 2025년 -17,223.6억원 (적자 전환)",
+        "value_text": "2024년 3,633.0억원 → 2025년 -17,223.6억원 (적자 전환)",
+        "previous": "363304463263",
+        "current": "-1722360788760",
+        "delta": "-2085665252023",
+        "change_pct": null,
+        "change_state": "적자 전환",
+        "status": "ok"
+      },
+      "CMP_2024_2025_CFS_NET_INCOME": {
+        "source": "OpenDART",
+        "period": "2024년 → 2025년 연간",
+        "fs_div": "CFS",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057",
+        "years": [
+          2024,
+          2025
+        ],
+        "currency": "KRW",
+        "kind": "annual_comparison",
+        "formula": "동일 연간·연결/별도 기준 비교",
+        "item": "net_income",
+        "text": "당기순이익: 2024년 5,755.1억원 → 2025년 -5,848.8억원 (적자 전환)",
+        "value_text": "2024년 5,755.1억원 → 2025년 -5,848.8억원 (적자 전환)",
+        "previous": "575512415979",
+        "current": "-584875358534",
+        "delta": "-1160387774513",
+        "change_pct": null,
+        "change_state": "적자 전환",
+        "status": "ok"
+      },
+      "CMP_2024_2025_CFS_OPERATING_MARGIN": {
+        "source": "OpenDART",
+        "period": "2024년 → 2025년 연간",
+        "fs_div": "CFS",
+        "stock_code": "006400",
+        "result_id": "5869b5a85f6a46a397cde58c1ff50057",
+        "years": [
+          2024,
+          2025
+        ],
+        "currency": "KRW",
+        "kind": "annual_comparison",
+        "formula": "영업이익 / 매출액 × 100; 이익률 차이는 %p",
+        "item": "operating_margin",
+        "text": "영업이익률: 2024년 2.19% → 2025년 -12.98% (15.17%p 하락)",
+        "value_text": "2024년 2.19% → 2025년 -12.98% (15.17%p 하락)",
+        "previous": "2.189603505796257066303481339",
+        "current": "-12.98255636877858597946288238",
+        "delta_pp": "-15.17215987457484304576636372",
+        "status": "ok"
+      },
+      "FINANCIAL_STATUS": {
+        "text": "연간 재무자료 수집 상태",
+        "status": "ok",
+        "source": "OpenDART",
+        "years_available": [
+          "2023",
+          "2024",
+          "2025"
+        ]
+      }
+    }
+  }
+]

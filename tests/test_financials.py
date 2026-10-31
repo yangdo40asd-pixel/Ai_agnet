@@ -246,6 +246,30 @@ class FinancialsNormalizationAndRatiosTests(unittest.TestCase):
         facts = bundle["facts"]
         self.assertTrue(any(f.fact_id == "FIN_2025_REVENUE" for f in facts))
 
+    def test_comparison_collection_can_skip_unneeded_profitability_index_calls(self):
+        settings=Settings('g','m','i','s',dart_api_key='test-dart-key')
+        with (patch('src.data.financials.fetch_corp_codes',return_value={'005930':{'corp_code':'00126380','ambiguous':False}}),
+              patch('src.data.financials.fetch_statement',side_effect=lambda code,year,report,fs,**kw: sample_raw_statement(bsns_year=year)),
+              patch('src.data.financials.fetch_financial_indices') as index):
+            bundle=collect_company_financials(self.stock,settings,years=('2024','2025'),include_indices=False)
+        self.assertEqual(bundle['status'],'ok')
+        self.assertEqual(len(bundle['annual_summaries']),2)
+        index.assert_not_called()
+
+    def test_reversed_years_keep_latest_ratios_and_comparison_basis(self):
+        settings=Settings('g','m','i','s',dart_api_key='test-dart-key')
+        corp_map={'005930':{'corp_code':'00126380','ambiguous':False}}
+        def response(corp_code,year,reprt_code,fs_div,*,settings):
+            return sample_raw_statement(bsns_year=year,reprt_code=reprt_code,fs_div=fs_div,
+                revenue='100,000,000,000',op_income='10,000,000,000' if year=='2024' else '20,000,000,000')
+        with (patch('src.data.financials.fetch_corp_codes',return_value=corp_map),
+              patch('src.data.financials.fetch_statement',side_effect=response),
+              patch('src.data.financials.fetch_financial_indices',return_value={'status':'empty','list':[]})):
+            bundle=collect_company_financials(self.stock,settings,years=('2025','2024'))
+        self.assertEqual([s.bsns_year for s in bundle['statements']],['2024','2025'])
+        self.assertIn('2025',bundle['ratios'].operating_margin.period)
+        self.assertEqual(bundle['ratios'].operating_margin.value,20)
+
 
 if __name__ == "__main__":
     unittest.main()

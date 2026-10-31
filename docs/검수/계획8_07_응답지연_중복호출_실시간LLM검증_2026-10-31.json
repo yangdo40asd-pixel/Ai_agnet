@@ -1,0 +1,72 @@
+[
+  {
+    "tag": "s04_i1_direct_question_optimization",
+    "category": "07-A 기본 설명/질문 답변 중복 생성 개선",
+    "query": "삼성전자 실적 어때?",
+    "intent_type": "선택 기업 실적에 대한 직접 질의",
+    "intent_desc": "삼성전자의 확인된 매출과 영업이익 증감 및 수익성 개선 여부를 질문자가 원하는 형태로 즉시 답변할 것을 요구함.",
+    "optimized_sec": 15.84,
+    "pipe_sec": 1.67,
+    "llm_sec": 14.17,
+    "commentary_status": "not_requested",
+    "status": "OK",
+    "text": "삼성전자는 전년 대비 매출과 영업이익이 모두 큰 폭으로 증가하며 실적이 개선되었습니다. 매출은 100.0억원에서 120.0억원으로 20.00% 증가했고 영업이익은 10.0억원에서 18.0억원으로 80.00% 증가했으며 영업이익률은 10.00%에서 15.00%로 5.00%p 상승했습니다. 매출 증가폭보다 영업이익 증가폭이 더 커지면서 수익성이 강화된 흐름을 보였습니다.",
+    "detail": {
+      "calls_saved": "기본 리포트 생성 1회 + 재무 설명 1회 절감 (총 2회 LLM 호출 절감)",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN"
+      ]
+    }
+  },
+  {
+    "tag": "s04_i2_cached_data_reuse",
+    "category": "07-B 조회 자료 재사용 및 불필요한 재수집 차단",
+    "query": "영업이익 왜 그렇게 늘었어?",
+    "intent_type": "동일 종목 직전 실적에 대한 원인 분석 후속 질문",
+    "intent_desc": "이미 수집된 삼성전자 실적 자료를 재활용하여 외부 DART/뉴스 재수집 없이 즉각적인 원인 분석을 수행할 것을 요구함.",
+    "needs_data_result": false,
+    "external_calls": 0,
+    "llm_sec": 11.79,
+    "status": "OK",
+    "text": "삼성전자는 매출 증가폭보다 영업이익 증가폭이 더 커지면서 수익성이 강화되었습니다. 매출은 100.0억원에서 120.0억원으로 20.00% 증가했고 영업이익은 10.0억원에서 18.0억원으로 80.00% 증가했으며 영업이익률은 10.00%에서 15.00%로 5.00%p 상승했습니다.",
+    "detail": {
+      "external_data_fetching": "완전 생략 (0건)",
+      "evidence_reused": [
+        "financial",
+        "history",
+        "dart",
+        "news",
+        "commentary",
+        "financial_commentary"
+      ]
+    }
+  },
+  {
+    "tag": "s04_i3_budget_and_retry_limits",
+    "category": "07-C 재시도/시간 계측 및 호출 예산 관리",
+    "query": "[내부 시스템 검증] 시간 초과 및 한도 도달 시 무한 재시도 차단",
+    "intent_type": "안정적인 실패 제어 및 불필요한 재호출 방지",
+    "intent_desc": "시간 예산이 소진되거나 한도에 도달했을 때 무한 재시도나 멈춤 없이 즉각적인 사용자 피드백을 반환할 것을 요구함.",
+    "status": "OK",
+    "text": "turn_budget 정상 작동 확인: 예산 초과 시 즉각 안전 예외 발생 및 무한 루프 차단.",
+    "detail": {
+      "budget_enforced": true,
+      "max_retries": 1
+    }
+  },
+  {
+    "tag": "s04_v1_button_and_canvas_contract_preservation",
+    "category": "07-D 캔버스/버튼 계약 보존 및 책임 분리",
+    "query": "[종목 버튼 클릭 시나리오] 삼성전자 선택",
+    "intent_type": "버튼 선택 시 전체 종합 리포트 및 캔버스 계약 보존",
+    "intent_desc": "질문 입력이 아닌 버튼 선택 시에는 캔버스와 대시보드가 사용할 종합 리포트 commentary를 정상 생성하여 기존 UI 계약을 보존할 것을 요구함.",
+    "status": "OK",
+    "text": "버튼 선택 시 기본 리포트 정상 생성 및 캔버스 계약 보존 완료. 요약: **삼성전자 조회 결과**\n\n현재 주가와 PER가 확인되었습니다.\n\n관련 소식은 수집된 뉴스 제목을 기준으로 정리했습니다.",
+    "detail": {
+      "commentary_present": true,
+      "blocks_count": 2
+    }
+  }
+]

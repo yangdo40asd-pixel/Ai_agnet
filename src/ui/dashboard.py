@@ -342,6 +342,10 @@ def render_news(result: AnalysisResult):
     for article in news.articles:
         with st.container():
             st.markdown(f"**뉴스 {article.id}. {article.title}**")
+            from src.source_presentation import news_usage_label
+            usage = news_usage_label(result, article.id)
+            if usage:
+                st.caption(usage)
             st.caption(
                 f"발행 시각: {article.published_at or '확인되지 않음'} · "
                 f"원문 사이트: {article.publisher_domain or '확인되지 않음'}"

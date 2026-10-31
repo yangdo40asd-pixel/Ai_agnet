@@ -1,6 +1,19 @@
 """분석 결과를 근거 자료로 변환한다. 질문·LLM·화면에 의존하지 않는다."""
 from src.models import AnalysisResult, resolve_roe_metric
 from src.data.financial_comparison import annual_comparison_evidence
+from src.data.text_facts import source_facts, fact_payload
+
+
+def article_evidence(article, stock_name, *, known_names=(), include_excerpt=True, relationships=(), stock_code=None):
+    from src.data.relations import article_relationships, relationship_payload
+    key=f'NEWS_{article.id}'
+    facts=source_facts(article.title,key,stock_name,published_at=article.published_at,known_names=known_names)
+    if article.description and include_excerpt:
+        facts+=source_facts(article.description,key,stock_name,scope='article_excerpt',published_at=article.published_at,known_names=known_names)
+    return {'text':article.title,'url':article.url,'scope':'article_excerpt' if article.description and include_excerpt else 'headline_only','stock_name':stock_name,
+            'structured_facts':[fact_payload(f) for f in facts],
+            **({'relationship_proofs':[relationship_payload(p) for p in article_relationships(article,stock_name,relationships,target_code=stock_code)]} if relationships else {}),
+            **({'excerpt':article.description,'excerpt_scope':'article_excerpt'} if article.description and include_excerpt else {})}
 
 
 def build_evidence(result: AnalysisResult | None) -> dict[str, dict]:
@@ -29,9 +42,35 @@ def build_evidence(result: AnalysisResult | None) -> dict[str, dict]:
                          "retrieved_at": (metric.retrieved_at if metric else financial.retrieved_at).isoformat(),
                          "stock_code": result.target_code, "result_id": result.result_id}
     for article in result.news.articles:
-        evidence[f"NEWS_{article.id}"] = {"text": article.title, "url": article.url, "source": result.news.source,
+        evidence[f"NEWS_{article.id}"] = {**article_evidence(article, financial.stock.name, known_names=tuple(s.name for s in result.candidates),relationships=result.news.relationships,stock_code=result.target_code), "source": result.news.source,
             "publisher_domain": article.publisher_domain,
-            "published_at": article.published_at, "retrieved_at": result.news.retrieved_at.isoformat(), "scope": "headline_only"}
+            "published_at": article.published_at, "retrieved_at": result.news.retrieved_at.isoformat()}
+    for document in result.source_documents:
+        if document.stock_code != result.target_code or document.scope!='official_disclosure':
+            continue
+        # 각 문서의 사실만 보존하며, 여러 정정 공시 중 현재 유효 문서를 결정하지 않는다(Y 범위).
+        text=document.text
+        facts=source_facts(text,document.evidence_id,document.stock_name,scope=document.scope,
+                           published_at=document.published_at,known_names=tuple(s.name for s in result.candidates))
+        verified=[f for f in facts if f.status=='verified'][:16]
+        contexts=[]
+        for fact in verified:
+            a,b=fact.span
+            contexts.append(text[max(0,a-100):min(len(text),b+100)])
+        evidence[document.evidence_id]={'text':document.title,'source':document.source,'url':document.url,
+            'scope':document.scope,'stock_code':document.stock_code,'stock_name':document.stock_name,
+            'document_id':document.document_id,'published_at':document.published_at,
+            'retrieved_at':document.retrieved_at.isoformat(),'source_excerpt':'\n'.join(dict.fromkeys(contexts))[:2400],
+            'structured_facts':[fact_payload(f) for f in facts], 'validity':'document_only',
+            'extraction_scope':'원문 앞 6000자의 명시적 수치만 검사; 전체 정정 이력 미확인'}
+    if result.news.admission is not None:
+        from src.agents.news_relevance import matches
+        if matches(result.news.admission, result.news, financial.stock, result.theme, result.result_id):
+            for assessment in result.news.admission.assessments:
+                key = "NEWS_" + str(assessment.article_id)
+                if key in evidence:
+                    evidence[key].update(relation=assessment.relation, admitted=assessment.accepted,
+                                         subject_quote=assessment.subject_quote, support_quote=assessment.support_quote)
     evidence["NEWS_STATUS"] = {"text": result.news.message or result.news.status, "status": result.news.status,
         "source": result.news.source, "retrieved_at": result.news.retrieved_at.isoformat()}
     for fact in result.financial_facts:
@@ -67,6 +106,15 @@ def build_evidence(result: AnalysisResult | None) -> dict[str, dict]:
             "revenue": str(annual.revenue) if annual.revenue is not None else None, "operating_income": str(annual.operating_income) if annual.operating_income is not None else None, "net_income": str(annual.net_income) if annual.net_income is not None else None}
     evidence.update(annual_comparison_evidence(result.annual_summaries,
                     stock_code=result.target_code, result_id=result.result_id))
+    from src.data.quarterly import quarterly_evidence
+    evidence.update(quarterly_evidence(result.quarterly_summaries, stock_code=result.target_code,
+                                      result_id=result.result_id, statements=result.financial_statements))
+    if result.section_status.get("quarterly_request"):
+        evidence["Q_COLLECTION_STATUS"] = {"status": result.section_status.get("dart_quarterly"),
+            "request_token": result.section_status["quarterly_request"], "source": "OpenDART",
+            "text": result.section_status.get("quarterly_message", "분기 재무자료 조회 상태")}
+    from src.data.cost_structure import cost_structure_evidence
+    evidence.update(cost_structure_evidence(result.financial_statements,stock_code=result.target_code,result_id=result.result_id,annual_summaries=result.annual_summaries))
     evidence["FINANCIAL_STATUS"] = {"text": "연간 재무자료 수집 상태", "status": result.section_status.get("dart", "unknown"),
                                     "source": "OpenDART", "years_available": sorted({a.bsns_year for a in result.annual_summaries})}
     return evidence

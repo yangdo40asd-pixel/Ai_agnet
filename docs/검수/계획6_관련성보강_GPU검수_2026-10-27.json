@@ -1,0 +1,401 @@
+{
+  "checked_at": "2026-10-27T00:28:25.727476+09:00",
+  "synthetic_data": true,
+  "provider": "local",
+  "model": "gemma-4-12b-q4",
+  "base_url": "http://127.0.0.1:1234/v1",
+  "cases": [
+    {
+      "id": "unrelated",
+      "quality_review": "pending",
+      "verdict": {
+        "unit_reviews": [
+          {
+            "id": "intro_0",
+            "reason": "제목 기준이라는 범위 고지는 인용 문구가 없어도 허용됩니다.",
+            "supported": true
+          },
+          {
+            "id": "intro_1",
+            "reason": "가상그룹 지주회사의 이사회 경영 강화 소식은 NEWS_2 제목과 일치합니다.",
+            "supported": true
+          }
+        ],
+        "reason": "질문은 '가상검수회사'의 실적과 뉴스를 물었으나, 답변은 '가상그룹 지주회사'의 소식만을 다루고 있으며 질문 대상과 답변 내용 사이의 사업적 연결이 없습니다.",
+        "checks": {
+          "evidence_match": false,
+          "time_basis": true,
+          "question_focus": false,
+          "explanation": true,
+          "scope_disclosed": true,
+          "context_consistent": true
+        },
+        "supported": false,
+        "answers_question": false
+      },
+      "status": "returned",
+      "elapsed_seconds": 5.442,
+      "trace": [
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "제목 기준이라는 범위 고지는 인용 문구가 없어도 허용됩니다.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "가상그룹 지주회사의 이사회 경영 강화 소식은 NEWS_2 제목과 일치합니다.",
+                "supported": true
+              }
+            ],
+            "reason": "질문은 '가상검수회사'의 실적과 뉴스를 물었으나, 답변은 '가상그룹 지주회사'의 소식만을 다루고 있으며 질문 대상과 답변 내용 사이의 사업적 연결이 없습니다.",
+            "checks": {
+              "evidence_match": false,
+              "time_basis": true,
+              "question_focus": false,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": false,
+            "answers_question": false
+          },
+          "evidence_ids": [
+            "NEWS_2"
+          ],
+          "displayed_data_sources": []
+        }
+      ]
+    },
+    {
+      "id": "route",
+      "quality_review": "pending",
+      "response": {
+        "action": "discover",
+        "theme": "반도체",
+        "code": "",
+        "company": "",
+        "scope": "all",
+        "period": "",
+        "reason": ""
+      },
+      "status": "returned",
+      "elapsed_seconds": 1.028,
+      "trace": [
+        {
+          "task": "chat_route",
+          "response": {
+            "action": "discover",
+            "theme": "반도체",
+            "code": "",
+            "company": "",
+            "scope": "all",
+            "period": ""
+          },
+          "evidence_ids": [],
+          "displayed_data_sources": []
+        }
+      ]
+    },
+    {
+      "id": "candidate_retry",
+      "quality_review": "pending",
+      "response": [
+        "삼성전자",
+        "SK하이닉스",
+        "한미반도체"
+      ],
+      "status": "returned",
+      "elapsed_seconds": 0.809,
+      "trace": [
+        {
+          "task": "candidates",
+          "response": {
+            "stocks": [
+              "삼성전자",
+              "SK하이닉스",
+              "한미반도체"
+            ]
+          },
+          "evidence_ids": [],
+          "displayed_data_sources": []
+        }
+      ]
+    },
+    {
+      "id": "financial",
+      "quality_review": "pending",
+      "question": "매출이 늘었으면 실적이 좋아진 거야?",
+      "text": "가상검수회사는 매출과 영업이익이 모두 증가하며 실적이 전반적으로 개선되었습니다. 매출은 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승했습니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN"
+      ],
+      "follow_up": "",
+      "blocks": [],
+      "path": "local_llm",
+      "status": "returned",
+      "elapsed_seconds": 9.359,
+      "trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사는 매출과 영업이익이 모두 증가하며 실적이 전반적으로 개선되었습니다. 매출은 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승했습니다.",
+            "evidence_ids": [
+              "CMP_2024_2025_CFS_REVENUE",
+              "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "CMP_2024_2025_CFS_OPERATING_MARGIN"
+            ],
+            "follow_up": "",
+            "blocks": []
+          },
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN",
+            "FINANCIAL_STATUS"
+          ],
+          "displayed_data_sources": []
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "제공된 매출, 영업이익, 영업이익률의 증가 수치가 모두 일치하며 실적 개선이라는 결론이 타당합니다.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "매출 20.00% 증가, 영업이익 80.00% 증가, 영업이익률 5.00%p 상승 수치가 모두 근거 자료와 정확히 일치합니다.",
+                "supported": true
+              }
+            ],
+            "reason": "모든 수치와 실적 개선 결론이 제공된 근거 자료와 정확히 일치하며, 질문에 대한 직접적인 답변을 포함하고 있습니다.",
+            "checks": {
+              "evidence_match": true,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": true,
+            "answers_question": true
+          },
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "displayed_data_sources": [
+            {
+              "evidence_id": "CMP_2024_2025_CFS_REVENUE",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            },
+            {
+              "evidence_id": "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            },
+            {
+              "evidence_id": "CMP_2024_2025_CFS_OPERATING_MARGIN",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "basic_report",
+      "quality_review": "pending",
+      "text": "**가상검수회사 조회 결과**\n\n관련 소식은 수집된 뉴스 제목을 기준으로 정리했습니다.\n\n**연간 실적**\n연결재무제표 · 매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)\n\n연결재무제표 · 영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)\n\n연결재무제표 · 영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)\n\n**테마 동향**\n이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+      "blocks": [
+        {
+          "title": "연간 실적",
+          "text": "연결재무제표 · 매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)\n\n연결재무제표 · 영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)\n\n연결재무제표 · 영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ]
+        },
+        {
+          "title": "테마 동향",
+          "text": "이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+          "evidence_ids": [
+            "NEWS_1"
+          ]
+        }
+      ],
+      "status": "returned",
+      "elapsed_seconds": 7.698,
+      "trace": [
+        {
+          "task": "basic_report",
+          "response": {
+            "stock_name": "가상검수회사",
+            "price": 10000,
+            "per": 12.5,
+            "theme_trend": [
+              {
+                "text": "이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+                "news_ids": [
+                  1
+                ]
+              }
+            ],
+            "stock_comment": "",
+            "opportunity": null,
+            "risk": null,
+            "summary": null
+          },
+          "evidence_ids": [],
+          "displayed_data_sources": []
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "도입 및 자료 범위 고지 문구로, 인용 문구가 없어도 허용됩니다.",
+                "supported": true
+              },
+              {
+                "id": "block_0_0",
+                "reason": "제목 속의 사실을 그대로 반영한 헤딩으로 적합합니다.",
+                "supported": true
+              },
+              {
+                "id": "block_0_1",
+                "reason": "뉴스 제목에 명시된 '가동 계획 발표' 사실을 정확히 반영했습니다.",
+                "supported": true
+              }
+            ],
+            "reason": "모든 단위가 제공된 뉴스 제목의 사실과 일치하며, 계획을 실적이나 인과로 왜곡하지 않았습니다.",
+            "checks": {
+              "evidence_match": true,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": true,
+            "answers_question": true
+          },
+          "evidence_ids": [
+            "NEWS_1"
+          ],
+          "displayed_data_sources": []
+        }
+      ]
+    }
+  ],
+  "sha256": {
+    "src\\agents\\providers\\groq.py": "884edb3be24c37c1fb39736a556c44b3809657e8bdbddbb96570d51cd8656423",
+    "src\\agents\\providers\\local.py": "10cd54296e87fcb5c05f808edb786e7c08c44c56ca8bb15b1a12e3371cee93a2",
+    "src\\agents\\providers\\result.py": "e448fd74d7794071777be712cdb43c83f217060dcb0918c4ccf2e29374e3a04e",
+    "src\\agents\\providers\\__init__.py": "18f51b538835b0806c0a38cb5ae417484fefa6ec67a3eda1ca41e37acd831e12",
+    "src\\config.py": "74d4d3914ae88cbe71eca2007328e50d4428ef3195361307ccd851b77876203b",
+    "src\\agents\\transport.py": "c5d60edf798afa145d6a8b0b438db3d5adcda615277df51412c1f3e55d2afb01",
+    "src\\agents\\output_contract.py": "274cc2f45688a9ac7096df692564426b886de01679a27c4d383c35143be76e0e",
+    "src\\agents\\grounding.py": "e13d5589be5d65de50a87771d329494486a8bb230e390e1f07cf794468711afd",
+    "src\\agents\\chat.py": "e44ff0e46301b136fffd36d8838c10432ce5956d967857229bb3701c5a56cd30",
+    "src\\agents\\report.py": "08c173214335abde47d510a4030bfbe5e461545d7a58d13d37af35618956aff9",
+    "src\\agents\\local_verification.py": "ef453d16d02bf6576bf16d103c00e8f1ba1e632593695d41e1ccda671aee1d1a"
+  },
+  "requests": 7,
+  "events": [
+    {
+      "task": "chat_grounding_review",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 1819,
+        "completion_tokens": 248,
+        "total_tokens": 2067
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 5.354
+    },
+    {
+      "task": "chat_route",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 332,
+        "completion_tokens": 34,
+        "total_tokens": 366
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 1.025
+    },
+    {
+      "task": "candidates",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 287,
+        "completion_tokens": 26,
+        "total_tokens": 313
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 0.809
+    },
+    {
+      "task": "chat_answer",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 3085,
+        "completion_tokens": 170,
+        "total_tokens": 3255
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 4.022
+    },
+    {
+      "task": "chat_grounding_review",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 3384,
+        "completion_tokens": 272,
+        "total_tokens": 3656
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 5.331
+    },
+    {
+      "task": "basic_report",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 1230,
+        "completion_tokens": 125,
+        "total_tokens": 1355
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 2.86
+    },
+    {
+      "task": "chat_grounding_review",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 2076,
+        "completion_tokens": 274,
+        "total_tokens": 2350
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 4.832
+    }
+  ],
+  "groq_client_calls": 0
+}

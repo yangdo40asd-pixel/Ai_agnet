@@ -1,0 +1,91 @@
+{
+  "f01_v2_sparse_info": {
+    "theme": "AI 반도체",
+    "products": "반도체 소자 제조",
+    "direct_supported": false,
+    "intro": "AI 반도체 후보 기업의 공식 사업 정보에서 확인한 차이입니다.\n\n가상반도체의 등록 사업만으로는 AI 반도체와의 구체적인 연결까지 확인되지 않았습니다.",
+    "unlinked_explained": true
+  },
+  "f01_v2_partial_missing": {
+    "missing_stock": "결측기업B",
+    "intro": "통신 후보 기업의 공식 사업 정보에서 확인한 차이입니다.\n\n이번 조회에서 공식 사업 정보를 확보하지 못해 결측기업B의 테마 연관 이유는 확인하지 못했습니다.",
+    "missing_notice": true,
+    "cards": [
+      "확인기업A",
+      "결측기업B",
+      "확인기업C"
+    ]
+  },
+  "f01_v2_word_absence": {
+    "answer_text": "이번 후보의 공식 사업 자료에서는 ‘바이오’에 해당하는 기업을 직접 구분할 근거를 확보하지 못했습니다. 등록 제품의 다른 표현을 임의로 같은 분야로 분류하지 않았습니다.",
+    "says_no_evidence": true,
+    "avoids_denying_business": true
+  },
+  "d10_journeys_audit": {
+    "Journey_A_Theme_Discovery_Expansion": {
+      "title": "A — 테마 발견과 확장",
+      "prompt_path": "“관심 테마주” → “반도체/로봇” → “관련주 더 보여줘” → “서로 뭐가 달라?” → “그중 메모리 직접 제조만”",
+      "status": "01/02-E 완료 (신규 시장 테마 발견 E01-I2/I3는 04 예정)",
+      "implemented": [
+        "반도체, 2차전지, 자동차, 바이오, 로봇, 조선 등 복수 테마 최초 탐색 완료",
+        "후보 확장('관련주 더 보여줘') 시 기존 후보 보존 및 신규 3종목 독립 카드 생성 완료",
+        "기업 간 차이점 질문('이 세 회사는 서로 뭐가 달라?') 시 카드 강제 없이 사업 역할 차이 직결 비교 완료",
+        "분야 좁히기('그중 메모리 직접 제조하는 곳만') 시 장비사 제외 및 제조사 2사 카드 압축 완료"
+      ],
+      "remaining": "시장 전반에서 최신 유행 테마를 스스로 발굴하는 04 단계(E01-I2/I3)"
+    },
+    "Journey_B_Single_Stock_Analysis": {
+      "title": "B — 한 종목 실적과 원인 질문",
+      "prompt_path": "“삼성SDI 분석해줘” → “왜 영업이익이 줄었어?”",
+      "status": "기반 구현 완료, 대화형 원인 해석은 05 예정",
+      "implemented": [
+        "단일 종목 실적 분석(매출, 영업이익, 순이익, PER, PBR) 결정적 계산 완료",
+        "원가/판관비/기타영업손익 항등식 기반 비용 비중 계산(cost_structure.py) 완료",
+        "영업이익 증감의 원가율/판관비율 영향 검증 및 숫자 검사 완료"
+      ],
+      "remaining": "단순 수치 나열을 넘어선 사업상 배경 및 쉬운 대화형 원인 설명 강화(05 A02-I3)"
+    },
+    "Journey_C_Comparison_And_Forecast": {
+      "title": "C — 두 기업 비교와 전망",
+      "prompt_path": "“LG에너지솔루션과 비교하면?” → “그럼 내년 실적은?”",
+      "status": "결정적 2~6개사 비교 완료, 대화 연속성은 06 예정",
+      "implemented": [
+        "2~6개 기업 공통 연간 매출·영업손익·이익률 결정적 비교(verified_comparison) 완료",
+        "동일 통화/회계기준/기간 검증 및 적자 전환 엄격 검증 완료",
+        "과거 확정 실적과 미래 전망(컨센서스)의 엄격한 분리 검증 완료"
+      ],
+      "remaining": "비교 후 한 기업 평가 및 ‘그럼 내년은?’의 대화 문맥 자연스러운 승계(06 C02/E03)"
+    },
+    "Journey_D_Topic_Switch_And_Concept": {
+      "title": "D — 주제 전환과 기술/용어 설명",
+      "prompt_path": "“그건 그렇고 AI 반도체는?” → “HBM TC 본더가 구체적으로 어떤 기술이야?”",
+      "status": "02-E 완료",
+      "implemented": [
+        "새로운 테마로의 주제 전환 시 이전 종목 문맥 간섭 차단 완료",
+        "기술/용어 질의 시 카드를 강제하지 않고 DART 공시 원문 기반의 직결 개념 설명 완료"
+      ],
+      "remaining": "06 C03 주제 전환 시 캐시/세션 완전 분리 감사"
+    },
+    "Journey_E_Canvas_And_Excel": {
+      "title": "E — 상세 자료 및 캔버스 연동",
+      "prompt_path": "카드 [실적 보기] 클릭 → “차트/표로 보여줘” → “Excel 다운로드”",
+      "status": "02-D/E 연동 완료, 캔버스 전면 확장은 08 예정",
+      "implemented": [
+        "카드 내 [실적 보기] 클릭 시 request_status='pending' 전이 및 중복 클릭 방지 완료",
+        "8개 시트 Excel 바이트 생성 및 result_id 바인딩 완료",
+        "결과 변경 시에만 Excel 캐시 갱신 완료"
+      ],
+      "remaining": "채팅 내 명시적 차트/비교표 요구 시 캔버스 자동 개방 조건 정리(08 U03/U04)"
+    },
+    "Journey_F_Summary_And_Exit": {
+      "title": "F — 대화 요약과 종료",
+      "prompt_path": "“지금까지 대화 내용 요약해줘” → “고마워 여기까지 할게”",
+      "status": "09 예정",
+      "implemented": [
+        "chat_messages 최근 40개 보존 및 순차 이력 관리 완료",
+        "텍스트 마크다운 및 출처 메타데이터 보존 완료"
+      ],
+      "remaining": "요청 시에만 전체/직전 분량별 요약 및 종료 인사 시 추가 분석 강제 없는 깔끔한 마감(09 M01/M03)"
+    }
+  }
+}

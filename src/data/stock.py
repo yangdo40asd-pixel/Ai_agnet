@@ -17,13 +17,13 @@ def normalize_name(name: str) -> str:
     return " ".join(unicodedata.normalize("NFKC", name).split())
 
 
-def validate_candidate_names(names: object) -> tuple[str, ...]:
-    if not isinstance(names, list) or len(names) != 3:
-        raise AppError("candidate_format", "AI가 종목 후보 세 개를 올바르게 제안하지 못했습니다. 테마를 다시 입력해 주세요.")
+def validate_candidate_names(names: object, *, min_count=3, max_count=3) -> tuple[str, ...]:
+    if not isinstance(names, list) or not min_count <= len(names) <= max_count:
+        raise AppError("candidate_format", "AI 종목 후보의 개수가 요청 범위에 맞지 않습니다. 테마를 다시 입력해 주세요.")
     if any(not isinstance(name, str) or not name.strip() or len(name) > 80 for name in names):
         raise AppError("candidate_format", "종목 후보에 비어 있거나 잘못된 이름이 있습니다. 다시 입력해 주세요.")
     cleaned = tuple(normalize_name(name) for name in names)
-    if len(set(name.casefold() for name in cleaned)) != 3:
+    if len(set(name.casefold() for name in cleaned)) != len(cleaned):
         raise AppError("candidate_duplicate", "AI가 같은 종목을 중복 제안했습니다. 테마를 다시 입력해 주세요.")
     return cleaned
 
@@ -69,6 +69,41 @@ def resolve_candidates(names: tuple[str, ...], listing) -> tuple[StockCandidate,
             reason="" if ticker else "현재 금융 조회 경로에서 지원하지 않는 시장",
         ))
     return tuple(results)
+
+
+def stock_mentions(text: str, *, listing=None, candidates=()):
+    """공식 명칭/코드의 위치를 반환한다. 겹치는 이름은 최장 일치하고 별칭은 추측하지 않는다."""
+    normalized = normalize_name(text)
+    if listing is not None:
+        # 전체 마스터를 매번 후보로 변환하지 않고 실제 언급 가능성이 있는 행만 대조한다.
+        names = tuple(dict.fromkeys(str(row.Name) for row in listing.itertuples()
+                                    if normalize_name(str(row.Name)).casefold() in normalized.casefold()
+                                    or str(row.Code).strip().upper().zfill(6) in normalized.upper()))
+        stocks = resolve_candidates(names, listing)
+    else:
+        stocks = tuple(candidates)
+    spans = []
+    for stock in stocks:
+        for value in (normalize_name(stock.name), stock.code):
+            if not value:
+                continue
+            for match in re.finditer(re.escape(value), normalized, re.I):
+                spans.append((match.start(), match.end(), stock))
+    starts = {start for start, _, _ in spans}
+    ends = {end for _, end, _ in spans}
+    particles = ("으로", "에서", "보다", "에게", "이", "가", "은", "는", "을", "를", "의", "와", "과", "로", "랑")
+    found = []
+    for start, end, stock in sorted(spans, key=lambda v: (v[0], -(v[1]-v[0]))):
+        prefix, suffix = normalized[:start], normalized[end:]
+        left_ok = not prefix or not prefix[-1].isalnum() or any(
+            prefix.endswith(p) and start-len(p) in ends for p in particles)
+        right_ok = not suffix or not suffix[0].isalnum() or any(
+            suffix.startswith(p) and (len(suffix) == len(p) or not suffix[len(p)].isalnum()
+                                     or end+len(p) in starts) for p in particles)
+        if not left_ok or not right_ok or any(start < b and end > a for a, b, _ in found):
+            continue
+        found.append((start, end, stock))
+    return tuple(found)
 
 
 def require_target(candidates: tuple[StockCandidate, ...]) -> StockCandidate:

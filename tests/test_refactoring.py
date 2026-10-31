@@ -140,6 +140,28 @@ class AnswerRetryTests(unittest.TestCase):
         self.assertEqual(refs[0]["id"], "PRICE")
         self.assertEqual(invoke.call_args_list[0].args[2]["concept_reference"], {})
 
+    def test_price_direct_answer_includes_as_of_date(self):
+        with patch("src.agents.chat._invoke") as call:
+            answer, refs, _ = answer_question("현재 주가는 얼마야?", self.result, [], self.settings)
+            self.assertIn("70,000.00원", answer)
+            self.assertIn("2026년 10월 20일 기준", answer)
+            self.assertEqual(refs[0]["id"], "PRICE")
+            call.assert_not_called()
+
+    def test_price_answer_with_as_of_date_and_rejects_invented_date(self):
+        from src.agents.chat import validate_response
+        from src.models import AppError
+        evidence = build_evidence(self.result)
+        valid = {"text": "2026년 10월 20일 기준 주가는 {{PRICE}}입니다.", "evidence_ids": ["PRICE"], "follow_up": ""}
+        response = validate_response(valid, evidence, "plain")
+        self.assertIn("70,000.00원", response.intro)
+
+        # 근거 as_of에 없는 날짜(2026-10-29)를 쓰면 거절
+        invalid = {"text": "2026년 10월 29일 기준 주가는 {{PRICE}}입니다.", "evidence_ids": ["PRICE"], "follow_up": ""}
+        with self.assertRaises(AppError) as caught:
+            validate_response(invalid, evidence, "plain")
+        self.assertEqual(caught.exception.code, "chat_numbers")
+
 
 class ScopedCollectionTests(unittest.TestCase):
     def test_only_requested_sources_run_and_preserved_sources_keep_their_values(self):

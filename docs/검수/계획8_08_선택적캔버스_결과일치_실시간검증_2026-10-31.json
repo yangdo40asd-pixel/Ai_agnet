@@ -1,0 +1,76 @@
+[
+  {
+    "tag": "u03_i1_general_question_no_canvas",
+    "category": "08-A 선택적 캔버스 개방",
+    "query": "삼성전자 실적 어때?",
+    "intent_type": "일반 실적 질문 (차트/캔버스 미요청)",
+    "intent_desc": "차트나 캔버스를 명시적으로 요구하지 않은 일반 질문에서는 우측 캔버스를 펼치지 않고 채팅창 내에서 답변을 완결할 것을 요구함.",
+    "canvases_count": 0,
+    "status": "OK",
+    "text": "일반 질문에 대해 불필요한 빈 캔버스를 펼치지 않고 채팅창에서 설명을 완료함 (canvases=0).",
+    "detail": {
+      "canvas_open": false
+    }
+  },
+  {
+    "tag": "u03_i2_explicit_chart_canvas_open",
+    "category": "08-A 선택적 캔버스 개방",
+    "query": "삼성전자 차트 보여줘",
+    "intent_type": "선택 기업 시세·차트 명시적 요청",
+    "intent_desc": "사용자가 차트를 명시적으로 요구했을 때, 다른 종목이 아닌 질문 대상 기업(삼성전자)의 캔버스를 즉시 열고 활성화할 것을 요구함.",
+    "canvases_count": 1,
+    "active_canvas_id": "c1",
+    "opened_stock": "삼성전자",
+    "status": "OK",
+    "text": "명시적 차트 요청에 따라 요청 기업(삼성전자)의 캔버스 카드를 즉시 개방함. (canvas_id=c1)",
+    "detail": {
+      "target_stock": "삼성전자"
+    }
+  },
+  {
+    "tag": "u03_i2_u04_i4_explicit_excel_export_ready",
+    "category": "08-A/B 엑셀 즉시 준비 및 파일 일치성",
+    "query": "삼성전자 분석 결과 Excel로 내보내줘",
+    "intent_type": "분석 결과 엑셀 파일 내보내기 명시 요청",
+    "intent_desc": "엑셀 내보내기 요구 시 캔버스를 열고 엑셀 다운로드 바이트를 즉시 준비하여 사용자가 지체 없이 다운로드할 수 있게 할 것을 요구함.",
+    "filename": "주식분석_반도체_삼성전자_005930_3M_20261020.xlsx",
+    "valid_xlsx": true,
+    "bytes_len": 24161,
+    "status": "OK",
+    "text": "Excel 내보내기 요청에 따라 즉시 엑셀 번들을 생성하고 다운로드 준비를 마침. (파일명: 주식분석_반도체_삼성전자_005930_3M_20261020.xlsx, 크기: 24161 bytes)",
+    "detail": {
+      "valid_signature": true
+    }
+  },
+  {
+    "tag": "u04_i2_multi_canvas_isolation",
+    "category": "08-B 캔버스 다중 보존 및 덮어쓰기 방지",
+    "query": "[종목 전환 시나리오] SK하이닉스 캔버스 추가",
+    "intent_type": "다른 기업 전환 시 과거 캔버스 보존 및 독립 격리",
+    "intent_desc": "새로운 기업(SK하이닉스)의 캔버스가 추가되어도 기존 삼성전자 캔버스를 덮어쓰지 않고 양쪽 카드를 독립적으로 유지할 것을 요구함.",
+    "canvases_count": 2,
+    "active_stock": "SK하이닉스",
+    "preserved_stock": "삼성전자",
+    "status": "OK",
+    "text": "SK하이닉스 추가 시 기존 삼성전자 캔버스를 덮어쓰지 않고 독립 카드로 온전히 보존함 (총 2장 유지).",
+    "detail": {
+      "cards": [
+        "SK하이닉스",
+        "삼성전자"
+      ]
+    }
+  },
+  {
+    "tag": "u04_i1_i3_result_id_and_metadata_consistency",
+    "category": "08-B 결과 ID 및 메타데이터 일치성",
+    "query": "[계약 검증] 대화-캔버스-보관자료 간 결과 ID 대조",
+    "intent_type": "결과 식별자 기반 데이터 무결성 보장",
+    "intent_desc": "모든 캔버스 카드와 저장된 분석 자료가 고유한 result_id로 정확히 바인딩되어 데이터 혼선이 없을 것을 요구함.",
+    "status": "OK",
+    "text": "모든 캔버스가 고유 result_id(samsung-res-001, hynix-res-002)로 완벽히 바인딩되어 데이터 혼선 없음.",
+    "detail": {
+      "samsung_id": "samsung-res-001",
+      "hynix_id": "hynix-res-002"
+    }
+  }
+]

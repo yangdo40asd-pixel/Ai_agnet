@@ -51,6 +51,20 @@ class AnswerQualityTests(unittest.TestCase):
         self.assertEqual(projected["PER"], self.evidence["PER"])
         self.assertEqual(self.evidence, before)
 
+    def test_generic_question_review_keeps_selected_target_separate_from_old_conversation(self):
+        from src.agents.grounding import review_response
+        from src.models import ChatResponse
+        evidence = {"NEWS_1": self.evidence["NEWS_1"]}
+        response = ChatResponse("수집된 제목 기준입니다.", [dict(evidence["NEWS_1"], id="NEWS_1")], lead_evidence_ids=("NEWS_1",))
+        request = {"question": "실적과 관련 뉴스를 함께 설명해 주세요.", "stock_name": "현재 선택 회사",
+                   "theme": "현재 테마", "conversation": [{"role": "user", "text": "이전 회사의 이사회 뉴스"}]}
+        with patch("src.agents.chat._invoke", return_value={}) as invoke:
+            review_response(response, evidence, request, self.settings, invoke)
+        sent = invoke.call_args.args[2]
+        self.assertEqual(sent["analysis_target"], {"stock_name": "현재 선택 회사", "theme": "현재 테마"})
+        self.assertEqual(sent["conversation"], request["conversation"])
+        self.assertEqual(sent["evidence"]["NEWS_1"]["text"], evidence["NEWS_1"]["text"])
+
     def test_followup_uses_unique_user_topic_not_assistant_invented_topic(self):
         history = [{"role": "user", "text": "생산 확대 뉴스는 무엇입니까?"},
                    {"role": "assistant", "text": "계약 취소가 발생했습니다."}]

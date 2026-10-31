@@ -17,7 +17,7 @@ def _decimal(value):
         return None
 
 
-def _change(before, after, *, profit=True):
+def amount_change(before, after, *, profit=True):
     """음수/영 분모의 성장률은 만들지 않고 변화 상태를 돌려준다."""
     delta = after - before
     if not profit and (before < 0 or after < 0):
@@ -69,7 +69,7 @@ def annual_comparison_evidence(summaries, *, stock_code, result_id):
                 before, after = _decimal(getattr(previous, field)), _decimal(getattr(current, field))
                 if before is None or after is None:
                     continue
-                delta, pct, state = _change(before, after, profit=field != "revenue")
+                delta, pct, state = amount_change(before, after, profit=field != "revenue")
                 change = f"{format_percent(abs(pct))} {state}" if pct is not None and pct else state
                 value_text = f"{year - 1}년 {format_eok(before)} → {year}년 {format_eok(after)} ({change})"
                 result[f"CMP_{year - 1}_{year}_{fs_div}_{field.upper()}"] = dict(

@@ -1,0 +1,63 @@
+{
+  "title": "실행04 테마 발견 및 탐색 보강 종합 검수 보고서",
+  "date": "2026-10-30",
+  "steps": [
+    {
+      "step": 1,
+      "query": "요즘 관심 가질 만한 테마주 알려줘",
+      "action": "theme_recommendation",
+      "themes_recommended": [
+        "AI 반도체",
+        "로봇",
+        "2차전지"
+      ],
+      "has_ranking_disclaimer": true,
+      "preview": "시장 전체의 실시간 테마 등락률이나 순위를 집계하는 통계 자료는 제공되지 않지만, 최근 산업 동향과 기업 공시·뉴스에서 관심이 이어지는 대표 테마를 소개해 드립니다.\n※ 아래 소개는 인기 순위나 주가 상승 보장이 아니며, 각 산업의 최근 시장 이슈와 기술·공급망 관점을..."
+    },
+    {
+      "step": 2,
+      "query": "AI 반도체 관련주 알려줘",
+      "action": "discover",
+      "theme": "AI 반도체",
+      "cards_rendered": 3,
+      "companies": [
+        "삼성전자",
+        "SK하이닉스",
+        "한미반도체"
+      ]
+    },
+    {
+      "step": 3,
+      "query": "더 보여줘",
+      "action": "expand",
+      "total_cumulated": 5,
+      "latest_added_cards": [
+        "HPSP",
+        "리노공업"
+      ]
+    },
+    {
+      "step": 4,
+      "query_memory": "그중 메모리 직접 제조하는 곳만 골라줘",
+      "memory_manufacturers_filtered": [
+        "삼성전자",
+        "SK하이닉스"
+      ],
+      "query_equipment": "장비 회사는?",
+      "equipment_companies_filtered": [
+        "삼성전자",
+        "한미반도체",
+        "HPSP"
+      ]
+    },
+    {
+      "step": 5,
+      "query": "삼성전자 실적 알려줘",
+      "action": "select",
+      "target_stock": "삼성전자"
+    }
+  ],
+  "passed": true,
+  "llama_server_status": "HTTP 200 OK",
+  "streamlit_server_status": "HTTP 200 OK"
+}

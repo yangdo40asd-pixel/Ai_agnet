@@ -32,3 +32,42 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Machine-local model-server process metadata (no model/runtime binaries in Git)
+.local_llm/
+
+# Publishing hygiene: keep source, fixtures and selected final evidence
+/scripts/archive/scratch_patches/
+/qs.txt
+/test_hanmi_sec.txt
+/test_sparse_output.txt
+/docs/검수/**/*.log
+/docs/검수/**/*.json
+/docs/검수/**/*.py
+/docs/검수/**/*.txt
+/docs/검수/**/*.diff
+/docs/검수/**/*.png
+# Final reports and source records required by regression fixtures
+!/docs/검수/계획5_18절_계약수정_실제답변검수_2026-10-26.json
+!/docs/검수/계획5_18절_실제답변검수_2026-10-25.json
+!/docs/검수/계획6_관련성보강_GPU검수_2026-10-27.json
+!/docs/검수/계획6_로컬_CPU8K_업무검수_2026-10-27.json
+!/docs/검수/계획6_비교연도수정_CPU8K새생성_2026-10-27.json
+!/docs/검수/계획6_비교연도수정_저장답변재심사_2026-10-27.json
+!/docs/검수/계획8_02E_다양한테마_검수결과_2026-10-30.json
+!/docs/검수/계획8_03A_근거경계_여정감사_2026-10-30.json
+!/docs/검수/계획8_04_테마발견_종합검수_2026-10-30.json
+!/docs/검수/계획8_05_답변품질_의도부합_실시간LLM검증_2026-10-30.json
+!/docs/검수/계획8_06_연속대화_기업전환_비교_실시간LLM검증_2026-10-31.json
+!/docs/검수/계획8_07_응답지연_중복호출_실시간LLM검증_2026-10-31.json
+!/docs/검수/계획8_08_선택적캔버스_결과일치_실시간검증_2026-10-31.json
+!/docs/검수/계획8_09_요약_저장_종료_실시간LLM검증_2026-10-31.json
+!/docs/검수/계획8_10_전체여정_최종감사_2026-10-31.json
+!/docs/검수/계획8_다양한_LLM_종단검수_결과_2026-10-30.json
+!/docs/검수/계획8_심층대화여정_LLM실시간검증_결과_2026-10-30.json
+
+/scratch/
+*.gguf
+*.safetensors
+.env.*
+!.env.example

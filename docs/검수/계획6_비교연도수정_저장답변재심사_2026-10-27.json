@@ -1,0 +1,174 @@
+{
+  "checked_at": "2026-10-27T00:34:14.620932+09:00",
+  "synthetic_data": true,
+  "provider": "local",
+  "model": "gemma-4-12b-q4",
+  "base_url": "http://127.0.0.1:1234/v1",
+  "cases": [
+    {
+      "id": "mixed_saved",
+      "quality_review": "pending",
+      "question": "실적과 관련 뉴스를 함께 설명해 주세요.",
+      "text": "수집된 뉴스 제목 기준입니다. 가상검수회사는 2024년 대비 2025년 매출액이 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가) 증가했고, 영업이익은 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가) 증가했으며 영업이익률은 2024년 10.00% → 2025년 15.00% (5.00%p 상승) 상승했습니다.\n\n**반도체 생산라인 가동 계획**\n반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_1"
+      ],
+      "follow_up": "",
+      "blocks": [
+        {
+          "title": "반도체 생산라인 가동 계획",
+          "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+          "evidence_ids": [
+            "NEWS_1"
+          ]
+        }
+      ],
+      "path": "saved_generation_local_review",
+      "saved_record": "docs\\검수\\계획6_관련성보강_CPU8K복합_2026-10-27.json",
+      "status": "returned",
+      "elapsed_seconds": 7.51,
+      "trace": [
+        {
+          "task": "chat_answer",
+          "origin": "saved_generation",
+          "response": {
+            "text": "가상검수회사는 2024년 대비 2025년 매출액이 {{CMP_2024_2025_CFS_REVENUE}} 증가했고, 영업이익은 {{CMP_2024_2025_CFS_OPERATING_INCOME}} 증가했으며 영업이익률은 {{CMP_2024_2025_CFS_OPERATING_MARGIN}} 상승했습니다.",
+            "evidence_ids": [
+              "CMP_2024_2025_CFS_REVENUE",
+              "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "CMP_2024_2025_CFS_OPERATING_MARGIN"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "반도체 생산라인 가동 계획",
+                "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              }
+            ]
+          },
+          "evidence_ids": [
+            "PRICE",
+            "PER",
+            "PBR",
+            "EPS",
+            "BPS",
+            "ROE",
+            "NEWS_1",
+            "NEWS_2",
+            "NEWS_STATUS",
+            "ANNUAL_2024_CFS",
+            "ANNUAL_2025_CFS",
+            "FIN_2024_CFS_REVENUE",
+            "FIN_2024_CFS_OPERATING_INCOME",
+            "FIN_2025_CFS_REVENUE",
+            "FIN_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN",
+            "FINANCIAL_STATUS"
+          ],
+          "displayed_data_sources": []
+        },
+        {
+          "task": "chat_grounding_review",
+          "origin": "live_local",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "도입 및 자료 범위 고지 문구로, 회사 사실 주장이 없으므로 허용됩니다.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "제공된 OpenDART 기반의 매출액, 영업이익, 영업이익률 수치와 정확히 일치합니다.",
+                "supported": true
+              },
+              {
+                "id": "block_0_0",
+                "reason": "뉴스 제목을 기반으로 한 소제목으로, 새로운 사실을 추가하지 않았습니다.",
+                "supported": true
+              },
+              {
+                "id": "block_0_1",
+                "reason": "NEWS_1의 제목 내용을 자연스러운 서술문으로 표현하였으며 사실과 부합합니다.",
+                "supported": true
+              },
+              {
+                "id": "block_0_2",
+                "reason": "제목에 실행 결과나 매출 반영 수치가 없으므로 자료의 한계를 명시한 적절한 설명입니다.",
+                "supported": true
+              }
+            ],
+            "reason": "모든 단위가 제공된 근거와 일치하며, 계획 발표를 실적 확정으로 오인하지 않고 한계를 명확히 고지했습니다.",
+            "checks": {
+              "evidence_match": true,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": true,
+            "answers_question": true
+          },
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN",
+            "NEWS_1"
+          ],
+          "displayed_data_sources": [
+            {
+              "evidence_id": "CMP_2024_2025_CFS_REVENUE",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            },
+            {
+              "evidence_id": "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            },
+            {
+              "evidence_id": "CMP_2024_2025_CFS_OPERATING_MARGIN",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sha256": {
+    "src\\agents\\providers\\groq.py": "884edb3be24c37c1fb39736a556c44b3809657e8bdbddbb96570d51cd8656423",
+    "src\\agents\\providers\\local.py": "10cd54296e87fcb5c05f808edb786e7c08c44c56ca8bb15b1a12e3371cee93a2",
+    "src\\agents\\providers\\result.py": "e448fd74d7794071777be712cdb43c83f217060dcb0918c4ccf2e29374e3a04e",
+    "src\\agents\\providers\\__init__.py": "18f51b538835b0806c0a38cb5ae417484fefa6ec67a3eda1ca41e37acd831e12",
+    "src\\config.py": "74d4d3914ae88cbe71eca2007328e50d4428ef3195361307ccd851b77876203b",
+    "src\\agents\\transport.py": "c5d60edf798afa145d6a8b0b438db3d5adcda615277df51412c1f3e55d2afb01",
+    "src\\agents\\output_contract.py": "274cc2f45688a9ac7096df692564426b886de01679a27c4d383c35143be76e0e",
+    "src\\agents\\grounding.py": "e13d5589be5d65de50a87771d329494486a8bb230e390e1f07cf794468711afd",
+    "src\\agents\\chat.py": "b9cd9637ee9aebe6c5a54f9b57bbb10dda213209205bf5f2b2cd5cdb65b3cfa2",
+    "src\\agents\\report.py": "08c173214335abde47d510a4030bfbe5e461545d7a58d13d37af35618956aff9",
+    "src\\agents\\local_verification.py": "ef453d16d02bf6576bf16d103c00e8f1ba1e632593695d41e1ccda671aee1d1a"
+  },
+  "requests": 1,
+  "events": [
+    {
+      "task": "chat_grounding_review",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 3437,
+        "completion_tokens": 396,
+        "total_tokens": 3833
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 7.421
+    }
+  ],
+  "groq_client_calls": 0
+}

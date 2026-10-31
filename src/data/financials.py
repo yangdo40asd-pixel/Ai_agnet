@@ -761,9 +761,11 @@ def build_quarter_comparison(
     target_fs_div = "CFS" if any(s.fs_div == "CFS" for s in valid) else valid[0].fs_div
     same_fs = [s for s in valid if s.fs_div == target_fs_div]
 
-    by_year_reprt: dict[tuple[str, str], FinancialStatementData] = {}
-    for s in same_fs:
-        by_year_reprt[(s.bsns_year, s.reprt_code)] = s
+    grouped = {}
+    for statement in same_fs:
+        grouped.setdefault((statement.bsns_year, statement.reprt_code), []).append(statement)
+    # 같은 보고기간의 여러 버전을 임의로 최신/유효 공시로 고르지 않는다.
+    by_year_reprt = {key: entries[0] for key, entries in grouped.items() if len(entries) == 1}
 
     years = sorted({s.bsns_year for s in same_fs})
     results: list[QuarterlyFinancialSummary] = []
@@ -782,7 +784,10 @@ def build_quarter_comparison(
             rev_row = get_standard_row(stmt, "revenue")
             op_row = get_standard_row(stmt, "operating_income")
             net_row = get_standard_row(stmt, "net_income")
-            # 이미 3개월 당분기 값인 row.amount만 사용한다.
+            # 이미 3개월 당분기 값인 원화 행만 사용한다.
+            rev_row, op_row, net_row = (r if r is not None and r.currency == "KRW"
+                                      and r.period_type == "quarter_3m" else None
+                                      for r in (rev_row, op_row, net_row))
             if all(r is None or r.amount is None for r in (rev_row, op_row, net_row)):
                 continue
             results.append(
@@ -920,6 +925,7 @@ def collect_company_financials(
     *,
     preferred_fs_div: str = "CFS",
     years: tuple[str, ...] | None = None,
+    include_indices: bool = True,
 ) -> dict[str, object]:
     """선택 종목의 DART 기업번호 매핑 → 최근 3개년 연간 재무제표·주요지표 수집 → 비교·비율·fact 생성을 수행한다.
 
@@ -1009,7 +1015,7 @@ def collect_company_financials(
         if norm.status == "ok":
             collected_statements.append(norm)
             # 2023년 이후 연도에 대해 주요 재무지표(수익성지표 M210000) 조회 시도
-            if int(year) >= 2023:
+            if include_indices and int(year) >= 2023:
                 idx_resp = fetch_financial_indices(
                     corp_code, year, "11011", "M210000", settings=settings
                 )
@@ -1027,6 +1033,8 @@ def collect_company_financials(
             "facts": (),
         }
 
+    # 호출자가 years를 역순으로 주어도 최신 비율의 기준 연도가 뒤집히지 않는다.
+    collected_statements.sort(key=lambda statement: int(statement.bsns_year))
     annual_summaries = build_annual_comparison(collected_statements, index_by_year)
     quarterly_summaries = build_quarter_comparison(collected_statements)
     latest_stmt = collected_statements[-1]

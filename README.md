@@ -23,7 +23,7 @@ Set-Location D:\ai_agent
 .\venv\Scripts\python.exe -m streamlit run .\src\ui\app.py
 ```
 
-새 환경의 기본 실행 패키지는 requirements-core.txt 기준이다. 챗봇용 추가 패키지는 없으며 기존 Groq 설정을 사용한다.
+새 환경의 기본 실행 패키지는 requirements-core.txt 기준이다. 기본 AI는 기존 Groq이며, `AI_PROVIDER=local`로 별도 로컬 서버를 선택할 수 있다. 실제 `.env`의 기존 설정은 자동 변경하지 않는다. [로컬 실행·복귀 안내](docs/로컬_LLM_실행안내.md)를 따른다.
 
 ```powershell
 .\venv\Scripts\python.exe -m pip install -r requirements-core.txt
@@ -34,6 +34,10 @@ Set-Location D:\ai_agent
 | 설정 | 용도 |
 |---|---|
 | GROQ_API_KEY | Groq의 AI 호출 인증 |
+| AI_PROVIDER | groq(기본) 또는 local. 로컬 실패 시 외부 자동 폴백 없음 |
+| LOCAL_LLM_BASE_URL / LOCAL_LLM_MODEL | 로컬 HTTP 서버의 /v1 주소와 등록 모델 ID |
+| LOCAL_LLM_CONNECT_TIMEOUT / LOCAL_LLM_READ_TIMEOUT | 로컬 연결·생성 제한 시간, 데이터 API 시간과 분리 |
+| LOCAL_LLM_OUTPUT_MODE / LOCAL_LLM_API_KEY | schema(기본)/json 명시 선택, 필요한 경우만 로컬 인증 |
 | GROQ_MODEL | 기본 openai/gpt-oss-20b. 모델 이용 권한/한도는 계정과 제공 시점에 따름 |
 | NAVER_CLIENT_ID / NAVER_CLIENT_SECRET | 현재 NAVER API HUB 뉴스 인증. Developers 검색 API 인증과 혼동하지 않음 |
 | DART_API_KEY | OpenDART 기업 재무 조회. 미설정 때 재무 영역은 수집하지 않음 |
@@ -45,7 +49,7 @@ Set-Location D:\ai_agent
 1. 왼쪽 입력은 글, png/jpg/webp 이미지, txt/pdf 파일을 받는다. 빈 값과 1,200자, 첨부 종류와 5MB 제한을 검사한다. 이미지와 PDF 본문은 모델에 넘기지 않는다.
 2. 테마 후보 탐색, 공식 이름·코드로 지정한 종목 조회, 개념 설명, 현재 종목 후속 질문을 구분한다. 자유 대화는 LLM 분류와 코드의 대상·범위 검사를 거친다. 전용 검색 폼은 명시적 검색 행동을 전달한다. 후보 탐색용 테마는 120자 이내다.
 3. 답변은 입니다·합니다체로 제공하고, 불필요한 후속 질문은 생략한다. AI의 확인 질문을 사용자 입력 버튼으로 복제하지 않는다. 예상 질문은 현재 자료로 지원하는 범위만 제안한다.
-4. Groq에 후보3개를 요청하고 응답 형식을 검사한다. KRX 목록으로 이름·코드·시장을 대조하고, 필요하면 1회 재제안한다.
+4. 선택한 AI 공급자에 후보3개를 요청하고 응답 형식을 검사한다. KRX 목록으로 이름·코드·시장을 대조하고, 필요하면 1회 재제안한다.
 5. 선택 전에는 상세 금융·재무·뉴스를 호출하지 않는다. 선택 뒤에 주가/PER/EPS/BPS/PBR, 일별 OHLCV, DART 최근 3개 연간 재무, 뉴스 제목 최대 3건, AI 설명을 수집한다.
 6. 수집 결과와 핵심 분석 리포트를 채팅에 표시한다. ‘차트·근거 보기’를 누르면 해당 답변의 결과 ID로 카드가 열린다. 클릭 전에는 오른쪽 영역 자체를 표시하지 않는다. 카드에는 지표·차트·재무·뉴스 근거와 엑셀 준비 버튼이 있다.
 7. 후속 질문은 해당 결과와 최근 대화로 답한다. 뉴스·시세는 15분, 금융 지표는 5분의 재조회 기준을 적용하며, 요청 범위가 미수집이거나 시세 기간을 바꾸면 필요한 영역을 조회한다. 이 시간은 갱신 판단 기준이며 원천 데이터의 실시간성을 보장하지 않는다. 새 테마는 기존 대화·캔버스를 보존한다.
@@ -80,7 +84,8 @@ PER는 제공 trailingPE를 우선하고, 없으면 조건에 맞는 원화 TTM 
 | src/data/dart.py / financials.py | 기업번호·공시/주요지표·계정/기간/금액·비율/fact_id |
 | src/agents/report.py | 후보/기본설명/재무설명·응답 검증 |
 | src/agents/chat.py | 문맥·현재 자료 기반 후속 답변·근거 검사 |
-| src/agents/transport.py | 공통 AI 호출·JSON/스키마·공급자 오류와 제한된 재시도 |
+| src/agents/transport.py / output_contract.py | 공통 공급자 선택·JSON 해석·출력 스키마 |
+| src/agents/providers/ | Groq와 로컬의 통신·인증·오류 처리. 업무 검증은 공통 계층 유지 |
 | src/agents/request.py / knowledge.py | 요청 의도·대상·범위 분리, 검토된 금융 개념 |
 | src/analysis_flow.py / diagnostics.py | 갱신 판단·리포트 조립, 비밀 본문을 남기지 않는 오류 단계 기록 |
 | src/formatting.py / text.py | 공통 표시 서식·테마 검색어 정리 |
@@ -108,6 +113,8 @@ openpyxl은 src/export/excel.py의 대조 함수와 자동/실제 검수에서 �
 과거 requirements.txt는 실험/후보 목록이다. 설치돼 있거나 목록에 있다는 이유만으로 사용 API/구현 완료로 세지 않는다. Selenium·crewai·reportlab 등은 현재 핵심 실행 기능의 근거가 아니다.
 
 ## 자동 검사와 실제 API 기록
+
+2026-10-27 최신 전체 자동 검사 **359개 통과**. 뉴스 채택·제외 ID 차단·복합 범위·단위별 사실/관련성·재작성·원문/Excel 보존을 포함한다. 실제 Q4 표본과 실패/부분 완료는 [계획6 25절](계획6_로컬LLM_통합_개발계획.md)을 따른다. NEWS_RELEVANCE_MODE=auto(기본)는 로컬에서 보완 정책을 적용하고 기존 Groq 경로는 유지한다. 실제 .env와 WBS는 변경하지 않았다. 아래 이전 날짜의 검수는 당시 이력이다.
 
 2026-10-25 외부 네트워크를 차단한 자동 검사 **281개**를 통과했다. 실제 검수 도구에는 생성·검증·재요청의 HTTP 호출마다 기본 65초 간격과 실행당 6회 호출 예산을 적용하고, 한도·사용량을 기록한다. 검수 중 429 응답에는 자동 재시도하지 않는다. 최신 변경·실제 답변 평가·남은 작업은 [계획5의 17.14절](계획5_근거기반_대화형분석_개선기획.md)을 따른다. 일반 앱 전체의 요청 제한을 바꾼 것은 아니며, 공유 계정 사용량·일일 토큰 한도까지 보장하지 않는다. 개별 평가 기준의 오판과 다양한 표현의 안정성, 실제 화면 육안 확인과 기본 리포트의 의미 검증 확대는 남아 있다.
 

@@ -519,9 +519,34 @@ def _write_income_sheet(result, stock, stock_code, workbook, ws_is, ws_summary, 
     else:
         ws_is.write_string(4, 0, "자료 없음", formats.label_fmt)
         ws_is.write_string(
-            4, 1, "OpenDART 연간 손익계산서 자료가 없거나 미공시 상태입니다.", formats.text_fmt
+            4, 1, "이 조회 결과에서 연간 손익계산서 자료를 확인하지 못했습니다.", formats.text_fmt
         )
     return annuals
+
+
+def _write_quarterly_table(result, worksheet, formats):
+    """연간 표와 섞지 않고 같은 스냅샷의 검증된 3개월 자료만 별도 구역에 쓴다."""
+    quarters = sorted((q for q in result.quarterly_summaries
+                       if q.is_standalone_quarter and q.period_type == "quarter_3m" and q.currency == "KRW"),
+                      key=lambda q: (q.period_label, q.fs_div))
+    if not quarters:
+        return
+    first = max(8, len(result.annual_summaries) + 7)
+    worksheet.write_string(first, 0, "분기 실적 (각 3개월, 누적 아님)", formats.title_fmt)
+    headers = ("분기", "재무구분", "매출액(원)", "영업이익(원)", "당기순이익(원)",
+               "매출액(억원)", "영업이익(억원)", "당기순이익(억원)", "공시접수번호", "출처", "산정 근거")
+    for col, header in enumerate(headers):
+        worksheet.write_string(first + 1, col, header, formats.header_fmt)
+    for row, quarter in enumerate(quarters, start=first + 2):
+        worksheet.write_string(row, 0, sanitize_excel_text(quarter.period_label), formats.text_fmt)
+        worksheet.write_string(row, 1, quarter.fs_div, formats.text_fmt)
+        for col, amount in enumerate((quarter.revenue, quarter.operating_income, quarter.net_income), start=2):
+            _write_optional_number(worksheet, row, col, amount, formats.int_fmt)
+            _write_optional_number(worksheet, row, col + 3,
+                                   Decimal(str(amount)) / 100000000 if amount is not None else None,
+                                   formats.dec_fmt)
+        for col, value in ((8, quarter.rcept_no), (9, "OpenDART"), (10, quarter.derivation_note)):
+            worksheet.write_string(row, col, sanitize_excel_text(value), formats.text_fmt)
 
 
 def _write_balance_sheet(annuals, stock, stock_code, workbook, ws_bs, formats):
@@ -654,7 +679,13 @@ def _write_news_sheet(result, stock, stock_code, ws_news, formats):
         ),
     )
 
+    from src.source_presentation import news_usage_label
+    usage_labels = {article.id: news_usage_label(result, article.id) for article in result.news.articles}
+    has_usage = any(usage_labels.values())
     news_headers = ("뉴스 번호", "기사 제목", "발행 시각", "언론사 도메인", "안전 확인된 원문 URL")
+    if has_usage:
+        news_headers += ("분석 활용 범위",)
+        ws_news.set_column(5, 5, 35)
     for col_idx, h in enumerate(news_headers):
         ws_news.write_string(3, col_idx, h, formats.header_fmt)
 
@@ -670,6 +701,8 @@ def _write_news_sheet(result, stock, stock_code, ws_news, formats):
             )
             safe_url = safe_news_url(art.url) or "미확인"
             ws_news.write_string(idx, 4, sanitize_excel_text(safe_url), formats.text_fmt)
+            if has_usage:
+                ws_news.write_string(idx, 5, sanitize_excel_text(usage_labels[art.id]), formats.text_fmt)
     else:
         ws_news.write_string(4, 0, "자료 없음", formats.label_fmt)
         ws_news.write_string(
@@ -780,6 +813,7 @@ def build_workbook_bytes(result: AnalysisResult) -> bytes:
     fin, ratios = _write_metrics_sheet(price_at_str, result, stock, stock_code, ws_metrics, formats)
     hist = _write_history_sheet(fin, price_period, result, stock, stock_code, workbook, ws_history, formats)
     annuals = _write_income_sheet(result, stock, stock_code, workbook, ws_is, ws_summary, formats)
+    _write_quarterly_table(result, ws_is, formats)
     _write_balance_sheet(annuals, stock, stock_code, workbook, ws_bs, formats)
     _write_cash_flow_sheet(annuals, stock, stock_code, ws_cf, formats)
     _write_news_sheet(result, stock, stock_code, ws_news, formats)

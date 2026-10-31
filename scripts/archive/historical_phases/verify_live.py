@@ -107,9 +107,16 @@ def _verify_selected_result(app, result, expected_theme: str, expected_code: str
     check(len(app.success) == int(result.complete), "부분 결과의 완료 표시 오류")
 
     # 5. 엑셀(XLSX) 바이트·파일명·내부 시트·네이티브 차트 셀 참조 대조
-    check("export_bytes" in app.session_state and "export_filename" in app.session_state, "엑셀 다운로드 자료 미생성")
-    export_bytes = app.session_state["export_bytes"]
-    export_filename = app.session_state["export_filename"]
+    cards = app.session_state["canvases"] if "canvases" in app.session_state else []
+    if cards and not cards[0].get("export_bytes"):
+        card_id = cards[0]["canvas_id"]
+        app.button(key=f"prepare_export_{card_id}").click().run()
+        cards = app.session_state["canvases"]
+    check(bool(cards and cards[0].get("export_bytes")), "엑셀 다운로드 자료 미생성")
+    export_bytes = cards[0]["export_bytes"]
+    export_filename = cards[0]["export_filename"]
+    app.session_state["export_bytes"] = export_bytes
+    app.session_state["export_filename"] = export_filename
     check(expected_code in export_filename, "엑셀 파일명 종목코드 불일치")
     excel_check = reconcile_workbook_values(result, export_bytes)
     check(excel_check["all_sheets_present"], "엑셀 8개 시트 구성 누락")
@@ -120,10 +127,11 @@ def _verify_selected_result(app, result, expected_theme: str, expected_code: str
 
     # 6. 단순 rerun 시 API 재호출 없이 동일 객체 및 엑셀 보존 확인
     app.run(timeout=180)
+    cards = app.session_state["canvases"] if "canvases" in app.session_state else []
     check(
         not app.exception
         and app.session_state["dashboard_result"] is result
-        and app.session_state["export_bytes"] is export_bytes,
+        and cards and cards[0].get("export_bytes") is export_bytes,
         "화면 단순 재실행(rerun) 시 결과/엑셀 보존 실패",
     )
 
@@ -203,7 +211,7 @@ def _verify_selected_result(app, result, expected_theme: str, expected_code: str
     }
 
 
-def run_case(app, theme: str, *, verify_second_candidate: bool = False):
+def run_case(app, theme: str, *, verify_second_candidate: bool = False, verify_followup: bool = True):
     start = time.monotonic()
     t_disc = time.perf_counter()
     from src.agents.chat import is_explicit_search
@@ -235,6 +243,25 @@ def run_case(app, theme: str, *, verify_second_candidate: bool = False):
 
     primary_detail = _verify_selected_result(app, result1, discovery.theme, first_code)
 
+    followup_detail = None
+    if verify_followup:
+        t_follow = time.perf_counter()
+        follow_question = "최근 실적이 좋아졌어?"
+        app.text_input(key="composer_text").set_value(follow_question)
+        app.button(key="composer_submit").click().run(timeout=180)
+        check(not app.exception, "후속 질문 실행 예외")
+        last_msg = next((m for m in reversed(app.session_state["chat_messages"]) if m["role"] == "assistant"), None)
+        check(last_msg is not None, "후속 질문 어시스턴트 답변 누락")
+        check(bool(last_msg.get("text")), "후속 질문 어시스턴트 답변 본문 공백")
+        followup_detail = {
+            "question": follow_question,
+            "answer": last_msg["text"],
+            "target": last_msg.get("target"),
+            "evidence_count": len(last_msg.get("evidence") or ()),
+            "follow_up": last_msg.get("follow_up"),
+            "elapsed_ms": round((time.perf_counter() - t_follow) * 1000.0, 2),
+        }
+
     switch_detail = None
     if verify_second_candidate and len(discovery.candidates) >= 2:
         second_code = discovery.candidates[1].code
@@ -248,6 +275,10 @@ def run_case(app, theme: str, *, verify_second_candidate: bool = False):
         for card in list(app.session_state["canvases"]):
             app.button(key=f"close_{card['canvas_id']}").click().run()
         app.button(key="add_canvas").click().run()
+        if "export_bytes" in app.session_state:
+            del app.session_state["export_bytes"]
+        if "export_filename" in app.session_state:
+            del app.session_state["export_filename"]
         switch_detail = _verify_selected_result(app, result2, discovery.theme, second_code)
 
     return {
@@ -260,6 +291,7 @@ def run_case(app, theme: str, *, verify_second_candidate: bool = False):
             for x in discovery.candidates
         ],
         **primary_detail,
+        "followup": followup_detail,
         "candidate_switch_verified": switch_detail is not None,
         "switched_stock": switch_detail["selected_stock"] if switch_detail else None,
         "switched_timings_ms": switch_detail["timings_ms"] if switch_detail else None,
@@ -271,6 +303,7 @@ def run_case(app, theme: str, *, verify_second_candidate: bool = False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--live", action="store_true", help="실제 외부 API 호출 활성화")
+    parser.add_argument("--base-url", default=None, help="로컬 LLM 기본 URL 재정의")
     parser.add_argument(
         "--themes",
         nargs="+",
@@ -285,7 +318,7 @@ def main():
     parser.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "검수자료" / "실제_API_검수.json",
+        default=ROOT / "docs" / "검수" / "계획6_G02_M04_실제금융API_종단검수_2026-10-27.json",
     )
     args = parser.parse_args()
     if not args.live:
@@ -293,11 +326,17 @@ def main():
     from streamlit.testing.v1 import AppTest
     from src.config import load_settings
 
+    if args.base_url:
+        import os
+        os.environ["LOCAL_LLM_BASE_URL"] = args.base_url
     settings = load_settings()
     app = AppTest.from_file(str(ROOT / "src/ui/app.py"), default_timeout=180).run()
+    active_model = settings.local_model if settings.ai_provider == "local" else settings.groq_model
     report = {
         "checked_at": now_kst().isoformat(),
-        "model": settings.groq_model,
+        "ai_provider": settings.ai_provider,
+        "model": active_model,
+        "local_base_url": settings.local_base_url if settings.ai_provider == "local" else None,
         "dart_configured": bool(settings.dart_api_key),
         "external_responses_mocked": False,
         "browser_or_server_started": False,
@@ -309,8 +348,11 @@ def main():
         try:
             item = run_case(app, theme, verify_second_candidate=(index == 0))
         except Exception as error:
+            import traceback
+            tb = traceback.format_exc()
+            print("ERROR IN LIVE CASE:", tb, flush=True)
             # 인증 응답·요청 객체·예외 본문은 API 키를 포함할 수 있으므로 기록하지 않는다.
-            item = {"theme": theme, "status": "failed", "error_type": type(error).__name__}
+            item = {"theme": theme, "status": "failed", "error_type": type(error).__name__, "error_detail": str(error)}
             if isinstance(error, AssertionError):
                 item["check"] = str(error)
             item["app_errors"] = [x.value for x in app.error]
@@ -329,6 +371,7 @@ def main():
                         "selected_stock",
                         "candidate_switch_verified",
                         "switched_stock",
+                        "followup",
                         "check",
                         "error_type",
                         "warnings",
@@ -340,6 +383,7 @@ def main():
             flush=True,
         )
     app.button(key="clear_results").click().run()
+    canvases_cleared = not bool(app.session_state["canvases"]) if "canvases" in app.session_state else True
     report["clear_result"] = (
         "passed"
         if (
@@ -347,7 +391,7 @@ def main():
             and not app.metric
             and "dashboard_result" not in app.session_state
             and "candidate_result" not in app.session_state
-            and "export_bytes" not in app.session_state
+            and canvases_cleared
         )
         else "failed"
     )

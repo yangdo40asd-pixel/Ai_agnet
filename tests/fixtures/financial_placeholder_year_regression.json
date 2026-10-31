@@ -1,0 +1,10 @@
+{
+  "text": "가상검수회사는 2024년 대비 2025년 매출액이 {{CMP_2024_2025_CFS_REVENUE}} 증가했고, 영업이익은 {{CMP_2024_2025_CFS_OPERATING_INCOME}} 증가했으며 영업이익률은 {{CMP_2024_2025_CFS_OPERATING_MARGIN}} 상승했습니다.",
+  "evidence_ids": [
+    "CMP_2024_2025_CFS_REVENUE",
+    "CMP_2024_2025_CFS_OPERATING_INCOME",
+    "CMP_2024_2025_CFS_OPERATING_MARGIN"
+  ],
+  "follow_up": "",
+  "blocks": []
+}

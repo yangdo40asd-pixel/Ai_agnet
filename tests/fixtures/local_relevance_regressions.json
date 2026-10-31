@@ -1,0 +1,767 @@
+{
+  "version": 1,
+  "synthetic_data": true,
+  "dataset": {
+    "stock_name": "가상검수회사",
+    "stock_code": "123456",
+    "theme": "반도체",
+    "annual_years": [
+      2024,
+      2025
+    ],
+    "news": [
+      {
+        "id": "NEWS_1",
+        "title": "가상검수회사 반도체 메모리 생산라인 가동 계획 발표",
+        "expected_scope": "company"
+      },
+      {
+        "id": "NEWS_2",
+        "title": "가상그룹 지주회사 이사회 경영 강화",
+        "expected_scope": "unknown",
+        "note": "선택 회사와의 연결 근거를 제공하지 않은 대조"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "mixed_latest_wrong",
+      "expected_status": "failed",
+      "answer": {
+        "text": "수집된 뉴스 제목 기준입니다. 가상검수회사는 2024년 대비 2025년 매출액이 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가) 증가했고, 영업이익은 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가) 증가했으며 영업이익률은 2024년 10.00% → 2025년 15.00% (5.00%p 상승) 상승했습니다.\n\n**반도체 생산라인 가동 계획**\n반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 계획 발표는 실제 실행이나 매출 반영을 확인한 것이 아니며 구체적인 실행 여부는 추가 확인이 필요합니다.\n\n**지주회사 경영 강화 소식**\n가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 뉴스는 제목 기준이며, 경영 강화의 구체적인 내용이나 범위는 확인되지 않았습니다.",
+        "evidence_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN",
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "blocks": [
+          {
+            "title": "반도체 생산라인 가동 계획",
+            "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 계획 발표는 실제 실행이나 매출 반영을 확인한 것이 아니며 구체적인 실행 여부는 추가 확인이 필요합니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ]
+          },
+          {
+            "title": "지주회사 경영 강화 소식",
+            "text": "가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 뉴스는 제목 기준이며, 경영 강화의 구체적인 내용이나 범위는 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_2"
+            ]
+          }
+        ]
+      },
+      "contract": {
+        "allowed_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN",
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "forbidden_ids": [
+          "NEWS_2"
+        ],
+        "required_groups": {
+          "financial": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "news": [
+            "NEWS_1"
+          ]
+        }
+      },
+      "provenance": {
+        "file": "docs/검수/계획6_비교연도수정_CPU8K새생성_2026-10-27.json",
+        "sha256": "a4d861eef1e199a0dd612cd7530118d59a143c773936ff293eea39feca6884a4",
+        "case": "mixed",
+        "generation_origin": "live",
+        "execution_status": "returned"
+      },
+      "raw_generation": [
+        {
+          "text": "가상검수회사는 2024년 대비 2025년 매출액이 {{CMP_2024_2025_CFS_REVENUE}} 증가했고, 영업이익은 {{CMP_2024_2025_CFS_OPERATING_INCOME}} 증가했으며 영업이익률은 {{CMP_2024_2025_CFS_OPERATING_MARGIN}} 상승했습니다.",
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "follow_up": "",
+          "blocks": [
+            {
+              "title": "반도체 생산라인 가동 계획",
+              "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 계획 발표는 실제 실행이나 매출 반영을 확인한 것이 아니며 구체적인 실행 여부는 추가 확인이 필요합니다.",
+              "evidence_ids": [
+                "NEWS_1"
+              ]
+            },
+            {
+              "title": "지주회사 경영 강화 소식",
+              "text": "가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 뉴스는 제목 기준이며, 경영 강화의 구체적인 내용이나 범위는 확인되지 않았습니다.",
+              "evidence_ids": [
+                "NEWS_2"
+              ]
+            }
+          ]
+        }
+      ],
+      "provider_reviews": [
+        {
+          "unit_reviews": [
+            {
+              "id": "intro_0",
+              "reason": "도입 및 자료 범위 고지 문구로, 회사 사실 주장이 없으므로 허용됩니다.",
+              "supported": true
+            },
+            {
+              "id": "intro_1",
+              "reason": "제공된 CMP_2024_2025_CFS 관련 수치 및 증감률과 정확히 일치합니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_0",
+              "reason": "NEWS_1의 제목을 서술형으로 표현한 것이며 새로운 사실을 추가하지 않았습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_1",
+              "reason": "NEWS_1의 내용을 정확히 반영하고 있습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_2",
+              "reason": "계획 발표와 실제 실행을 구분하여 자료의 한계를 적절히 설명했습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_1_0",
+              "reason": "NEWS_2의 제목을 서술형으로 표현한 것이며 새로운 사실을 추가하지 않았습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_1_1",
+              "reason": "NEWS_2의 내용을 정확히 반영하고 있습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_1_2",
+              "reason": "도입 및 자료 범위 고지 문구로, 회사 사실 주장이 없으므로 허용됩니다.",
+              "supported": true
+            },
+            {
+              "id": "block_1_3",
+              "reason": "NEWS_2 제목에 구체적 내용이 없음을 나타내는 자료의 한계 설명으로 적합합니다.",
+              "supported": true
+            }
+          ],
+          "reason": "모든 단위가 제공된 근거와 일치하며, 계획과 실적을 명확히 구분하고 자료의 한계를 적절히 고지했습니다.",
+          "checks": {
+            "evidence_match": true,
+            "time_basis": true,
+            "question_focus": true,
+            "explanation": true,
+            "scope_disclosed": true,
+            "context_consistent": true
+          },
+          "supported": true,
+          "answers_question": true
+        }
+      ]
+    },
+    {
+      "id": "mixed_first_wrong",
+      "expected_status": "failed",
+      "answer": {
+        "text": "수집된 뉴스 제목 기준입니다. 가상검수회사는 2024년 대비 2025년 매출액이 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승했습니다.\n\n**반도체 생산라인 가동 계획**\n반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.\n\n**지주회사 경영 강화**\n가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 보도만으로는 구체적인 경영 강화의 내용이나 방향을 파악하기 어렵습니다.",
+        "evidence_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN",
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "blocks": [
+          {
+            "title": "반도체 생산라인 가동 계획",
+            "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ]
+          },
+          {
+            "title": "지주회사 경영 강화",
+            "text": "가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 보도만으로는 구체적인 경영 강화의 내용이나 방향을 파악하기 어렵습니다.",
+            "evidence_ids": [
+              "NEWS_2"
+            ]
+          }
+        ]
+      },
+      "contract": {
+        "allowed_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN",
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "forbidden_ids": [
+          "NEWS_2"
+        ],
+        "required_groups": {
+          "financial": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "news": [
+            "NEWS_1"
+          ]
+        }
+      },
+      "provenance": {
+        "file": "docs/검수/계획6_로컬_CPU8K_업무검수_2026-10-27.json",
+        "sha256": "9e82d30b5c0e75d9960c900be303a3d4a0e2fcac11621a0e7bcbf99eb0f4fb12",
+        "case": "mixed",
+        "generation_origin": "live",
+        "execution_status": "returned"
+      },
+      "raw_generation": [
+        {
+          "text": "가상검수회사는 2024년 대비 2025년 매출액이 {{CMP_2024_2025_CFS_REVENUE}} 증가했고 영업이익은 {{CMP_2024_2025_CFS_OPERATING_INCOME}} 증가했으며 영업이익률은 {{CMP_2024_2025_CFS_OPERATING_MARGIN}} 상승했습니다.",
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "follow_up": "",
+          "blocks": [
+            {
+              "title": "반도체 생산라인 가동 계획",
+              "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+              "evidence_ids": [
+                "NEWS_1"
+              ]
+            },
+            {
+              "title": "지주회사 경영 강화",
+              "text": "가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 보도만으로는 구체적인 경영 강화의 내용이나 방향을 파악하기 어렵습니다.",
+              "evidence_ids": [
+                "NEWS_2"
+              ]
+            }
+          ]
+        },
+        {
+          "text": "가상검수회사는 2024년 대비 2025년 매출액이 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승했습니다.",
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "follow_up": "",
+          "blocks": [
+            {
+              "title": "반도체 생산라인 가동 계획",
+              "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+              "evidence_ids": [
+                "NEWS_1"
+              ]
+            },
+            {
+              "title": "지주회사 경영 강화",
+              "text": "가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 보도만으로는 구체적인 경영 강화의 내용이나 방향을 파악하기 어렵습니다.",
+              "evidence_ids": [
+                "NEWS_2"
+              ]
+            }
+          ]
+        }
+      ],
+      "provider_reviews": [
+        {
+          "unit_reviews": [
+            {
+              "id": "intro_0",
+              "reason": "수집된 자료의 범위를 명시하는 안내 문구로, 회사 사실 주장이 없으므로 허용됩니다.",
+              "supported": true
+            },
+            {
+              "id": "intro_1",
+              "reason": "제공된 재무 지표(매출액 20% 증가, 영업이익 80% 증가, 영업이익률 5%p 상승)와 정확히 일치합니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_0",
+              "reason": "뉴스 제목을 기반으로 한 소제목으로, 새로운 사실을 추가하지 않았습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_1",
+              "reason": "NEWS_1의 제목 내용을 서술문으로 적절하게 표현했습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_2",
+              "reason": "제목에 실행 결과나 매출 반영 내용이 없으므로, 확인 불가라는 한계 설명을 덧붙인 것은 적합합니다.",
+              "supported": true
+            },
+            {
+              "id": "block_1_0",
+              "reason": "뉴스 제목을 기반으로 한 소제목으로, 새로운 사실을 추가하지 않았습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_1_1",
+              "reason": "NEWS_2의 제목 내용을 서술문으로 적절하게 표현했습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_1_2",
+              "reason": "제목에 구체적인 내용이 없으므로, 확인이 어렵다는 한계 설명을 덧붙인 것은 적합합니다.",
+              "supported": true
+            }
+          ],
+          "reason": "모든 단위가 제공된 근거와 일치하며, 계획 발표를 실적이나 확정된 결과로 오인하지 않도록 적절한 한계 설명을 포함하고 있습니다.",
+          "checks": {
+            "evidence_match": true,
+            "time_basis": true,
+            "question_focus": true,
+            "explanation": true,
+            "scope_disclosed": true,
+            "context_consistent": true
+          },
+          "supported": true,
+          "answers_question": true
+        }
+      ]
+    },
+    {
+      "id": "financial_valid",
+      "expected_status": "passed",
+      "answer": {
+        "text": "가상검수회사는 매출과 영업이익이 모두 증가하며 실적이 전반적으로 개선되었습니다. 매출은 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승했습니다.",
+        "evidence_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN"
+        ],
+        "blocks": []
+      },
+      "contract": {
+        "allowed_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN",
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "forbidden_ids": [
+          "NEWS_2"
+        ],
+        "required_groups": {
+          "financial": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ]
+        }
+      },
+      "provenance": {
+        "file": "docs/검수/계획6_관련성보강_GPU검수_2026-10-27.json",
+        "sha256": "c83201cb1a6bb7ea39257c4392fbfd2443f7599382299a757eb2788c0fc6953f",
+        "case": "financial",
+        "generation_origin": "live",
+        "execution_status": "returned"
+      },
+      "raw_generation": [
+        {
+          "text": "가상검수회사는 매출과 영업이익이 모두 증가하며 실적이 전반적으로 개선되었습니다. 매출은 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승했습니다.",
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "follow_up": "",
+          "blocks": []
+        }
+      ],
+      "provider_reviews": [
+        {
+          "unit_reviews": [
+            {
+              "id": "intro_0",
+              "reason": "제공된 매출, 영업이익, 영업이익률의 증가 수치가 모두 일치하며 실적 개선이라는 결론이 타당합니다.",
+              "supported": true
+            },
+            {
+              "id": "intro_1",
+              "reason": "매출 20.00% 증가, 영업이익 80.00% 증가, 영업이익률 5.00%p 상승 수치가 모두 근거 자료와 정확히 일치합니다.",
+              "supported": true
+            }
+          ],
+          "reason": "모든 수치와 실적 개선 결론이 제공된 근거 자료와 정확히 일치하며, 질문에 대한 직접적인 답변을 포함하고 있습니다.",
+          "checks": {
+            "evidence_match": true,
+            "time_basis": true,
+            "question_focus": true,
+            "explanation": true,
+            "scope_disclosed": true,
+            "context_consistent": true
+          },
+          "supported": true,
+          "answers_question": true
+        }
+      ]
+    },
+    {
+      "id": "basic_news_valid",
+      "expected_status": "passed",
+      "answer": {
+        "text": "**가상검수회사 조회 결과**\n\n관련 소식은 수집된 뉴스 제목을 기준으로 정리했습니다.\n\n**연간 실적**\n연결재무제표 · 매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)\n\n연결재무제표 · 영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)\n\n연결재무제표 · 영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)\n\n**테마 동향**\n이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+        "evidence_ids": [],
+        "blocks": [
+          {
+            "title": "연간 실적",
+            "text": "연결재무제표 · 매출액: 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가)\n\n연결재무제표 · 영업이익: 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가)\n\n연결재무제표 · 영업이익률: 2024년 10.00% → 2025년 15.00% (5.00%p 상승)",
+            "evidence_ids": [
+              "CMP_2024_2025_CFS_REVENUE",
+              "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "CMP_2024_2025_CFS_OPERATING_MARGIN"
+            ]
+          },
+          {
+            "title": "테마 동향",
+            "text": "이 종목은 반도체 메모리 생산라인 가동 계획을 발표했습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ]
+          }
+        ]
+      },
+      "contract": {
+        "allowed_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN",
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "forbidden_ids": [
+          "NEWS_2"
+        ],
+        "required_groups": {
+          "financial": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "news": [
+            "NEWS_1"
+          ]
+        }
+      },
+      "provenance": {
+        "file": "docs/검수/계획6_관련성보강_GPU검수_2026-10-27.json",
+        "sha256": "c83201cb1a6bb7ea39257c4392fbfd2443f7599382299a757eb2788c0fc6953f",
+        "case": "basic_report",
+        "generation_origin": "live",
+        "execution_status": "returned"
+      },
+      "raw_generation": [],
+      "provider_reviews": [
+        {
+          "unit_reviews": [
+            {
+              "id": "intro_0",
+              "reason": "도입 및 자료 범위 고지 문구로, 인용 문구가 없어도 허용됩니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_0",
+              "reason": "제목 속의 사실을 그대로 반영한 헤딩으로 적합합니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_1",
+              "reason": "뉴스 제목에 명시된 '가동 계획 발표' 사실을 정확히 반영했습니다.",
+              "supported": true
+            }
+          ],
+          "reason": "모든 단위가 제공된 뉴스 제목의 사실과 일치하며, 계획을 실적이나 인과로 왜곡하지 않았습니다.",
+          "checks": {
+            "evidence_match": true,
+            "time_basis": true,
+            "question_focus": true,
+            "explanation": true,
+            "scope_disclosed": true,
+            "context_consistent": true
+          },
+          "supported": true,
+          "answers_question": true
+        }
+      ]
+    },
+    {
+      "id": "mixed_related_saved",
+      "expected_status": "passed",
+      "answer": {
+        "text": "수집된 뉴스 제목 기준입니다. 가상검수회사는 2024년 대비 2025년 매출액이 2024년 100.0억원 → 2025년 120.0억원 (20.00% 증가) 증가했고, 영업이익은 2024년 10.0억원 → 2025년 18.0억원 (80.00% 증가) 증가했으며 영업이익률은 2024년 10.00% → 2025년 15.00% (5.00%p 상승) 상승했습니다.\n\n**반도체 생산라인 가동 계획**\n반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+        "evidence_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN",
+          "NEWS_1"
+        ],
+        "blocks": [
+          {
+            "title": "반도체 생산라인 가동 계획",
+            "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ]
+          }
+        ]
+      },
+      "contract": {
+        "allowed_ids": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN",
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "forbidden_ids": [
+          "NEWS_2"
+        ],
+        "required_groups": {
+          "financial": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "news": [
+            "NEWS_1"
+          ]
+        }
+      },
+      "provenance": {
+        "file": "docs/검수/계획6_비교연도수정_저장답변재심사_2026-10-27.json",
+        "sha256": "079a8926ac3dc869fba343f4fcbfd78a330f172d845342e72d95dd9a421ab711",
+        "case": "mixed_saved",
+        "generation_origin": "saved",
+        "execution_status": "returned"
+      },
+      "raw_generation": [
+        {
+          "text": "가상검수회사는 2024년 대비 2025년 매출액이 {{CMP_2024_2025_CFS_REVENUE}} 증가했고, 영업이익은 {{CMP_2024_2025_CFS_OPERATING_INCOME}} 증가했으며 영업이익률은 {{CMP_2024_2025_CFS_OPERATING_MARGIN}} 상승했습니다.",
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN"
+          ],
+          "follow_up": "",
+          "blocks": [
+            {
+              "title": "반도체 생산라인 가동 계획",
+              "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만, 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+              "evidence_ids": [
+                "NEWS_1"
+              ]
+            }
+          ]
+        }
+      ],
+      "provider_reviews": [
+        {
+          "unit_reviews": [
+            {
+              "id": "intro_0",
+              "reason": "도입 및 자료 범위 고지 문구로, 회사 사실 주장이 없으므로 허용됩니다.",
+              "supported": true
+            },
+            {
+              "id": "intro_1",
+              "reason": "제공된 OpenDART 기반의 매출액, 영업이익, 영업이익률 수치와 정확히 일치합니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_0",
+              "reason": "뉴스 제목을 기반으로 한 소제목으로, 새로운 사실을 추가하지 않았습니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_1",
+              "reason": "NEWS_1의 제목 내용을 자연스러운 서술문으로 표현하였으며 사실과 부합합니다.",
+              "supported": true
+            },
+            {
+              "id": "block_0_2",
+              "reason": "제목에 실행 결과나 매출 반영 수치가 없으므로 자료의 한계를 명시한 적절한 설명입니다.",
+              "supported": true
+            }
+          ],
+          "reason": "모든 단위가 제공된 근거와 일치하며, 계획 발표를 실적 확정으로 오인하지 않고 한계를 명확히 고지했습니다.",
+          "checks": {
+            "evidence_match": true,
+            "time_basis": true,
+            "question_focus": true,
+            "explanation": true,
+            "scope_disclosed": true,
+            "context_consistent": true
+          },
+          "supported": true,
+          "answers_question": true
+        }
+      ]
+    },
+    {
+      "id": "single_unrelated_rejected",
+      "expected_status": "failed",
+      "answer": {
+        "text": "수집된 뉴스 제목 기준입니다. 가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다.",
+        "evidence_ids": [
+          "NEWS_2"
+        ],
+        "blocks": []
+      },
+      "contract": {
+        "allowed_ids": [
+          "NEWS_1",
+          "NEWS_2"
+        ],
+        "forbidden_ids": [
+          "NEWS_2"
+        ],
+        "required_groups": {}
+      },
+      "provenance": {
+        "file": "docs/검수/계획6_관련성보강_GPU검수_2026-10-27.json",
+        "sha256": "c83201cb1a6bb7ea39257c4392fbfd2443f7599382299a757eb2788c0fc6953f",
+        "case": "unrelated",
+        "generation_origin": "verifier_supplied_negative",
+        "input_origin": "scripts/verify_local_llm.py의 고정 부정 입력. 기존 기록에 전체 요청 본문은 없음",
+        "execution_status": "returned"
+      },
+      "raw_generation": [],
+      "provider_reviews": [
+        {
+          "unit_reviews": [
+            {
+              "id": "intro_0",
+              "reason": "제목 기준이라는 범위 고지는 인용 문구가 없어도 허용됩니다.",
+              "supported": true
+            },
+            {
+              "id": "intro_1",
+              "reason": "가상그룹 지주회사의 이사회 경영 강화 소식은 NEWS_2 제목과 일치합니다.",
+              "supported": true
+            }
+          ],
+          "reason": "질문은 '가상검수회사'의 실적과 뉴스를 물었으나, 답변은 '가상그룹 지주회사'의 소식만을 다루고 있으며 질문 대상과 답변 내용 사이의 사업적 연결이 없습니다.",
+          "checks": {
+            "evidence_match": false,
+            "time_basis": true,
+            "question_focus": false,
+            "explanation": true,
+            "scope_disclosed": true,
+            "context_consistent": true
+          },
+          "supported": false,
+          "answers_question": false
+        }
+      ]
+    }
+  ],
+  "live_contracts": {
+    "financial": {
+      "allowed_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "forbidden_ids": [
+        "NEWS_2"
+      ],
+      "required_groups": {
+        "financial": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN"
+        ]
+      }
+    },
+    "basic_report": {
+      "allowed_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "forbidden_ids": [
+        "NEWS_2"
+      ],
+      "required_groups": {
+        "financial": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN"
+        ],
+        "news": [
+          "NEWS_1"
+        ]
+      }
+    },
+    "mixed": {
+      "allowed_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "forbidden_ids": [
+        "NEWS_2"
+      ],
+      "required_groups": {
+        "financial": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN"
+        ],
+        "news": [
+          "NEWS_1"
+        ]
+      }
+    },
+    "mixed_saved": {
+      "allowed_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "forbidden_ids": [
+        "NEWS_2"
+      ],
+      "required_groups": {
+        "financial": [
+          "CMP_2024_2025_CFS_REVENUE",
+          "CMP_2024_2025_CFS_OPERATING_INCOME",
+          "CMP_2024_2025_CFS_OPERATING_MARGIN"
+        ],
+        "news": [
+          "NEWS_1"
+        ]
+      }
+    }
+  }
+}

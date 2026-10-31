@@ -58,8 +58,38 @@ class FinancialLiteralTests(unittest.TestCase):
             "매출이 20.00% 증가한 2025년 18.0억원은 실적이 개선됐습니다.",
             "매출이 20.00% 증가한 2025년 100.0억원은 실적이 개선됐습니다.",
             "매출은 120.0억원에서 100.0억원으로 20.00% 증가했습니다.",
-            "2025년 매출은 120.0억원입니다.",
+            "2025년 매출은 100.0억원입니다.",
+            "2024년 매출은 120.0억원이었습니다.",
+            "2025년 영업이익은 120.0억원입니다.",
         ):
+            payload = dict(text=text, evidence_ids=["CMP_2024_2025_CFS_REVENUE"], follow_up="", blocks=[])
+            with self.subTest(text=text), self.assertRaises(AppError) as caught:
+                validate_response(payload, self.saved["evidence"], "plain")
+            self.assertEqual(caught.exception.code, "chat_numbers")
+
+    def test_exact_current_amount_sentence_is_allowed_for_simple_lookups(self):
+        # 계획7: 단순 조회는 검증된 금액 한 문장으로 답할 수 있다. 당기·전기 값과 연도가 정확히 맞을 때만 허용한다.
+        for text in ("2025년 매출은 120.0억원입니다.", "2024년 매출은 100.0억원이었습니다."):
+            payload = dict(text=text, evidence_ids=["CMP_2024_2025_CFS_REVENUE"], follow_up="", blocks=[])
+            with self.subTest(text=text):
+                self.assertEqual(validate_response(payload, self.saved["evidence"], "plain").text, text)
+
+    def test_saved_local_year_with_comparison_placeholder_keeps_numeric_binding(self):
+        payload = json.loads((FIXTURE.parent / "financial_placeholder_year_regression.json").read_text(encoding="utf-8"))
+        response = validate_response(payload, self.saved["evidence"], "issues")
+        self.assertIn("2024년 대비 2025년", response.text)
+        self.assertNotIn("{{", response.text)
+        for before, after in (("2024년 대비 2025년", "2025년 대비 2024년"),
+                              ("2024년", "2023년"), ("매출액이 {{CMP", "영업이익은 {{CMP")):
+            bad = deepcopy(payload)
+            bad["text"] = bad["text"].replace(before, after)
+            with self.subTest(after=after), self.assertRaises(AppError) as caught:
+                validate_response(bad, self.saved["evidence"], "issues")
+            self.assertEqual(caught.exception.code, "chat_numbers")
+
+    def test_placeholder_does_not_authorize_year_in_another_event_or_sentence(self):
+        for text in ("2024년 대비 2025년 계약을 체결했습니다. 매출은 {{CMP_2024_2025_CFS_REVENUE}}입니다.",
+                     "2024년 대비 2025년 계약을 체결했고 매출은 {{CMP_2024_2025_CFS_REVENUE}}입니다."):
             payload = dict(text=text, evidence_ids=["CMP_2024_2025_CFS_REVENUE"], follow_up="", blocks=[])
             with self.subTest(text=text), self.assertRaises(AppError) as caught:
                 validate_response(payload, self.saved["evidence"], "plain")

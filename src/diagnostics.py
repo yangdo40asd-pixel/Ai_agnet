@@ -1,10 +1,44 @@
-"""오류의 위치와 종류만 기록한다. 예외 본문·사용자 입력·설정값은 기록하지 않는다."""
+"""기본 로그에는 오류 분류만 기록한다. 원문 수집은 명시적 검수 문맥에서만 활성화한다."""
 import logging
 import re
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 from src.models import AppError
 
 logger = logging.getLogger("ai_agent.diagnostics")
+_validation_sink = ContextVar("validation_diagnostic_sink", default=None)
+
+
+@contextmanager
+def capture_validation_events(sink):
+    """명시적 검수에서만 공개 자료·생성 결과를 수집한다. 기본 로그에는 원문을 남기지 않는다."""
+    token = _validation_sink.set(sink)
+    try:
+        yield
+    finally:
+        _validation_sink.reset(token)
+
+
+def record_validation_failure(stage, payload, evidence, error, *, question=""):
+    sink = _validation_sink.get()
+    if sink is None:
+        return
+    from copy import deepcopy
+    def clean(value):
+        if isinstance(value, dict):
+            return {key: clean(item) for key, item in value.items()
+                    if not any(word in str(key).lower() for word in ("api_key", "authorization", "password", "secret", "token"))}
+        if isinstance(value, (list, tuple)):
+            return [clean(item) for item in value]
+        return deepcopy(value)
+    try:
+        sink({"stage": stage, "code": getattr(error, "code", type(error).__name__),
+              "question": question, "response": clean(payload), "evidence": clean(evidence),
+              "leftover_contexts": list(getattr(error, "leftover_contexts", ()))})
+    except Exception:
+        # 검수용 기록 장치가 답변의 성공·실패를 변경하지 않는다.
+        pass
 _STAGES = frozenset({"chat", "analysis", "pending_answer", "export"})
 _ERROR_TYPES = frozenset({"AppError", "ValueError", "TypeError", "KeyError", "RuntimeError", "TimeoutError"})
 _CODES = frozenset({"ai_auth", "ai_rate_limit", "ai_format", "ai_failed", "ai_truncated",

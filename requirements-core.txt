@@ -10,3 +10,5 @@ plotly
 XlsxWriter
 python-dotenv
 langchain-groq
+# 로컬 OpenAI 호환 서버 통신. Groq의 간접 의존성에만 기대지 않는다.
+httpx>=0.27,<1

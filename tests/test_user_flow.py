@@ -43,8 +43,11 @@ class UserFlowTests(unittest.TestCase):
         self.stack = ExitStack()
         self.addCleanup(self.stack.close)
         self.stack.enter_context(patch("socket.socket.connect", side_effect=AssertionError("로컬 검사에서 실제 외부 요청은 허용하지 않습니다.")))
-        self.stack.enter_context(patch("src.pipeline.load_settings", return_value=Settings(
-            "test-only-not-a-key", "test-model", "test-id", "test-secret")))
+        # 기존 화면 회귀는 사업 원문 결측을 주입한다. F01의 자료/생성 정상 경로는 별도 검사한다.
+        self.stack.enter_context(patch("src.discovery_flow.collect_business_profiles", return_value=()))
+        test_settings = Settings("test-only-not-a-key", "test-model", "test-id", "test-secret")
+        self.stack.enter_context(patch("src.config.load_settings", return_value=test_settings))
+        self.stack.enter_context(patch("src.pipeline.load_settings", return_value=test_settings))
         listing = pd.DataFrame([
             {"Name": "예시회사", "Code": "005930", "Market": "KOSPI"},
             {"Name": "회사나", "Code": "247540", "Market": "KOSDAQ"},
@@ -142,7 +145,8 @@ class UserFlowTests(unittest.TestCase):
         self.assertEqual(len(self.app.dataframe[0].value), 3)
         self.assertEqual(len(self.app.metric), 0)
         self.assertEqual(len(self.app.success), 0)
-        self.assertTrue(any("분석할 종목을 선택해 주세요" in item.value for item in self.app.info))
+        self.assertFalse(any("분석할 종목을 선택해 주세요" in item.value for item in self.app.info))
+        self.assertFalse(any(el.key == "candidate_selector" for el in self.app.selectbox))
         self.assertEqual(self.llm.invoke.call_count, 1)
         self.listing.assert_called_once()
         self.ticker.assert_not_called()

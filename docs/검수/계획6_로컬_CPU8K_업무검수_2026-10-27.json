@@ -1,0 +1,428 @@
+{
+  "checked_at": "2026-10-27T00:20:06.638167+09:00",
+  "synthetic_data": true,
+  "provider": "local",
+  "model": "gemma-4-12b-q4",
+  "base_url": "http://127.0.0.1:1235/v1",
+  "cases": [
+    {
+      "id": "followup",
+      "quality_review": "pending",
+      "question": "그러면 그 발표로 실적 개선이 확정된 건가요?",
+      "text": "수집된 뉴스 제목 기준입니다. 발표된 내용은 생산라인 가동 계획에 대한 것이며, 실제 가동을 통한 실적 개선이 확정된 것은 아닙니다. 계획 발표는 실행 여부나 실제 매출 반영을 확인한 것이 아니므로, 향후 실제 가동 및 생산 결과에 대한 확인이 필요합니다.",
+      "evidence_ids": [
+        "NEWS_1"
+      ],
+      "follow_up": "",
+      "blocks": [],
+      "path": "local_llm",
+      "status": "returned",
+      "elapsed_seconds": 94.963,
+      "trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "발표된 내용은 생산라인 가동 계획에 대한 것이며, 실제 가동을 통한 실적 개선이 확정된 것은 아닙니다. 계획 발표는 실행 여부나 실제 매출 반영을 확인한 것이 아니므로, 향후 실제 가동 및 생산 결과에 대한 확인이 필요합니다.",
+            "evidence_ids": [
+              "NEWS_1"
+            ],
+            "follow_up": "",
+            "blocks": []
+          },
+          "evidence_ids": [
+            "PRICE",
+            "PER",
+            "PBR",
+            "EPS",
+            "BPS",
+            "ROE",
+            "NEWS_1",
+            "NEWS_2",
+            "NEWS_STATUS",
+            "ANNUAL_2024_CFS",
+            "ANNUAL_2025_CFS",
+            "FIN_2024_CFS_REVENUE",
+            "FIN_2024_CFS_OPERATING_INCOME",
+            "FIN_2025_CFS_REVENUE",
+            "FIN_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN",
+            "FINANCIAL_STATUS"
+          ],
+          "displayed_data_sources": []
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "뉴스 제목을 기준으로 답변함을 명시하여 자료 범위를 올바르게 고지함.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "NEWS_1의 '가동 계획 발표' 내용을 정확히 반영함.",
+                "supported": true
+              },
+              {
+                "id": "intro_2",
+                "reason": "계획 발표가 실적 확정을 의미하지 않음을 구분하여 설명함.",
+                "supported": true
+              },
+              {
+                "id": "intro_3",
+                "reason": "계획과 실행의 차이를 설명하고 향후 확인 필요성을 언급함.",
+                "supported": true
+              }
+            ],
+            "reason": "모든 단위가 제공된 뉴스 제목의 범위 내에서 사실을 정확히 구분하여 답변함.",
+            "checks": {
+              "evidence_match": true,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": true,
+            "answers_question": true
+          },
+          "evidence_ids": [
+            "NEWS_1"
+          ],
+          "displayed_data_sources": []
+        }
+      ]
+    },
+    {
+      "id": "mixed",
+      "quality_review": "pending",
+      "question": "실적과 관련 뉴스를 함께 설명해 주세요.",
+      "text": "수집된 뉴스 제목 기준입니다. 가상검수회사는 2024년 대비 2025년 매출액이 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승했습니다.\n\n**반도체 생산라인 가동 계획**\n반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.\n\n**지주회사 경영 강화**\n가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 보도만으로는 구체적인 경영 강화의 내용이나 방향을 파악하기 어렵습니다.",
+      "evidence_ids": [
+        "CMP_2024_2025_CFS_REVENUE",
+        "CMP_2024_2025_CFS_OPERATING_INCOME",
+        "CMP_2024_2025_CFS_OPERATING_MARGIN",
+        "NEWS_1",
+        "NEWS_2"
+      ],
+      "follow_up": "",
+      "blocks": [
+        {
+          "title": "반도체 생산라인 가동 계획",
+          "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+          "evidence_ids": [
+            "NEWS_1"
+          ]
+        },
+        {
+          "title": "지주회사 경영 강화",
+          "text": "가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 보도만으로는 구체적인 경영 강화의 내용이나 방향을 파악하기 어렵습니다.",
+          "evidence_ids": [
+            "NEWS_2"
+          ]
+        }
+      ],
+      "path": "local_llm",
+      "status": "returned",
+      "elapsed_seconds": 280.647,
+      "trace": [
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사는 2024년 대비 2025년 매출액이 {{CMP_2024_2025_CFS_REVENUE}} 증가했고 영업이익은 {{CMP_2024_2025_CFS_OPERATING_INCOME}} 증가했으며 영업이익률은 {{CMP_2024_2025_CFS_OPERATING_MARGIN}} 상승했습니다.",
+            "evidence_ids": [
+              "CMP_2024_2025_CFS_REVENUE",
+              "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "CMP_2024_2025_CFS_OPERATING_MARGIN"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "반도체 생산라인 가동 계획",
+                "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "지주회사 경영 강화",
+                "text": "가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 보도만으로는 구체적인 경영 강화의 내용이나 방향을 파악하기 어렵습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          },
+          "evidence_ids": [
+            "PRICE",
+            "PER",
+            "PBR",
+            "EPS",
+            "BPS",
+            "ROE",
+            "NEWS_1",
+            "NEWS_2",
+            "NEWS_STATUS",
+            "ANNUAL_2024_CFS",
+            "ANNUAL_2025_CFS",
+            "FIN_2024_CFS_REVENUE",
+            "FIN_2024_CFS_OPERATING_INCOME",
+            "FIN_2025_CFS_REVENUE",
+            "FIN_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN",
+            "FINANCIAL_STATUS"
+          ],
+          "displayed_data_sources": []
+        },
+        {
+          "task": "chat_answer",
+          "response": {
+            "text": "가상검수회사는 2024년 대비 2025년 매출액이 20.00% 증가했고 영업이익은 80.00% 증가했으며 영업이익률은 5.00%p 상승했습니다.",
+            "evidence_ids": [
+              "CMP_2024_2025_CFS_REVENUE",
+              "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "CMP_2024_2025_CFS_OPERATING_MARGIN"
+            ],
+            "follow_up": "",
+            "blocks": [
+              {
+                "title": "반도체 생산라인 가동 계획",
+                "text": "반도체 메모리 생산라인 가동 계획이 발표되었습니다. 다만 이는 계획 발표 단계이며 실제 실행 여부나 매출 반영 결과는 확인되지 않았습니다.",
+                "evidence_ids": [
+                  "NEWS_1"
+                ]
+              },
+              {
+                "title": "지주회사 경영 강화",
+                "text": "가상그룹 지주회사의 이사회 경영 강화 소식이 보도되었습니다. 해당 보도만으로는 구체적인 경영 강화의 내용이나 방향을 파악하기 어렵습니다.",
+                "evidence_ids": [
+                  "NEWS_2"
+                ]
+              }
+            ]
+          },
+          "evidence_ids": [
+            "PRICE",
+            "PER",
+            "PBR",
+            "EPS",
+            "BPS",
+            "ROE",
+            "NEWS_1",
+            "NEWS_2",
+            "NEWS_STATUS",
+            "ANNUAL_2024_CFS",
+            "ANNUAL_2025_CFS",
+            "FIN_2024_CFS_REVENUE",
+            "FIN_2024_CFS_OPERATING_INCOME",
+            "FIN_2025_CFS_REVENUE",
+            "FIN_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN",
+            "FINANCIAL_STATUS"
+          ],
+          "displayed_data_sources": []
+        },
+        {
+          "task": "chat_grounding_review",
+          "response": {
+            "unit_reviews": [
+              {
+                "id": "intro_0",
+                "reason": "수집된 자료의 범위를 명시하는 안내 문구로, 회사 사실 주장이 없으므로 허용됩니다.",
+                "supported": true
+              },
+              {
+                "id": "intro_1",
+                "reason": "제공된 재무 지표(매출액 20% 증가, 영업이익 80% 증가, 영업이익률 5%p 상승)와 정확히 일치합니다.",
+                "supported": true
+              },
+              {
+                "id": "block_0_0",
+                "reason": "뉴스 제목을 기반으로 한 소제목으로, 새로운 사실을 추가하지 않았습니다.",
+                "supported": true
+              },
+              {
+                "id": "block_0_1",
+                "reason": "NEWS_1의 제목 내용을 서술문으로 적절하게 표현했습니다.",
+                "supported": true
+              },
+              {
+                "id": "block_0_2",
+                "reason": "제목에 실행 결과나 매출 반영 내용이 없으므로, 확인 불가라는 한계 설명을 덧붙인 것은 적합합니다.",
+                "supported": true
+              },
+              {
+                "id": "block_1_0",
+                "reason": "뉴스 제목을 기반으로 한 소제목으로, 새로운 사실을 추가하지 않았습니다.",
+                "supported": true
+              },
+              {
+                "id": "block_1_1",
+                "reason": "NEWS_2의 제목 내용을 서술문으로 적절하게 표현했습니다.",
+                "supported": true
+              },
+              {
+                "id": "block_1_2",
+                "reason": "제목에 구체적인 내용이 없으므로, 확인이 어렵다는 한계 설명을 덧붙인 것은 적합합니다.",
+                "supported": true
+              }
+            ],
+            "reason": "모든 단위가 제공된 근거와 일치하며, 계획 발표를 실적이나 확정된 결과로 오인하지 않도록 적절한 한계 설명을 포함하고 있습니다.",
+            "checks": {
+              "evidence_match": true,
+              "time_basis": true,
+              "question_focus": true,
+              "explanation": true,
+              "scope_disclosed": true,
+              "context_consistent": true
+            },
+            "supported": true,
+            "answers_question": true
+          },
+          "evidence_ids": [
+            "CMP_2024_2025_CFS_REVENUE",
+            "CMP_2024_2025_CFS_OPERATING_INCOME",
+            "CMP_2024_2025_CFS_OPERATING_MARGIN",
+            "NEWS_1",
+            "NEWS_2"
+          ],
+          "displayed_data_sources": [
+            {
+              "evidence_id": "CMP_2024_2025_CFS_REVENUE",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            },
+            {
+              "evidence_id": "CMP_2024_2025_CFS_OPERATING_INCOME",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            },
+            {
+              "evidence_id": "CMP_2024_2025_CFS_OPERATING_MARGIN",
+              "label": "OpenDART · 2024년 → 2025년 연간 · 연결"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "candidates",
+      "quality_review": "pending",
+      "response": [
+        "삼성전자",
+        "SK하이닉스",
+        "한미반도체"
+      ],
+      "status": "returned",
+      "elapsed_seconds": 7.095,
+      "trace": [
+        {
+          "task": "candidates",
+          "response": {
+            "stocks": [
+              "삼성전자",
+              "SK하이닉스",
+              "한미반도체"
+            ]
+          },
+          "evidence_ids": [],
+          "displayed_data_sources": []
+        }
+      ]
+    }
+  ],
+  "sha256": {
+    "src\\agents\\providers\\groq.py": "884edb3be24c37c1fb39736a556c44b3809657e8bdbddbb96570d51cd8656423",
+    "src\\agents\\providers\\local.py": "a87f3a29ead07bb2595949bfcf5962d35d0ff42bcea23b9e9444e3d6107af5e4",
+    "src\\agents\\providers\\result.py": "e448fd74d7794071777be712cdb43c83f217060dcb0918c4ccf2e29374e3a04e",
+    "src\\agents\\providers\\__init__.py": "18f51b538835b0806c0a38cb5ae417484fefa6ec67a3eda1ca41e37acd831e12",
+    "src\\config.py": "74d4d3914ae88cbe71eca2007328e50d4428ef3195361307ccd851b77876203b",
+    "src\\agents\\transport.py": "c5d60edf798afa145d6a8b0b438db3d5adcda615277df51412c1f3e55d2afb01",
+    "src\\agents\\output_contract.py": "396ba3e56cae26a5c3f1426fbbf40d3eadf7ff4a38041d897ab89844896ffd28",
+    "src\\agents\\grounding.py": "2a12458d30420fa5331a344a11e87eeea30dddaa1df4f6fa547a0ca9b943474e",
+    "src\\agents\\chat.py": "ec559a91f9a520d2178310352b2a8fa97f8b945d6c20b56e8a5fcf0f80ab42f0",
+    "src\\agents\\report.py": "40befb3944292d1d4a11351343cf00329a78950785067c5a80f5ad74fcc61ea4",
+    "src\\agents\\local_verification.py": "ef453d16d02bf6576bf16d103c00e8f1ba1e632593695d41e1ccda671aee1d1a"
+  },
+  "requests": 6,
+  "events": [
+    {
+      "task": "chat_answer",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 4532,
+        "completion_tokens": 90,
+        "total_tokens": 4622
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 28.845
+    },
+    {
+      "task": "chat_grounding_review",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 1949,
+        "completion_tokens": 304,
+        "total_tokens": 2253
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 66.02
+    },
+    {
+      "task": "chat_answer",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 4485,
+        "completion_tokens": 370,
+        "total_tokens": 4855
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 84.309
+    },
+    {
+      "task": "chat_answer",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 4970,
+        "completion_tokens": 329,
+        "total_tokens": 5299
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 71.349
+    },
+    {
+      "task": "chat_grounding_review",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 3363,
+        "completion_tokens": 569,
+        "total_tokens": 3932
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 124.986
+    },
+    {
+      "task": "candidates",
+      "provider": "local",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 252,
+        "completion_tokens": 26,
+        "total_tokens": 278
+      },
+      "finish_reason": "stop",
+      "elapsed_seconds": 7.095
+    }
+  ],
+  "groq_client_calls": 0
+}

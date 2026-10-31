@@ -7,8 +7,10 @@ from typing import Any
 
 from src.export.excel import build_export_filename, build_workbook_bytes
 from src.models import AnalysisResult, CandidateDiscoveryResult, QueryOptions, now_kst
+from src.ui.chat_lifecycle import REQUEST_STATE_KEYS
 
-ALL_STATE_KEYS = (
+ALL_STATE_KEYS = REQUEST_STATE_KEYS + (
+    "active_comparison",
     "candidate_result",
     "selected_code",
     "query_options",
@@ -37,7 +39,7 @@ ALL_STATE_KEYS = (
     "awaiting_theme",
     "conversation_mode",
     "inflight_request",
-    "results", "active_canvas_id", "request_scope", "request_status", "pending_question",
+    "results", "active_canvas_id", "request_scope", "request_status", "pending_question", "routing_listing",
     "last_submission", "queued_action", "pending_previous_result", "answer_result_id",
 )
 
@@ -48,8 +50,8 @@ THEME_KEEP_KEYS = {
     "canvas_seq",
     "canvas_scroll_generation",
     "inflight_request",
-    "results", "active_canvas_id",
-}
+    "results", "active_canvas_id", "last_submission", "retry_submission", "routing_listing",
+} | set(REQUEST_STATE_KEYS)
 
 MAX_CANVASES = 8
 
@@ -129,6 +131,16 @@ def append_chat_message(state: MutableMapping[str, Any], role: str, text: str, *
     messages = list(state.get("chat_messages", ()))
     messages.append({"role": role, "text": text, "sent_at": now_kst().isoformat(), **extra})
     state["chat_messages"] = messages[-40:]
+
+
+def store_candidate_extension(state, discovery):
+    """추가 후보만 갱신한다. 선택 기업·분석 결과·캔버스·대화는 초기화하지 않는다."""
+    current = state.get("candidate_result")
+    if current is None or current.theme != discovery.theme or discovery.failure_reason:
+        raise ValueError("기존 탐색과 일치하는 추가 후보만 저장할 수 있습니다.")
+    if not {s.code for s in current.selectable_candidates} <= {s.code for s in discovery.selectable_candidates}:
+        raise ValueError("기존 후보를 제거한 결과는 추가 탐색이 아닙니다.")
+    state["candidate_result"] = discovery
 
 
 def select_candidate(state: MutableMapping[str, Any], code: str | None) -> None:
@@ -358,10 +370,14 @@ def suggested_prompts(state: MutableMapping[str, Any]) -> tuple[str, ...]:
         if result.price_history and result.price_history.status == "ok" and len(result.price_history.bars) >= 2:
             prompts.append("조회 기간의 주가와 거래량 변화를 설명해줘")
     elif state.get("candidate_result"):
-        # 연관성을 조사하지 않은 후보에게 사업 설명/비교를 약속하지 않는다.
-        prompts.append("PER의 뜻을 설명해줘")
+        if state["candidate_result"].business_profiles:
+            prompts.append("이 기업들은 서로 뭐가 달라?")
+        prompts.append("관련주 더 보여줘")
     else:
-        if not state.get("chat_messages"):
+        latest_msg = next((m for m in reversed(state.get("chat_messages", ())) if m.get("role") == "assistant"), None)
+        if latest_msg and "테마를 소개해 드립니다" in latest_msg.get("text", ""):
+            prompts.extend(("AI 반도체 관련주 알려줘", "로봇 테마 보여줘", "2차전지 관련 기업 찾아줘"))
+        elif not state.get("chat_messages"):
             prompts.extend(("반도체 관련 종목을 찾아줘", "삼성전자를 분석해줘", "PER와 PBR의 차이를 설명해줘"))
         # 대화가 시작되면 첫 화면 예시를 계속 반복하지 않는다.
     recent = {m.get("text") for m in list(state.get("chat_messages", ()))[-6:] if m.get("role") == "user"}
